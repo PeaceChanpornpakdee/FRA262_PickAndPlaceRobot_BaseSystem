@@ -21,6 +21,6 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    component.rec_1.draw()
+    component.display()
 
     pygame.display.update()
