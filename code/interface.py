@@ -1,17 +1,26 @@
 import pygame
-  
-# Initializing imported module
+from component import *
+from color import Color
+
+# Initialize imported module
 pygame.init()
   
 # Displaying a window
-pygame.display.set_mode((750, 750))
+screen = pygame.display.set_mode((750, 750))
+
+#Preparing components
+component = Component(screen)
   
-# Creating a bool value which checks if game is running
+# Create a bool value which checks if game is running
 running = True
   
-# Keep game running till running is true
+# Keep game running until running is true
 while running:
     # Check for event if user has pushed any event in queue
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+    component.rec_1.draw()
+
+    pygame.display.update()
