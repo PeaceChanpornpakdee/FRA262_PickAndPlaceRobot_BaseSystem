@@ -1,25 +1,17 @@
-# import pygame package
 import pygame
   
-# initializing imported module
+# Initializing imported module
 pygame.init()
   
-# displaying a window of height
-# 500 and width 400
+# Displaying a window
 pygame.display.set_mode((750, 750))
   
-# creating a bool value which checks
-# if game is running
+# Creating a bool value which checks if game is running
 running = True
   
-# keep game running till running is true
+# Keep game running till running is true
 while running:
-      
-    # Check for event if user has pushed
-    # any event in queue
+    # Check for event if user has pushed any event in queue
     for event in pygame.event.get():
-          
-        # if event is of type quit then 
-        # set running bool to false
         if event.type == pygame.QUIT:
             running = False
