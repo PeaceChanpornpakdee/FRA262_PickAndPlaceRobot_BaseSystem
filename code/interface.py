@@ -1,26 +1,27 @@
-import pygame
-from component import *
-from color import Color
+import tkinter as tk
+from tkinter import ttk
+from tkinter.messagebox import showinfo
 
-# Initialize imported module
-pygame.init()
-  
-# Displaying a window
-screen = pygame.display.set_mode((750, 750))
+class App(tk.Tk):
+  def __init__(self):
+    super().__init__()
 
-#Preparing components
-component = Component(screen)
-  
-# Create a bool value which checks if game is running
-running = True
-  
-# Keep game running until running is true
-while running:
-    # Check for event if user has pushed any event in queue
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    # Configure the root window
+    self.title('My Awesome App')
+    self.geometry('300x50')
 
-    component.display()
+    # Label
+    self.label = ttk.Label(self, text='Hello, Tkinter!')
+    self.label.pack()
 
-    pygame.display.update()
+    # Button
+    self.button = ttk.Button(self, text='Click Me')
+    self.button['command'] = self.button_clicked
+    self.button.pack()
+
+  def button_clicked(self):
+    showinfo(title='Information', message='Hello, Tkinter!')
+
+if __name__ == "__main__":
+  app = App()
+  app.mainloop()
