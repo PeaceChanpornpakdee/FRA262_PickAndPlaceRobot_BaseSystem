@@ -1,6 +1,6 @@
 import tkinter as tk
 
-from frame import MainFrame
+from frame import MainFrame, FieldFrame
 from color import Color
 
 class App(tk.Tk):
@@ -22,5 +22,6 @@ class App(tk.Tk):
 
 if __name__ == "__main__":
     app = App()
-    frame = MainFrame(app)
+    # frame = MainFrame(app)
+    field = FieldFrame(app)
     app.mainloop()
