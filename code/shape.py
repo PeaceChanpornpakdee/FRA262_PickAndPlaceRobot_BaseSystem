@@ -1,4 +1,5 @@
 import pygame
+import pygame.gfxdraw
 
 class Rectangle:
     def __init__(self, screen, color, x, y, w, h):
@@ -22,7 +23,20 @@ class Circle:
         self.r = r # Radius
 
     def draw(self):
-        pygame.draw.circle(self.screen, self.color, (self.x, self.y), self.r)
+        pygame.gfxdraw.filled_circle(self.screen, self.x, self.y, self.r, self.color)
+        # pygame.draw.circle(self.screen, self.color, (self.x, self.y), self.r)
+
+class Circle2:
+    def __init__(self, screen, color, x, y, r):
+        self.screen = screen
+        self.color = color
+        self.x = x # Center x
+        self.y = y # Center y
+        self.r = r # Radius
+
+    def draw(self):
+        pygame.gfxdraw.filled_circle(self.screen, self.x, self.y, self.r, self.color)
+        # pygame.draw.circle(self.screen, self.color, (self.x, self.y), self.r)
 
 
 class RoundedRectangle:
@@ -38,8 +52,6 @@ class RoundedRectangle:
     def draw(self):
         pygame.draw.rect(self.screen, self.color, (self.x-self.w/2, self.y-self.h/2+self.r, self.w, self.h-2*self.r))
         pygame.draw.rect(self.screen, self.color, (self.x-self.w/2+self.r, self.y-self.h/2, self.w-2*self.r, self.h))
-        # pygame.draw.rect(self.screen, self.color, (self.x-self.w/2, self.y-self.h/2+self.r, self.w, self.h-2*self.r))
-        # pygame.draw.rect(self.screen, self.color, (self.x-self.w/2+self.r, self.y-self.h/2+self.r, self.w-2*self.r, self.h-2*self.r))
         pygame.draw.circle(self.screen, self.color, (self.x+self.w/2-self.r, self.y+self.h/2-self.r), self.r)
         pygame.draw.circle(self.screen, self.color, (self.x-self.w/2+self.r, self.y+self.h/2-self.r), self.r)
         pygame.draw.circle(self.screen, self.color, (self.x+self.w/2-self.r, self.y-self.h/2+self.r), self.r)

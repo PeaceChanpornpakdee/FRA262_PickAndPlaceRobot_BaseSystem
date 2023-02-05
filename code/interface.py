@@ -6,7 +6,7 @@ from color import Color
 pygame.init()
   
 # Displaying a window
-screen = pygame.display.set_mode((750, 750))
+screen = pygame.display.set_mode((720, 720))
 
 #Preparing components
 component = Component(screen)
