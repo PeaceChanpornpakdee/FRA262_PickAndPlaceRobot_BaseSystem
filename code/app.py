@@ -1,6 +1,7 @@
 import tkinter as tk
+from tkinter import ttk
 
-from frame import MainFrame, FieldFrame
+from frame import MainFrame, FieldFrame, TestCanvas, Canvas
 from color import Color
 
 class App(tk.Tk):
@@ -23,5 +24,15 @@ class App(tk.Tk):
 if __name__ == "__main__":
     app = App()
     # frame = MainFrame(app)
-    field = FieldFrame(app)
+
+    # s = ttk.Style()
+    # s.configure('BW.TFrame', background=Color.white)
+    # field = FieldFrame(app, 'BW.TFrame')
+
+    # test = TestCanvas(app)
+
+    # test2 = TestCanvas(app)
+
+    cv = Canvas(app)
+
     app.mainloop()
