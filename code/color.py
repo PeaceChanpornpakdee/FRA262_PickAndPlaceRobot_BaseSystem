@@ -5,4 +5,5 @@ class Color:
     gray        = "#8C8C8C"
     darkgray    = "#3C4048"
     lightblue   = "#0AD1DA"
+    red         = "#BC0000"
     

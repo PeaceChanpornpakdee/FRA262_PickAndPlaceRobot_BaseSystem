@@ -33,7 +33,9 @@ if __name__ == "__main__":
     field_canvas.create_round_rectangle("TopLeft", 600, 26, 240+20, 80, 20, Color.darkgray)
     field_canvas.create_grid(20, 120, 70, 30, Color.lightgray)
     field_canvas.create_textbox(690, 52, "Module III", 26, Color.lightblue)
-    field_canvas.create_photo("logo", 800, 66)
     field_canvas.create_textbox(690, 82, "Base System", 19, Color.whitegray)
+    field_canvas.create_photo("logo", 800, 66)
+    # field_canvas.create_tray(0, 0, 30)
+    field_canvas.create_navigator(0, 0, 8)
 
     app.mainloop()
