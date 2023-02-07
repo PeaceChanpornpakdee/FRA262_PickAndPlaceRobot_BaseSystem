@@ -37,5 +37,8 @@ if __name__ == "__main__":
     field_canvas.create_photo("logo", 800, 66)
     field_canvas.create_tray(9, 30, 20)
     field_canvas.create_navigator(-10, 10, 8)
+    field_canvas.create_oval_point(-10, 10, 0)
+    # field_canvas.create_target_point(10.2, 19.7)
+    field_canvas.create_target_point(10, 10)
 
     app.mainloop()

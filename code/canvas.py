@@ -80,3 +80,14 @@ class Canvas():
         self.canvas.create_polygon(*navigator_points["navigator_top"], fill="#FFD18C", outline="")
         self.canvas.create_polygon(*navigator_points["navigator_left"], fill="#FFB545", outline="")
         self.canvas.create_polygon(*navigator_points["navigator_right"], fill="#EAA031", outline="")
+
+    def create_oval_point(self, grid_x, grid_y, grid_z):
+        oval_points = map_oval_points(grid_x, grid_y, grid_z, 4)
+        self.canvas.create_oval(*oval_points, fill=Color.red, outline='')
+
+    def create_target_point(self, grid_x, grid_y):
+        target_points = map_target_points(grid_x, grid_y)
+        self.canvas.create_oval(*target_points["inner_oval"], fill=Color.blue, outline='')
+        self.canvas.create_oval(*target_points["outer_oval"], fill='', outline=Color.blue, width=2)
+        for i in range(4):
+            self.canvas.create_line(*target_points["tick"][i], fill=Color.blue, width=2)
