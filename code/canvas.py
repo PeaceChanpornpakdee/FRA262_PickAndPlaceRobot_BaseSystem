@@ -1,4 +1,5 @@
 import tkinter as tk
+from PIL import ImageTk, Image
 from color import Color
 
 class Canvas():
@@ -6,7 +7,8 @@ class Canvas():
     Canvas class
     """
     def __init__(self, container, width, height, padding):
-        self.canvas = tk.Canvas(container, width=width, height=height, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge', cursor='sb_down_arrow')
+        # self.canvas = tk.Canvas(container, width=width, height=height, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge', cursor='sb_down_arrow')
+        self.canvas = tk.Canvas(container, width=width, height=height, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge')
         self.canvas.pack(pady=padding)
         self.create_round_rectangle("TopLeft", 0, 0, width, height, 20, Color.white)
 
@@ -42,4 +44,10 @@ class Canvas():
         self.canvas.create_line((x+8*15, y+120-4*15), (x+560+8*15, y+120+280-4*15), width=2, fill=color)
 
     def create_textbox(self, x, y, text, size, color):
-        self.canvas.create_text((x,y), text=text, fill=color, font=("Inter-Regular", size))
+        self.canvas.create_text((x,y), text=text, fill=color, font=("Inter-SemiBold", size))
+
+    def create_photo(self, file_name, x, y):
+        file = "image/" + file_name + ".png"
+        image = Image.open(file)
+        self.canvas.image = ImageTk.PhotoImage(image)
+        self.canvas.create_image(x, y, image=self.canvas.image)
