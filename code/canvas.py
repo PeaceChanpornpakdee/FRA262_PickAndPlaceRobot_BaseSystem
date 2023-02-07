@@ -11,7 +11,7 @@ class Canvas():
         # self.canvas = tk.Canvas(container, width=width, height=height, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge', cursor='sb_down_arrow')
         self.canvas = tk.Canvas(container, width=width, height=height, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge')
         self.canvas.pack(pady=padding)
-        self.create_round_rectangle("TopLeft", 0, 0, width, height, 20, Color.white)
+        self.create_round_rectangle("TopLeft", 0, 0, width, height, 20, Color.whitegray)
 
     def create_round_rectangle(self, mode, x, y, w, h, r, color):
         if mode == "Center":
