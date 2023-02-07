@@ -1,7 +1,7 @@
+import pyglet
 import tkinter as tk
-from tkinter import ttk
 
-from frame import MainFrame, FieldFrame, TestCanvas, Canvas
+from frame import Canvas
 from color import Color
 
 class App(tk.Tk):
@@ -26,16 +26,11 @@ class App(tk.Tk):
 
 if __name__ == "__main__":
     app = App()
-    # frame = MainFrame(app)
+    field_canvas   = Canvas(app, 840, 540, 30)
+    command_canvas = Canvas(app, 840, 150, 0)
 
-    # s = ttk.Style()
-    # s.configure('BW.TFrame', background=Color.white)
-    # field = FieldFrame(app, 'BW.TFrame')
-
-    # test = TestCanvas(app)
-
-    # test2 = TestCanvas(app)
-
-    cv = Canvas(app)
+    field_canvas.create_round_rectangle("TopLeft", 600, 25, 240+20, 80, 20, Color.darkgray)
+    field_canvas.create_grid(20, 120, 70, 30, Color.lightgray)
+    field_canvas.create_textbox(100, 200, "Hello", 25, Color.gray)
 
     app.mainloop()
