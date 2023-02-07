@@ -59,6 +59,9 @@ class Canvas():
         self.canvas.create_polygon(*tray_points["top_tray"],    fill=Color.lightgray, outline="")
         self.canvas.create_polygon(*tray_points["left_wall"],   fill=Color.middlegray, outline="")
         self.canvas.create_polygon(*tray_points["right_wall"],  fill=Color.gray, outline="")
+        for row in range(3):
+            for column in range(3):
+                self.canvas.create_oval(*(tray_points["holes"][row][column]), fill=Color.gray, outline='')
 
     def create_navigator(self, grid_x, grid_y, grid_z):
 

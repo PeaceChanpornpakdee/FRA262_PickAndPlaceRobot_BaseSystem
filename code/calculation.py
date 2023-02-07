@@ -56,6 +56,28 @@ def map_tray_points(grid_x, grid_y, tray_width, tray_height, tray_thick, orienta
         tray_points["top_tray"][right_side[0]]
     )
 
+    hole_centers = []
+    for row in range(3):
+        hole_centers.append([])
+        for column in range(3):
+            hole_tray_x = 1 + 2*column
+            hole_tray_y = 1 + 1.5*row
+            hole_diagonal = (hole_tray_x**2 + hole_tray_y**2) ** 0.5
+            hole_theta = math.atan(hole_tray_x / hole_tray_y)
+            hole_centers[row].append( map_3D_to_2D( grid_x + hole_diagonal * math.sin(theta+hole_theta), grid_y + hole_diagonal * math.cos(theta+hole_theta), tray_thick ), )
+
+    hole_points = []
+    for row in range(3):
+        hole_points.append([])
+        for column in range(3):
+            hole_center_point = hole_centers[row][column]
+            hole_points[row].append((
+                (hole_center_point[0]-4, hole_center_point[1]+2),
+                (hole_center_point[0]+4, hole_center_point[1]-2),
+            ))
+
+    tray_points["holes"] = hole_points
+
     return tray_points
 
 def map_navigator_points(grid_x, grid_y, grid_z):
