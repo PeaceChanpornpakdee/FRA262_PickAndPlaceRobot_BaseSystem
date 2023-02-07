@@ -21,6 +21,9 @@ class App(tk.Tk):
         self.resizable(False, False)
         self.configure(bg=Color.darkgray)
 
+        # Add font
+        pyglet.font.add_file('font/Inter-Regular.ttf')
+
 if __name__ == "__main__":
     app = App()
     # frame = MainFrame(app)
