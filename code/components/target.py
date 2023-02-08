@@ -1,4 +1,4 @@
-from color import Color
+from components.color import Color
 
 class Target():
     """

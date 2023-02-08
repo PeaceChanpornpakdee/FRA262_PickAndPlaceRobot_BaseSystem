@@ -1,16 +1,14 @@
 import pyglet
 import tkinter as tk
 
-from color import Color
-from canvas import Canvas
-from grid import Grid
-from tray import Tray
-from target import Target
-from navigator import Navigator
+from components.color import Color
+from components.canvas import Canvas
+from components.grid import Grid
+from components.tray import Tray
+from components.target import Target
+from components.navigator import Navigator
 
-from button import ToggleButton
-
-
+from components.button import ToggleButton
 
 from function import *
 from keyboard import Keyboard
@@ -55,9 +53,8 @@ class App(tk.Tk):
 
 if __name__ == "__main__":
     app = App()
-    field_canvas   = Canvas(app, 840, 540, 30)
-    command_canvas = Canvas(app, 840, 150, 0)
 
+    field_canvas   = Canvas(app, 840, 540, 30)
     field_canvas.create_round_rectangle(600, 26, 240+20, 80, 20, Color.darkgray)
     field_canvas.create_textbox(690, 52, "Module III", 26, Color.lightblue)
     field_canvas.create_textbox(690, 82, "Base System", 19, Color.whitegray)
@@ -68,6 +65,7 @@ if __name__ == "__main__":
     app.target =  Target(root_canvas=field_canvas, root_grid=grid, grid_x=10, grid_y=10)
     app.navi = Navigator(root_canvas=field_canvas, root_grid=grid, grid_x=-5, grid_y=10, grid_z=8)
     
+    command_canvas = Canvas(app, 840, 150, 0)
     # command_canvas.create_rectangle_button(0, 0, 100, 50, 20, Color.blue, "Run", 20, Color.white, hello)
     # command_canvas.create_radio_button(100, 100, 14, Color.blue, "active", hello)
     # command_canvas.create_radio_button(200, 100, 14, Color.blue, "inactive", hello)

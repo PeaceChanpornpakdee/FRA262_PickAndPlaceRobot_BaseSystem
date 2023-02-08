@@ -1,6 +1,6 @@
 import tkinter as tk
 from PIL import ImageTk, Image
-from color import Color
+from components.color import Color
 
 class Canvas():
     """
