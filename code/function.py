@@ -5,4 +5,4 @@ def laser_transmit(status):
         print("Turn Laser ON")
 
 def hello():
-    print("hello")
+    print("Hello")
