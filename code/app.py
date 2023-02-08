@@ -76,5 +76,7 @@ if __name__ == "__main__":
         keyboard = Keyboard(app)
         keyboard.key_bind(app)
 
+    app.bind("<ButtonRelease-1>", mouse_position)
+
     app.task()
     app.mainloop()

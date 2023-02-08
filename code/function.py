@@ -6,3 +6,6 @@ def laser_transmit(status):
 
 def hello():
     print("Hello")
+
+def mouse_position(event):
+    print(event.x, event.y)
