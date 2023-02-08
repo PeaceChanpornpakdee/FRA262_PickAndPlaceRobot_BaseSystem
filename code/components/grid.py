@@ -33,3 +33,9 @@ class Grid():
         pixel_x = self.offset_x +  8*(grid_x+15) - 8*(grid_y+35) + 560
         pixel_y = self.offset_y - (4*(grid_x+15) + 4*(grid_y+35) - 400 + 8*grid_z)
         return pixel_x, pixel_y
+
+    # def map_2D_to_3D(self, pixel_x, pixel_y):
+    #     grid_x =  (pixel_x - 2*pixel_y - self.offset_x + 2*self.offset_y) / 16
+    #     grid_y = -(pixel_x + 2*pixel_y - self.offset_x - 2*self.offset_y - 800) / 16
+    #     print(grid_x, grid_y)
+    #     return grid_x, grid_y
