@@ -1,8 +1,8 @@
-def laser(status):
+def laser_transmit(status):
     if status == "inactive":
-        print("Laser OFF")
+        print("Turn Laser OFF")
     else:
-        print("Laser ON")
+        print("Turn Laser ON")
 
 def hello():
     print("hello")

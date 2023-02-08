@@ -103,28 +103,3 @@ def map_tray_points(grid_x, grid_y, tray_width, tray_height, tray_thick, orienta
     tray_points["holes"] = hole_points
 
     return tray_points
-
-def map_navigator_points(grid_x, grid_y, grid_z):
-    pixel_x, pixel_y = map_3D_to_2D(grid_x, grid_y, grid_z)
-
-    navigator_points = {
-        "navigator_tip" : (pixel_x, pixel_y),
-        "navigator_top" : (
-            (pixel_x,      pixel_y - 16),
-            (pixel_x - 16, pixel_y - 24),
-            (pixel_x,      pixel_y - 32),
-            (pixel_x + 16, pixel_y - 24),
-        ),
-        "navigator_left" : (
-            (pixel_x,      pixel_y),
-            (pixel_x - 16, pixel_y - 24),
-            (pixel_x,      pixel_y - 16),
-        ),
-        "navigator_right" : (
-            (pixel_x,      pixel_y),
-            (pixel_x + 16, pixel_y - 24),
-            (pixel_x,      pixel_y - 16),
-        )
-    }
-
-    return navigator_points
