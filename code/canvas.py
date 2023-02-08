@@ -11,12 +11,9 @@ class Canvas():
         # self.canvas = tk.Canvas(container, width=width, height=height, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge', cursor='sb_down_arrow')
         self.canvas = tk.Canvas(container, width=width, height=height, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge')
         self.canvas.pack(pady=padding)
-        self.create_round_rectangle("TopLeft", 0, 0, width, height, 20, Color.whitegray)
+        self.create_round_rectangle(0, 0, width, height, 20, Color.whitegray)
 
-    def create_round_rectangle(self, mode, x, y, w, h, r, color):
-        if mode == "Center":
-            x = x - w/2
-            y = y - h/2
+    def create_round_rectangle(self, x, y, w, h, r, color):
         self.canvas.create_oval(x,       y,       x+2*r, y+2*r, fill=color, outline='')
         self.canvas.create_oval(x+w-2*r, y,       x+w,   y+2*r, fill=color, outline='')
         self.canvas.create_oval(x,       y+h-2*r, x+2*r, y+h,   fill=color, outline='')
@@ -45,7 +42,8 @@ class Canvas():
         self.canvas.create_line((x+8*15, y+120-4*15), (x+560+8*15, y+120+280-4*15), width=2, fill=color)
 
     def create_textbox(self, x, y, text, size, color):
-        self.canvas.create_text((x,y), text=text, fill=color, font=("Inter-SemiBold", size))
+        textbox = self.canvas.create_text((x,y), text=text, fill=color, font=("Inter-SemiBold", size))
+        return textbox
 
     def create_photo(self, file_name, x, y):
         file = "image/" + file_name + ".png"
@@ -53,6 +51,18 @@ class Canvas():
         self.canvas.image = ImageTk.PhotoImage(image)
         self.canvas.create_image(x, y, image=self.canvas.image)
 
+    def create_click_area(self, x, y, w, h, shape):
+        if shape == "rectangle":
+            return self.canvas.create_rectangle(x, y, x+w, y+h, fill="", outline="")
+        if shape == "oval":
+            return self.canvas.create_oval(x, y, x+w, y+h, fill="", outline="")
+
+    def create_rectangle_button(self, x, y, w, h, r, button_color, text, text_size, text_color, function):
+        self.create_round_rectangle(x, y, w, h, r, button_color)
+        self.create_textbox(x+w/2, y+h/2, text, text_size, text_color)
+        self.click_area = self.create_click_area(x, y, w, h, "rectangle")
+        self.canvas.tag_bind(self.click_area, "<ButtonRelease-1>", function)
+    
     def create_tray(self, origin_x, origin_y, orientation):
         tray_points = map_tray_points(origin_x, origin_y, 6, 5, 0.5, orientation)
         self.canvas.create_polygon(*tray_points["bottom_tray"], fill=Color.gray, outline="")

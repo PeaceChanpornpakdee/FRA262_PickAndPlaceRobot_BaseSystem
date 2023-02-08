@@ -3,6 +3,7 @@ import tkinter as tk
 
 from canvas import Canvas
 from color import Color
+from function import *
 
 class App(tk.Tk):
     def __init__(self):
@@ -30,7 +31,7 @@ if __name__ == "__main__":
     field_canvas   = Canvas(app, 840, 540, 30)
     command_canvas = Canvas(app, 840, 150, 0)
 
-    field_canvas.create_round_rectangle("TopLeft", 600, 26, 240+20, 80, 20, Color.darkgray)
+    field_canvas.create_round_rectangle(600, 26, 240+20, 80, 20, Color.darkgray)
     field_canvas.create_grid(20, 120, 70, 30, Color.lightgray)
     field_canvas.create_textbox(690, 52, "Module III", 26, Color.lightblue)
     field_canvas.create_textbox(690, 82, "Base System", 19, Color.whitegray)
@@ -38,7 +39,7 @@ if __name__ == "__main__":
     field_canvas.create_tray(9, 30, 20)
     field_canvas.create_navigator(-10, 10, 8)
     field_canvas.create_oval_point(-10, 10, 0)
-    # field_canvas.create_target_point(10.2, 19.7)
     field_canvas.create_target_point(10, 10)
+    command_canvas.create_rectangle_button(0, 0, 100, 50, 20, Color.blue, "Run", 20, Color.white, hello)
 
     app.mainloop()
