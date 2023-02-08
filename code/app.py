@@ -1,14 +1,18 @@
 import pyglet
 import tkinter as tk
 
-from canvas import Canvas, ToggleButton, Navigator
+from canvas import Canvas, ToggleButton, Navigator, Tray
 from color import Color
 from function import *
+from keyboard import Keyboard
 
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title('Base System')
+
+        #Mode
+        self.mode = "Developer"
 
         # App window dimension
         window_width = 900
@@ -32,28 +36,10 @@ class App(tk.Tk):
         #Get navi position then redraw
         self.navi.clear_navigator()
         self.navi.create_navigator()
-        
+        self.pick_tray.clear_tray()
+        self.pick_tray.create_tray()
+
         self.after(10, self.task) 
-
-    def key_left(self, event):
-        self.navi.grid_x -= 0.1
-
-    def key_right(self, event):
-        self.navi.grid_x += 0.1
-
-    def key_up(self, event):
-        self.navi.grid_y += 0.1
-
-    def key_down(self, event):
-        self.navi.grid_y -= 0.1
-
-    def key_k(self, event):
-        self.navi.laser_on = False
-
-    def key_l(self, event):
-        self.navi.laser_on = True
-
-    
 
 if __name__ == "__main__":
     app = App()
@@ -65,7 +51,10 @@ if __name__ == "__main__":
     field_canvas.create_textbox(690, 52, "Module III", 26, Color.lightblue)
     field_canvas.create_textbox(690, 82, "Base System", 19, Color.whitegray)
     field_canvas.create_photo("logo", 800, 66)
-    field_canvas.create_tray(9, 30, 20)
+
+    # field_canvas.create_tray(9, 30, 20)
+    app.pick_tray = Tray(root_canvas=field_canvas) 
+
     # field_canvas.create_navigator(-10, 10, 8)
     app.navi = Navigator(root_canvas=field_canvas, grid_x=-5, grid_y=10, grid_z=8)
 
@@ -77,12 +66,10 @@ if __name__ == "__main__":
     
     toggle = ToggleButton(root_canvas=command_canvas, x=300, y=100, w=36, h=20, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, function=laser_transmit)
 
-    app.bind("<KeyPress-Left>", app.key_left)
-    app.bind("<KeyPress-Right>", app.key_right)
-    app.bind("<KeyPress-Up>", app.key_up)
-    app.bind("<KeyPress-Down>", app.key_down)
-    app.bind("<KeyPress-k>", app.key_k)
-    app.bind("<KeyPress-l>", app.key_l)
+    
+    if app.mode == "Developer":
+        keyboard = Keyboard(app)
+        keyboard.key_bind(app)
 
     app.task()
     app.mainloop()
