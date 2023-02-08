@@ -64,16 +64,6 @@ class Canvas():
             self.canvas.create_oval(x, y, x+r, y+r, fill="", outline=Color.lightgray, width=2)
         self.click_area = self.create_click_area(x, y, r, r, "oval")
         self.canvas.tag_bind(self.click_area, "<ButtonRelease-1>", function)
-    
-    def create_tray(self, origin_x, origin_y, orientation):
-        tray_points = map_tray_points(origin_x, origin_y, 6, 5, 0.5, orientation)
-        self.canvas.create_polygon(*tray_points["bottom_tray"], fill=Color.gray, outline="")
-        self.canvas.create_polygon(*tray_points["top_tray"],    fill=Color.lightgray, outline="")
-        self.canvas.create_polygon(*tray_points["left_wall"],   fill=Color.middlegray, outline="")
-        self.canvas.create_polygon(*tray_points["right_wall"],  fill=Color.gray, outline="")
-        for row in range(3):
-            for column in range(3):
-                self.canvas.create_oval(*(tray_points["holes"][row][column]), fill=Color.gray, outline='')
 
     def create_target_point(self, grid_x, grid_y):
         target_points = map_target_points(grid_x, grid_y)
@@ -81,6 +71,111 @@ class Canvas():
         self.canvas.create_oval(*target_points["outer_oval"], fill='', outline=Color.blue, width=2)
         for i in range(4):
             self.canvas.create_line(*target_points["tick"][i], fill=Color.blue, width=2)
+
+
+
+class Tray():
+    """
+    Tray class
+    """
+    def __init__(self, root_canvas):
+        self.root_canvas = root_canvas
+        self.origin_x = 0
+        self.origin_y = 0
+        self.orientation = 0
+        self.create_tray()
+
+    def create_tray(self):
+        tray_points = self.map_tray_points(self.origin_x, self.origin_y, 6, 5, 0.5, self.orientation)
+        self.tray_bottom = self.root_canvas.canvas.create_polygon(*tray_points["bottom_tray"], fill=Color.gray, outline="")
+        self.tray_top    = self.root_canvas.canvas.create_polygon(*tray_points["top_tray"],    fill=Color.lightgray, outline="")
+        self.tray_left   = self.root_canvas.canvas.create_polygon(*tray_points["left_wall"],   fill=Color.middlegray, outline="")
+        self.tray_right  = self.root_canvas.canvas.create_polygon(*tray_points["right_wall"],  fill=Color.gray, outline="")
+        self.tray_holes  = []
+        for row in range(3):
+            for column in range(3):
+                self.tray_holes.append(self.root_canvas.canvas.create_oval(*(tray_points["holes"][row][column]), fill=Color.gray, outline=''))
+
+    def clear_tray(self):
+        self.root_canvas.canvas.delete(self.tray_top)
+        self.root_canvas.canvas.delete(self.tray_bottom)
+        self.root_canvas.canvas.delete(self.tray_left)
+        self.root_canvas.canvas.delete(self.tray_right)
+        for i in range(9):
+            self.root_canvas.canvas.delete(self.tray_holes[i])
+
+    def map_tray_points(self, grid_x, grid_y, tray_width, tray_height, tray_thick, orientation):
+        tray_diagonal = (tray_width**2 + tray_height**2) ** 0.5
+        theta = math.radians(orientation)
+        tray_theta = math.atan(tray_width / tray_height)
+
+        tray_points = {
+            "bottom_tray" : (
+                map_3D_to_2D( grid_x, grid_y, 0 ),
+                map_3D_to_2D( grid_x + tray_width    * math.cos(theta),            grid_y - tray_width    * math.sin(theta),            0 ),
+                map_3D_to_2D( grid_x + tray_diagonal * math.sin(theta+tray_theta), grid_y + tray_diagonal * math.cos(theta+tray_theta), 0 ),
+                map_3D_to_2D( grid_x + tray_height   * math.sin(theta),            grid_y + tray_height   * math.cos(theta),            0 ),
+            ),
+            "top_tray" : (
+                map_3D_to_2D( grid_x, grid_y, tray_thick ),
+                map_3D_to_2D( grid_x + tray_width    * math.cos(theta),            grid_y - tray_width    * math.sin(theta), tray_thick ),
+                map_3D_to_2D( grid_x + tray_diagonal * math.sin(theta+tray_theta), grid_y + tray_diagonal * math.cos(theta+tray_theta), tray_thick ),
+                map_3D_to_2D( grid_x + tray_height   * math.sin(theta),            grid_y + tray_height   * math.cos(theta), tray_thick )
+            ),
+        }
+
+        if orientation <= 45:
+            left_side  = (3, 0)
+            right_side = (0, 1) 
+        elif orientation <= 135:
+            left_side  = (0, 1)
+            right_side = (1, 2) 
+        elif orientation <= 225:
+            left_side  = (1, 2)
+            right_side = (2, 3) 
+        elif orientation <= 315:
+            left_side  = (2, 3)
+            right_side = (3, 0) 
+        else:
+            left_side  = (3, 0)
+            right_side = (0, 1) 
+
+        tray_points["left_wall"] = ( 
+            tray_points["bottom_tray"][left_side[0]], 
+            tray_points["bottom_tray"][left_side[1]], 
+            tray_points["top_tray"][left_side[1]], 
+            tray_points["top_tray"][left_side[0]]
+        )
+        tray_points["right_wall"] = ( 
+            tray_points["bottom_tray"][right_side[0]], 
+            tray_points["bottom_tray"][right_side[1]], 
+            tray_points["top_tray"][right_side[1]], 
+            tray_points["top_tray"][right_side[0]]
+        )
+
+        hole_centers = []
+        for row in range(3):
+            hole_centers.append([])
+            for column in range(3):
+                hole_tray_x = 1 + 2*column
+                hole_tray_y = 1 + 1.5*row
+                hole_diagonal = (hole_tray_x**2 + hole_tray_y**2) ** 0.5
+                hole_theta = math.atan(hole_tray_x / hole_tray_y)
+                hole_centers[row].append( map_3D_to_2D( grid_x + hole_diagonal * math.sin(theta+hole_theta), grid_y + hole_diagonal * math.cos(theta+hole_theta), tray_thick ), )
+
+        hole_points = []
+        for row in range(3):
+            hole_points.append([])
+            for column in range(3):
+                hole_center_point = hole_centers[row][column]
+                hole_points[row].append((
+                    (hole_center_point[0]-4, hole_center_point[1]+2),
+                    (hole_center_point[0]+4, hole_center_point[1]-2),
+                ))
+
+        tray_points["holes"] = hole_points
+
+        return tray_points
 
 
 
@@ -97,6 +192,32 @@ class Navigator():
         self.over_tray = False
         self.grid_floor = 0
         self.create_navigator()
+
+    def create_navigator(self):
+        navigator_points = self.map_navigator_points()
+
+        if self.laser_on:
+            pixel_x = navigator_points["navigator_tip"][0]
+            pixel_y = navigator_points["navigator_tip"][1]
+            points = (
+                (pixel_x, pixel_y - 5),
+                (pixel_x, pixel_y + self.grid_z*8),
+            )
+            self.navigator_laser = self.root_canvas.canvas.create_line(*points, width=2, fill=Color.red)
+
+        self.navigator_top = self.root_canvas.canvas.create_polygon(*navigator_points["navigator_top"], fill="#FFD18C", outline="")
+        self.navigator_left = self.root_canvas.canvas.create_polygon(*navigator_points["navigator_left"], fill="#FFB545", outline="")
+        self.navigator_right =self.root_canvas.canvas.create_polygon(*navigator_points["navigator_right"], fill="#EAA031", outline="")
+
+        oval_points = self.map_oval_points(4)
+        self.navigator_point = self.root_canvas.canvas.create_oval(*oval_points, fill=Color.red, outline='')
+
+    def clear_navigator(self):
+        self.root_canvas.canvas.delete(self.navigator_laser)
+        self.root_canvas.canvas.delete(self.navigator_point)
+        self.root_canvas.canvas.delete(self.navigator_top)
+        self.root_canvas.canvas.delete(self.navigator_left)
+        self.root_canvas.canvas.delete(self.navigator_right)
 
     def map_navigator_points(self):
         pixel_x, pixel_y = map_3D_to_2D(self.grid_x, self.grid_y, self.grid_z)
@@ -132,32 +253,6 @@ class Navigator():
             (pixel_x + pixel_size, pixel_y - pixel_size/2)
         )
         return oval_points
-
-    def create_navigator(self):
-        navigator_points = self.map_navigator_points()
-
-        if self.laser_on:
-            pixel_x = navigator_points["navigator_tip"][0]
-            pixel_y = navigator_points["navigator_tip"][1]
-            points = (
-                (pixel_x, pixel_y - 5),
-                (pixel_x, pixel_y + self.grid_z*8),
-            )
-            self.navigator_laser = self.root_canvas.canvas.create_line(*points, width=2, fill=Color.red)
-
-        self.navigator_top = self.root_canvas.canvas.create_polygon(*navigator_points["navigator_top"], fill="#FFD18C", outline="")
-        self.navigator_left = self.root_canvas.canvas.create_polygon(*navigator_points["navigator_left"], fill="#FFB545", outline="")
-        self.navigator_right =self.root_canvas.canvas.create_polygon(*navigator_points["navigator_right"], fill="#EAA031", outline="")
-
-        oval_points = self.map_oval_points(4)
-        self.navigator_point = self.root_canvas.canvas.create_oval(*oval_points, fill=Color.red, outline='')
-
-    def clear_navigator(self):
-        self.root_canvas.canvas.delete(self.navigator_laser)
-        self.root_canvas.canvas.delete(self.navigator_point)
-        self.root_canvas.canvas.delete(self.navigator_top)
-        self.root_canvas.canvas.delete(self.navigator_left)
-        self.root_canvas.canvas.delete(self.navigator_right)
         
 
 
