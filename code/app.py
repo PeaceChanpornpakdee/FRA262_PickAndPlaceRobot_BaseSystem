@@ -43,5 +43,7 @@ if __name__ == "__main__":
     command_canvas.create_rectangle_button(0, 0, 100, 50, 20, Color.blue, "Run", 20, Color.white, hello)
     command_canvas.create_radio_button(100, 100, 14, Color.blue, "active", hello)
     command_canvas.create_radio_button(200, 100, 14, Color.blue, "inactive", hello)
+    command_canvas.create_toggle_button(300, 100, 36, 20, Color.blue, "On", 12, "active", hello)
+    command_canvas.create_toggle_button(350, 100, 36, 20, Color.blue, "Off", 12, "inactive", hello)
 
     app.mainloop()

@@ -69,8 +69,17 @@ class Canvas():
             self.canvas.create_oval(x+4, y+4, x+r-4, y+r-4, fill=button_color, outline="")
         elif status == "inactive":
             self.canvas.create_oval(x, y, x+r, y+r, fill="", outline=Color.lightgray, width=2)
-
         self.click_area = self.create_click_area(x, y, r, r, "oval")
+        self.canvas.tag_bind(self.click_area, "<ButtonRelease-1>", function)
+
+    def create_toggle_button(self, x, y, w, h, color, text, text_size, status, function):
+        if status == "active":
+            self.create_round_rectangle(x, y, w, h, h/2, color)
+            self.canvas.create_oval(x+w-h+3, y+3, x+w-3, y+h-3, fill=Color.white, outline="")
+        elif status == "inactive":
+            self.create_round_rectangle(x, y, w, h, h/2, Color.lightgray)
+            self.canvas.create_oval(x+3, y+3, x+h-3, y+h-3, fill=Color.white, outline="")  
+        self.click_area = self.create_click_area(x, y, w, h, "rectangle")
         self.canvas.tag_bind(self.click_area, "<ButtonRelease-1>", function)
     
     def create_tray(self, origin_x, origin_y, orientation):
