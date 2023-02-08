@@ -1,7 +1,7 @@
 import pyglet
 import tkinter as tk
 
-from canvas import Canvas
+from canvas import Canvas, ToggleButton
 from color import Color
 from function import *
 
@@ -40,10 +40,12 @@ if __name__ == "__main__":
     field_canvas.create_navigator(-10, 10, 8)
     field_canvas.create_oval_point(-10, 10, 0)
     field_canvas.create_target_point(10, 10)
-    command_canvas.create_rectangle_button(0, 0, 100, 50, 20, Color.blue, "Run", 20, Color.white, hello)
-    command_canvas.create_radio_button(100, 100, 14, Color.blue, "active", hello)
-    command_canvas.create_radio_button(200, 100, 14, Color.blue, "inactive", hello)
-    command_canvas.create_toggle_button(300, 100, 36, 20, Color.blue, "On", 12, "active", hello)
-    command_canvas.create_toggle_button(350, 100, 36, 20, Color.blue, "Off", 12, "inactive", hello)
+    # command_canvas.create_rectangle_button(0, 0, 100, 50, 20, Color.blue, "Run", 20, Color.white, hello)
+    # command_canvas.create_radio_button(100, 100, 14, Color.blue, "active", hello)
+    # command_canvas.create_radio_button(200, 100, 14, Color.blue, "inactive", hello)
+    # command_canvas.create_toggle_button(300, 100, 36, 20, Color.blue, "On", 12, "active", hello)
+    # command_canvas.create_toggle_button(350, 100, 36, 20, Color.blue, "Off", 12, "inactive", hello)
+
+    toggle = ToggleButton(root_canvas=command_canvas, x=300, y=100, w=36, h=20, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, function=laser)
 
     app.mainloop()

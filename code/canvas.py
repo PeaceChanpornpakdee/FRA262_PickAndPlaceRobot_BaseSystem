@@ -42,20 +42,13 @@ class Canvas():
         self.canvas.create_line((x+8*15, y+120-4*15), (x+560+8*15, y+120+280-4*15), width=2, fill=color)
 
     def create_textbox(self, x, y, text, size, color):
-        textbox = self.canvas.create_text((x,y), text=text, fill=color, font=("Inter-SemiBold", size))
-        return textbox
+        self.canvas.create_text((x,y), text=text, fill=color, font=("Inter-SemiBold", size))
 
     def create_photo(self, file_name, x, y):
         file = "image/" + file_name + ".png"
         image = Image.open(file)
         self.canvas.image = ImageTk.PhotoImage(image)
         self.canvas.create_image(x, y, image=self.canvas.image)
-
-    def create_click_area(self, x, y, w, h, shape):
-        if shape == "rectangle":
-            return self.canvas.create_rectangle(x, y, x+w, y+h, fill="", outline="")
-        if shape == "oval":
-            return self.canvas.create_oval(x, y, x+w, y+h, fill="", outline="")
 
     def create_rectangle_button(self, x, y, w, h, r, button_color, text, text_size, text_color, function):
         self.create_round_rectangle(x, y, w, h, r, button_color)
@@ -70,16 +63,6 @@ class Canvas():
         elif status == "inactive":
             self.canvas.create_oval(x, y, x+r, y+r, fill="", outline=Color.lightgray, width=2)
         self.click_area = self.create_click_area(x, y, r, r, "oval")
-        self.canvas.tag_bind(self.click_area, "<ButtonRelease-1>", function)
-
-    def create_toggle_button(self, x, y, w, h, color, text, text_size, status, function):
-        if status == "active":
-            self.create_round_rectangle(x, y, w, h, h/2, color)
-            self.canvas.create_oval(x+w-h+3, y+3, x+w-3, y+h-3, fill=Color.white, outline="")
-        elif status == "inactive":
-            self.create_round_rectangle(x, y, w, h, h/2, Color.lightgray)
-            self.canvas.create_oval(x+3, y+3, x+h-3, y+h-3, fill=Color.white, outline="")  
-        self.click_area = self.create_click_area(x, y, w, h, "rectangle")
         self.canvas.tag_bind(self.click_area, "<ButtonRelease-1>", function)
     
     def create_tray(self, origin_x, origin_y, orientation):
@@ -120,3 +103,49 @@ class Canvas():
         self.canvas.create_oval(*target_points["outer_oval"], fill='', outline=Color.blue, width=2)
         for i in range(4):
             self.canvas.create_line(*target_points["tick"][i], fill=Color.blue, width=2)
+
+class Button():
+    def create_click_area(self, x, y, w, h, shape):
+        if shape == "rectangle":
+            return self.root_canvas.canvas.create_rectangle(x, y, x+w, y+h, fill="", outline="")
+        if shape == "oval":
+            return self.root_canvas.canvas.create_oval(x, y, x+w, y+h, fill="", outline="")
+
+class ToggleButton(Button):
+    """
+    ToggleButton class
+    """
+    def __init__(self, root_canvas, x, y, w, h, active_color, active_text, inactive_color, inactive_text, text_size, function):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.root_canvas = root_canvas
+        self.active_color = active_color
+        self.active_text  = active_text
+        self.inactive_color = inactive_color
+        self.inactive_text  = inactive_text
+        self.text_size = text_size
+        self.function = function
+        self.status = "inactive"
+        self.create_toggle_button()
+
+    def clicked(self, event):
+        if self.status == "inactive":
+            self.status = "active"
+        else:
+            self.status = "inactive"
+        self.function(self.status)
+        # self.root_canvas.canvas.delete("all")
+        self.create_toggle_button()
+
+    def create_toggle_button(self):
+        x, y, w, h = self.x, self.y, self.w, self.h
+        if self.status == "active":
+            self.root_canvas.create_round_rectangle(x, y, w, h, h/2, self.active_color)
+            self.root_canvas.canvas.create_oval(x+w-h+3, y+3, x+w-3, y+h-3, fill=Color.white, outline="")
+        elif self.status == "inactive":
+            self.root_canvas.create_round_rectangle(x, y, w, h, h/2, self.inactive_color)
+            self.root_canvas.canvas.create_oval(x+3, y+3, x+h-3, y+h-3, fill=Color.white, outline="")  
+        self.click_area = self.create_click_area(x, y, w, h, "rectangle")
+        self.root_canvas.canvas.tag_bind(self.click_area, "<ButtonRelease-1>", self.clicked)
