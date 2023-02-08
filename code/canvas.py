@@ -62,6 +62,16 @@ class Canvas():
         self.create_textbox(x+w/2, y+h/2, text, text_size, text_color)
         self.click_area = self.create_click_area(x, y, w, h, "rectangle")
         self.canvas.tag_bind(self.click_area, "<ButtonRelease-1>", function)
+
+    def create_radio_button(self, x, y, r, button_color, status, function):
+        if status == "active":
+            self.canvas.create_oval(x, y, x+r, y+r, fill="", outline=button_color, width=2)
+            self.canvas.create_oval(x+4, y+4, x+r-4, y+r-4, fill=button_color, outline="")
+        elif status == "inactive":
+            self.canvas.create_oval(x, y, x+r, y+r, fill="", outline=Color.lightgray, width=2)
+
+        self.click_area = self.create_click_area(x, y, r, r, "oval")
+        self.canvas.tag_bind(self.click_area, "<ButtonRelease-1>", function)
     
     def create_tray(self, origin_x, origin_y, orientation):
         tray_points = map_tray_points(origin_x, origin_y, 6, 5, 0.5, orientation)

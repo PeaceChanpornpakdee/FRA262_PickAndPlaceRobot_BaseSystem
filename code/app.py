@@ -41,5 +41,7 @@ if __name__ == "__main__":
     field_canvas.create_oval_point(-10, 10, 0)
     field_canvas.create_target_point(10, 10)
     command_canvas.create_rectangle_button(0, 0, 100, 50, 20, Color.blue, "Run", 20, Color.white, hello)
+    command_canvas.create_radio_button(100, 100, 14, Color.blue, "active", hello)
+    command_canvas.create_radio_button(200, 100, 14, Color.blue, "inactive", hello)
 
     app.mainloop()
