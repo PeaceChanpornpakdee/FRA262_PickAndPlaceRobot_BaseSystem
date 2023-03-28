@@ -53,7 +53,7 @@ class RadioButton(Button):
     """
     RadioButton class
     """
-    def __init__(self, root_canvas, x, y, r, active_color, active_text, inactive_color, inactive_text, text_size):
+    def __init__(self, root_canvas, x, y, r, active_color, active_text, inactive_color, inactive_text, text_size, active_default):
         self.x = x
         self.y = y
         self.r = r
@@ -63,12 +63,10 @@ class RadioButton(Button):
         self.inactive_color = inactive_color
         self.inactive_text  = inactive_text
         self.text_size = text_size
-        self.active = False
-        # self.function = function
-        # self.status = "inactive"
-        self.create_radio_button()
+        self.active = active_default
+        self.create()
 
-    def create_radio_button(self):
+    def create(self):
         x, y, r = self.x, self.y, self.r
         if self.active == True:
             self.outer_oval = self.root_canvas.canvas.create_oval(x, y, x+r, y+r, fill="", outline=self.active_color, width=2)
@@ -78,32 +76,21 @@ class RadioButton(Button):
         self.click_area = self.create_click_area(x, y, r, r, "oval")
         self.root_canvas.canvas.tag_bind(self.click_area, "<ButtonRelease-1>", self.clicked)
 
-    def delete_radio_button(self):
+    def delete(self):
         self.root_canvas.canvas.delete(self.outer_oval)
         if not self.active:
             self.root_canvas.canvas.delete(self.inner_oval)
 
-    def clicked(self, event):
+    def switch(self):
         if self.active == False:
             self.active = True
-
         else:
             self.active = False
+        self.delete()
+        self.create()
 
-        print(self.active)
+    def clicked(self, event):
+        if not self.active:
+            self.switch()
 
-        self.delete_radio_button()
-        self.create_radio_button()
-
-
-
-    # def create_radio_button(self):
-    #     x, y, w, h = self.x, self.y, self.w, self.h
-    #     if self.status == "active":
-    #         self.root_canvas.create_round_rectangle(x, y, w, h, h/2, self.active_color)
-    #         self.root_canvas.canvas.create_oval(x+w-h+3, y+3, x+w-3, y+h-3, fill=Color.white, outline="")
-    #     elif self.status == "inactive":
-    #         self.root_canvas.create_round_rectangle(x, y, w, h, h/2, self.inactive_color)
-    #         self.root_canvas.canvas.create_oval(x+3, y+3, x+h-3, y+h-3, fill=Color.white, outline="")  
-    #     self.click_area = self.create_click_area(x, y, w, h, "rectangle")
-    #     self.root_canvas.canvas.tag_bind(self.click_area, "<ButtonRelease-1>", self.clicked)
+        

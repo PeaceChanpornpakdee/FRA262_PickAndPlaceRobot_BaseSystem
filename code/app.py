@@ -60,7 +60,10 @@ class App(tk.Tk):
         # command_canvas.create_radio_button(200, 100, 14, Color.blue, "inactive", hello)
         
         # toggle = ToggleButton(root_canvas=self.command_canvas, x=300, y=100, w=36, h=20, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, function=laser_transmit)
-        self.radio_1 = RadioButton(root_canvas=self.command_canvas, x=100, y=100, r=14, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12)
+        
+        self.operation_mode = "Tray"
+        self.radio_1 = RadioButton(root_canvas=self.command_canvas, x=100, y=100, r=14, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, active_default=True)
+        self.radio_2 = RadioButton(root_canvas=self.command_canvas, x=200, y=100, r=14, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, active_default=False)
 
         if self.mode == "Developer":
             keyboard = Keyboard(self)
@@ -73,6 +76,15 @@ class App(tk.Tk):
 
 
     def task(self):
+
+        if self.operation_mode == "Tray" and self.radio_2.active:
+            self.radio_1.switch()
+            self.operation_mode = "Point"
+
+        elif self.operation_mode == "Point" and self.radio_1.active:
+            self.radio_2.switch()
+            self.operation_mode = "Tray"
+
         #Remove in the Future
         self.pick_tray.clear_tray()
         self.pick_tray.create_tray()
