@@ -10,6 +10,7 @@ from components.navigator import Navigator
 from components.button import PressButton, RadioButton, ToggleButton
 from components.shape import RoundRectangle
 from components.textbox import TextBox
+from components.photo import Photo
 
 from function import *
 from keyboard import Keyboard
@@ -43,7 +44,7 @@ class App(tk.Tk):
         self.title_background = RoundRectangle(self.field_canvas.canvas, 600, 26, 240+20, 80, 20, Color.darkgray)
         TextBox(self.field_canvas, 690, 52, "Module III",  26, Color.lightblue)
         TextBox(self.field_canvas, 690, 82, "Base System", 19, Color.whitegray)
-        self.field_canvas.create_photo("logo", 800, 66)
+        Photo(self.field_canvas, "logo", 800, 66)
 
         self.grid = Grid(self.field_canvas, 20, 120, 70, 30, Color.lightgray)
         self.pick_tray = Tray(root_canvas=self.field_canvas, root_grid=self.grid) 
