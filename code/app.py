@@ -9,6 +9,7 @@ from components.target import Target
 from components.navigator import Navigator
 from components.button import PressButton, RadioButton, ToggleButton
 from components.shape import RoundRectangle
+from components.textbox import TextBox
 
 from function import *
 from keyboard import Keyboard
@@ -40,8 +41,8 @@ class App(tk.Tk):
         self.field_canvas = Canvas(self, 840, 540, 30)
         self.field_background = RoundRectangle(self.field_canvas.canvas, 0, 0, 840, 540, 20, Color.whitegray)
         self.title_background = RoundRectangle(self.field_canvas.canvas, 600, 26, 240+20, 80, 20, Color.darkgray)
-        self.field_canvas.create_textbox(690, 52, "Module III", 26, Color.lightblue)
-        self.field_canvas.create_textbox(690, 82, "Base System", 19, Color.whitegray)
+        TextBox(self.field_canvas, 690, 52, "Module III",  26, Color.lightblue)
+        TextBox(self.field_canvas, 690, 82, "Base System", 19, Color.whitegray)
         self.field_canvas.create_photo("logo", 800, 66)
 
         self.grid = Grid(self.field_canvas, 20, 120, 70, 30, Color.lightgray)
@@ -51,13 +52,13 @@ class App(tk.Tk):
         
         self.command_canvas = Canvas(self, 840, 150, 0)
         self.command_background = RoundRectangle(self.command_canvas.canvas, 0, 0, 840, 150, 20, Color.whitegray)
-        self.command_canvas.create_textbox(75, 25, "End Effector", 16, Color.darkgray)
-        self.command_canvas.create_textbox(75, 55, "Laser", 13, Color.darkgray)
-        self.command_canvas.create_textbox(75, 75, "Gripper", 13, Color.darkgray)
+        
+        TextBox(self.command_canvas, 75, 25, "End Effector", 16, Color.darkgray)
+        TextBox(self.command_canvas, 75, 55, "Laser", 13, Color.darkgray)
+        TextBox(self.command_canvas, 75, 75, "Gripper", 13, Color.darkgray)
 
-        self.command_canvas.create_textbox(400, 25, "Operation", 16, Color.darkgray)
-        self.command_canvas.create_textbox(700, 25, "Movement", 16, Color.darkgray)
-        # command_canvas.create_rectangle_button(0, 0, 100, 50, 20, Color.blue, "Run", 20, Color.white, hello)
+        TextBox(self.command_canvas, 400, 25, "Operation", 16, Color.darkgray)
+        TextBox(self.command_canvas, 700, 25, "Movement", 16, Color.darkgray)
         
         self.press_run = PressButton(root_canvas=self.command_canvas, x=400, y=100, w=100, h=50, r=20, active_color=Color.blue, inactive_color=Color.lightgray, text="Run", text_size=20, active_default=True)
 
