@@ -28,3 +28,23 @@ class RoundRectangle():
         self.root_canvas.canvas.delete(self.oval_4)
         self.root_canvas.canvas.delete(self.rec_1)
         self.root_canvas.canvas.delete(self.rec_2)
+
+class Oval():
+    """
+    Oval Class
+    """
+    def __init__(self, root_canvas, x, y, d, fill_color, outline_color):
+        self.root_canvas = root_canvas
+        self.x = x
+        self.y = y
+        self.d = d
+        self.fill_color = fill_color
+        self.outline_color = outline_color
+        self.create()
+
+    def create(self):
+        x, y, d = self.x, self.y, self.d
+        self.oval = self.root_canvas.canvas.create_oval(x, y, x+d, y+d, fill=self.fill_color, outline=self.outline_color) 
+
+    def delete(self):
+        self.root_canvas.canvas.delete(self.oval)

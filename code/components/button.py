@@ -1,5 +1,5 @@
 from components.color import Color
-from components.shape import RoundRectangle
+from components.shape import RoundRectangle, Oval
 
 class Button():
     """
@@ -74,12 +74,14 @@ class ToggleButton(Button):
         x, y, w, h = self.x, self.y, self.w, self.h
         if self.active == True:
             self.round_rec = RoundRectangle(self.root_canvas, x, y, w, h, h/2, self.active_color)
+            self.oval      = Oval(self.root_canvas, x+w-h+3, y+3, h-6, fill_color=Color.white, outline_color="")
             # self.round_rec = self.root_canvas.create_round_rectangle(x, y, w, h, h/2, self.active_color)
-            self.oval      = self.root_canvas.canvas.create_oval(x+w-h+3, y+3, x+w-3, y+h-3, fill=Color.white, outline="")
+            # self.oval      = self.root_canvas.canvas.create_oval(x+w-h+3, y+3, x+w-3, y+h-3, fill=Color.white, outline="")
         elif self.active == False:
             self.round_rec = RoundRectangle(self.root_canvas, x, y, w, h, h/2, self.inactive_color)
+            self.oval      = Oval(self.root_canvas, x+3, y+3, h-6, fill_color=Color.white, outline_color="")
             # self.round_rec = self.root_canvas.create_round_rectangle(x, y, w, h, h/2, self.inactive_color)
-            self.oval      = self.root_canvas.canvas.create_oval(x+3, y+3, x+h-3, y+h-3, fill=Color.white, outline="")  
+            # self.oval      = self.root_canvas.canvas.create_oval(x+3, y+3, x+h-3, y+h-3, fill=Color.white, outline="")  
         self.click_area = self.create_click_area(x, y, w, h, "rectangle")
         self.root_canvas.canvas.tag_bind(self.click_area, "<ButtonRelease-1>", self.switch)
 
@@ -89,7 +91,8 @@ class ToggleButton(Button):
         # print("delete")
         # self.root_canvas.canvas.delete(self.round_rec)
         self.round_rec.delete()
-        self.root_canvas.canvas.delete(self.oval)
+        self.oval.delete()
+        # self.root_canvas.canvas.delete(self.oval)
 
     def switch(self, event):
         self.active = not self.active
