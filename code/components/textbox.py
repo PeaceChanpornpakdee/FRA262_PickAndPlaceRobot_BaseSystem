@@ -9,4 +9,7 @@ class TextBox():
         self.create()
 
     def create(self):
-        self.canvas.create_text((self.x,self.y), text=self.text, fill=self.color, font=("Inter-SemiBold", self.size))
+        self.text = self.canvas.create_text((self.x,self.y), text=self.text, fill=self.color, font=("Inter-SemiBold", self.size))
+
+    def delete(self):
+        self.canvas.delete(self.text)
