@@ -63,13 +63,21 @@ class App(tk.Tk):
         TextBox(self.command_canvas, 400, 25, "Operation", 16, Color.darkgray)
         TextBox(self.command_canvas, 700, 25, "Movement", 16, Color.darkgray)
         
-        self.press_run = PressButton(canvas=self.command_canvas, x=400, y=100, w=100, h=50, r=20, active_color=Color.blue, inactive_color=Color.lightgray, text="Run", text_size=20, active_default=True)
 
-        self.toggle = ToggleButton(canvas=self.command_canvas, x=300, y=100, w=36, h=20, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, active_default=True)
+        self.toggle = ToggleButton(canvas=self.command_canvas, x=100, y=100, w=36, h=20, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, active_default=True)
         
         self.operation_mode = "Tray"
-        self.radio_1 = RadioButton(canvas=self.command_canvas, x=100, y=100, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Tray Mode",  text_size=12, active_default=True)
-        self.radio_2 = RadioButton(canvas=self.command_canvas, x=200, y=100, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Point Mode", text_size=12, active_default=False)
+        self.radio_1 = RadioButton(canvas=self.command_canvas, x=400, y=50, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Tray Mode",  text_size=12, active_default=True)
+        self.radio_2 = RadioButton(canvas=self.command_canvas, x=500, y=50, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Point Mode", text_size=12, active_default=False)
+        self.press_pick  = PressButton(canvas=self.command_canvas, x=400, y=80, w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Pick Tray", text_size=12, active_default=True)
+        self.press_place = PressButton(canvas=self.command_canvas, x=400, y=110, w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Place Tray", text_size=12, active_default=True)
+
+        self.press_home = PressButton(canvas=self.command_canvas, x=680, y=50, w=128, h=30, r=15, active_color=Color.gray, inactive_color=Color.lightgray, text="Home", text_size=15, active_default=True)
+        self.press_run  = PressButton(canvas=self.command_canvas, x=680, y=90, w=128, h=44, r=22, active_color=Color.blue, inactive_color=Color.lightgray, text="Run", text_size=22, active_default=True)
+
+
+        self.command_canvas.create_line((280, 20), (280, 140), width=2, fill=Color.lightgray)
+        self.command_canvas.create_line((620, 20), (620, 140), width=2, fill=Color.lightgray)
 
         if self.mode == "Developer":
             keyboard = Keyboard(self)
