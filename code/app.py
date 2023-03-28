@@ -7,7 +7,7 @@ from components.grid import Grid
 from components.tray import Tray
 from components.target import Target
 from components.navigator import Navigator
-from components.button import ToggleButton, RadioButton
+from components.button import PressButton, RadioButton, ToggleButton
 from components.shape import RoundRectangle
 
 from function import *
@@ -59,11 +59,13 @@ class App(tk.Tk):
         self.command_canvas.create_textbox(700, 25, "Movement", 16, Color.darkgray)
         # command_canvas.create_rectangle_button(0, 0, 100, 50, 20, Color.blue, "Run", 20, Color.white, hello)
         
+        self.press_run = PressButton(root_canvas=self.command_canvas, x=400, y=100, w=100, h=50, r=20, active_color=Color.blue, inactive_color=Color.lightgray, text="Run", text_size=20, active_default=True)
+
         self.toggle = ToggleButton(root_canvas=self.command_canvas, x=300, y=100, w=36, h=20, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, active_default=True)
         
         self.operation_mode = "Tray"
-        self.radio_1 = RadioButton(root_canvas=self.command_canvas, x=100, y=100, r=14, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, active_default=True)
-        self.radio_2 = RadioButton(root_canvas=self.command_canvas, x=200, y=100, r=14, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, active_default=False)
+        self.radio_1 = RadioButton(root_canvas=self.command_canvas, x=100, y=100, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Tray Mode",  text_size=12, active_default=True)
+        self.radio_2 = RadioButton(root_canvas=self.command_canvas, x=200, y=100, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Point Mode", text_size=12, active_default=False)
 
         if self.mode == "Developer":
             keyboard = Keyboard(self)
@@ -84,6 +86,10 @@ class App(tk.Tk):
         elif self.operation_mode == "Point" and self.radio_1.active:
             self.radio_2.switch()
             self.operation_mode = "Tray"
+
+        if self.press_run.pressed:
+            print("Run")
+            self.press_run.pressed = False
 
         #Remove in the Future
         self.pick_tray.clear_tray()
