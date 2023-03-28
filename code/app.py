@@ -54,7 +54,7 @@ class App(tk.Tk):
 if __name__ == "__main__":
     app = App()
 
-    field_canvas   = Canvas(app, 840, 540, 30)
+    field_canvas = Canvas(app, 840, 540, 30)
     field_canvas.create_round_rectangle(600, 26, 240+20, 80, 20, Color.darkgray)
     field_canvas.create_textbox(690, 52, "Module III", 26, Color.lightblue)
     field_canvas.create_textbox(690, 82, "Base System", 19, Color.whitegray)
@@ -76,7 +76,10 @@ if __name__ == "__main__":
         keyboard = Keyboard(app)
         keyboard.key_bind(app)
 
-    app.bind("<ButtonRelease-1>", mouse_position)
+    # app.bind("<ButtonRelease-1>", mouse_position)
+    # app.bind("<Motion>", mouse_position)
+    # field_canvas.canvas.bind("<Motion>", mouse_position)
+    field_canvas.canvas.bind("<ButtonRelease-1>", mouse_position)
 
     app.task()
     app.mainloop()
