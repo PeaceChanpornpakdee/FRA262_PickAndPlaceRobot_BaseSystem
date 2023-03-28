@@ -18,6 +18,7 @@ class Oval():
     def delete(self):
         self.canvas.delete(self.oval)
 
+
 class Rectangle():
     def __init__(self, canvas, x, y, w, h, color):
         self.canvas = canvas
