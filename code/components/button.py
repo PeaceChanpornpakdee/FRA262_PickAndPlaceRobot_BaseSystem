@@ -18,13 +18,13 @@ class PressButton(Button):
     """
     RectangleButton Class
     """
-    def __init__(self, root_canvas, x, y, w, h, r, active_color, inactive_color, text, text_size, active_default):
+    def __init__(self, canvas, x, y, w, h, r, active_color, inactive_color, text, text_size, active_default):
+        self.canvas = canvas
         self.x = x
         self.y = y
         self.w = w
         self.h = h
         self.r = r
-        self.canvas = root_canvas.canvas
         self.active_color = active_color
         self.inactive_color = inactive_color
         self.text = text
@@ -67,11 +67,11 @@ class RadioButton(Button):
     """
     RadioButton class
     """
-    def __init__(self, root_canvas, x, y, r, active_color, inactive_color, text, text_size, active_default):
+    def __init__(self, canvas, x, y, r, active_color, inactive_color, text, text_size, active_default):
+        self.canvas = canvas
         self.x = x
         self.y = y
         self.r = r
-        self.canvas = root_canvas.canvas
         self.active_color = active_color
         self.inactive_color = inactive_color
         self.text = text
@@ -108,12 +108,12 @@ class ToggleButton(Button):
     """
     ToggleButton class
     """
-    def __init__(self, root_canvas, x, y, w, h, active_color, active_text, inactive_color, inactive_text, text_size, active_default):
+    def __init__(self, canvas, x, y, w, h, active_color, active_text, inactive_color, inactive_text, text_size, active_default):
+        self.canvas = canvas
         self.x = x
         self.y = y
         self.w = w
         self.h = h
-        self.canvas = root_canvas.canvas
         self.active_color = active_color
         self.active_text  = active_text
         self.inactive_color = inactive_color

@@ -1,10 +1,10 @@
 from PIL import ImageTk, Image
 
 class Photo():
-    def __init__(self, root_canvas, file_name, x, y):
+    def __init__(self, canvas, file_name, x, y):
+        self.canvas = canvas
         self.x = x
         self.y = y
-        self.canvas = root_canvas.canvas
         self.file_name = file_name
         self.create()
 

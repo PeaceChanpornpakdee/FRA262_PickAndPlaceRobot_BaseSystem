@@ -1,8 +1,8 @@
 class TextBox():
-    def __init__(self, root_canvas, x, y, text, size, color):
+    def __init__(self, canvas, x, y, text, size, color):
+        self.canvas = canvas
         self.x = x
         self.y = y
-        self.canvas = root_canvas.canvas
         self.text = text
         self.size = size
         self.color = color
