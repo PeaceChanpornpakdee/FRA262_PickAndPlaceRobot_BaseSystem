@@ -7,8 +7,8 @@ from components.grid import Grid
 from components.tray import Tray
 from components.target import Target
 from components.navigator import Navigator
-
 from components.button import ToggleButton, RadioButton
+from components.shape import RoundRectangle
 
 from function import *
 from keyboard import Keyboard
@@ -38,7 +38,9 @@ class App(tk.Tk):
 
     def create_components(self):
         self.field_canvas = Canvas(self, 840, 540, 30)
-        self.field_canvas.create_round_rectangle(600, 26, 240+20, 80, 20, Color.darkgray)
+        self.field_background = RoundRectangle(self.field_canvas, 0, 0, 840, 540, 20, Color.whitegray)
+        self.title_background = RoundRectangle(self.field_canvas, 600, 26, 240+20, 80, 20, Color.darkgray)
+        # self.field_canvas.create_round_rectangle(600, 26, 240+20, 80, 20, Color.darkgray)
         self.field_canvas.create_textbox(690, 52, "Module III", 26, Color.lightblue)
         self.field_canvas.create_textbox(690, 82, "Base System", 19, Color.whitegray)
         self.field_canvas.create_photo("logo", 800, 66)
@@ -49,6 +51,7 @@ class App(tk.Tk):
         self.navi = Navigator(root_canvas=self.field_canvas, root_grid=self.grid, grid_x=-5, grid_y=10, grid_z=8)
         
         self.command_canvas = Canvas(self, 840, 150, 0)
+        self.command_background = RoundRectangle(self.command_canvas, 0, 0, 840, 150, 20, Color.whitegray)
         self.command_canvas.create_textbox(75, 25, "End Effector", 16, Color.darkgray)
         self.command_canvas.create_textbox(75, 55, "Laser", 13, Color.darkgray)
         self.command_canvas.create_textbox(75, 75, "Gripper", 13, Color.darkgray)
@@ -59,7 +62,7 @@ class App(tk.Tk):
         # command_canvas.create_radio_button(100, 100, 14, Color.blue, "active", hello)
         # command_canvas.create_radio_button(200, 100, 14, Color.blue, "inactive", hello)
         
-        # toggle = ToggleButton(root_canvas=self.command_canvas, x=300, y=100, w=36, h=20, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, function=laser_transmit)
+        self.toggle = ToggleButton(root_canvas=self.command_canvas, x=300, y=100, w=36, h=20, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, active_default=True)
         
         self.operation_mode = "Tray"
         self.radio_1 = RadioButton(root_canvas=self.command_canvas, x=100, y=100, r=14, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, active_default=True)
