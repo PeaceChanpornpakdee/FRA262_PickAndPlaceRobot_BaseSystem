@@ -16,7 +16,7 @@ class Button():
 
 class ToggleButton(Button):
     """
-    RadioButton class
+    ToggleButton class
     """
     def __init__(self, root_canvas, x, y, w, h, active_color, active_text, inactive_color, inactive_text, text_size, active_default):
         self.x = x
