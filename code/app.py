@@ -91,12 +91,12 @@ class App(tk.Tk):
 
     def task(self):
 
-        if self.operation_mode == "Tray" and self.radio_2.active:
-            self.radio_1.switch()
+        if self.operation_mode == "Tray" and self.radio_point.active:
+            self.radio_tray.switch()
             self.operation_mode = "Point"
 
-        elif self.operation_mode == "Point" and self.radio_1.active:
-            self.radio_2.switch()
+        elif self.operation_mode == "Point" and self.radio_tray.active:
+            self.radio_point.switch()
             self.operation_mode = "Tray"
 
         if self.press_run.pressed:
