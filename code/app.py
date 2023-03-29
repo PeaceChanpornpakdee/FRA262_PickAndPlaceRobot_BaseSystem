@@ -52,6 +52,8 @@ class App(tk.Tk):
         self.target =  Target(canvas=self.canvas_field, grid=self.grid, grid_x=10, grid_y=10)
         self.navi = Navigator(canvas=self.canvas_field, grid=self.grid, grid_x=-5, grid_y=10, grid_z=8)
 
+
+
         self.canvas_command = tk.Canvas(master=self, width=840, height=150, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge')
         self.canvas_command.pack(pady=0)
         self.background_command = RoundRectangle(canvas=self.canvas_command, x=0, y=0, w=840, h=150, r=20, color=Color.whitegray)
@@ -69,7 +71,13 @@ class App(tk.Tk):
         self.radio_point = RadioButton(canvas=self.canvas_command, x=500, y=50, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Point Mode",   text_size=12, active_default=False)
         self.press_pick  = PressButton(canvas=self.canvas_command, x=400, y=80,  w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Pick Tray", text_size=12, active_default=True)
         self.press_place = PressButton(canvas=self.canvas_command, x=400, y=110, w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Place Tray", text_size=12, active_default=True)
+        
+        self.entry_x_string = tk.StringVar() 
+        self.entry_x = tk.Entry(self, bg=Color.whitegray, bd=2, font="Inter-SemiBold", fg=Color.blue, selectforeground=Color.blue, highlightthickness=0, insertbackground=Color.blue, insertwidth=2, justify="center", textvariable=self.entry_x_string) 
+        self.canvas_command.create_window(400, 80, window=self.entry_x)
 
+        self.entry_y = tk.Entry(self, bg=Color.whitegray, bd=2, font="Inter-SemiBold", fg=Color.blue, selectforeground=Color.blue, highlightthickness=0, insertbackground=Color.blue, insertwidth=2, justify="center") 
+        self.canvas_command.create_window(400, 100, window=self.entry_y)
         
         self.text_movement = TextBox(self.canvas_command, 700, 25, "Movement", 16, Color.darkgray)
         self.press_home = PressButton(canvas=self.canvas_command, x=680, y=50, w=128, h=30, r=15, active_color=Color.gray, inactive_color=Color.lightgray, text="Home", text_size=15, active_default=True)
@@ -87,6 +95,30 @@ class App(tk.Tk):
         # app.bind("<Motion>", mouse_position)
         # canvas_field.canvas.bind("<Motion>", mouse_position)
         self.canvas_field.bind("<ButtonRelease-1>", mouse_position)
+
+        self.bind("<Return>", self.remove_focus)
+        self.canvas_command.bind("<Button-1>", self.remove_focus)
+
+    def remove_focus(self, event):
+        self.focus()
+
+    def validate(self, value):
+        accept_character = "1234567890."
+        
+        #Check if have 2 or more .
+        if len(value.split(".")) > 2:
+            print(False)
+            return 0
+        
+        #Check if only have numbers and .
+        for character in str(value):
+            print(character)
+            if character not in accept_character:
+                print(False)
+                return 0
+        print(True)
+        return 0
+            
 
 
     def task(self):
@@ -110,6 +142,9 @@ class App(tk.Tk):
         self.target.create_target()
         self.navi.clear_navigator()
         self.navi.create_navigator()
+
+        # print(self.entry_x.get())
+        self.validate(self.entry_x.get())
 
         self.after(10, self.task) 
 
