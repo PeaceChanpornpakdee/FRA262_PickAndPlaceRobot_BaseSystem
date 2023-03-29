@@ -56,20 +56,22 @@ class App(tk.Tk):
         self.command_canvas.pack(pady=0)
         self.command_background = RoundRectangle(self.command_canvas, 0, 0, 840, 150, 20, Color.whitegray)
         
-        TextBox(self.command_canvas, 75, 25, "End Effector", 16, Color.darkgray)
-        TextBox(self.command_canvas, 75, 55, "Laser", 13, Color.darkgray)
-        TextBox(self.command_canvas, 75, 75, "Gripper", 13, Color.darkgray)
+        self.text_end_eff   = TextBox(self.command_canvas, 75, 25, "End Effector", 16, Color.darkgray)
+        self.text_laser     = TextBox(self.command_canvas, 75, 60, "Laser", 13, Color.darkgray)
+        self.toggle_laser   = ToggleButton(canvas=self.command_canvas, x=100, y=50, w=36, h=20, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, active_default=True)
+        self.text_gripper   = TextBox(self.command_canvas, 75, 100, "Gripper", 13, Color.darkgray)
+        self.toggle_gripper = ToggleButton(canvas=self.command_canvas, x=100, y=90, w=36, h=20, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, active_default=True)
+        
 
         TextBox(self.command_canvas, 400, 25, "Operation", 16, Color.darkgray)
         TextBox(self.command_canvas, 700, 25, "Movement", 16, Color.darkgray)
         
 
-        self.toggle = ToggleButton(canvas=self.command_canvas, x=100, y=100, w=36, h=20, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, active_default=True)
         
         self.operation_mode = "Tray"
-        self.radio_1 = RadioButton(canvas=self.command_canvas, x=400, y=50, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Tray Mode",  text_size=12, active_default=True)
+        self.radio_1 = RadioButton(canvas=self.command_canvas, x=400, y=50, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Tray Mode  ",  text_size=12, active_default=True)
         self.radio_2 = RadioButton(canvas=self.command_canvas, x=500, y=50, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Point Mode", text_size=12, active_default=False)
-        self.press_pick  = PressButton(canvas=self.command_canvas, x=400, y=80, w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Pick Tray", text_size=12, active_default=True)
+        self.press_pick  = PressButton(canvas=self.command_canvas, x=400, y=80,  w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Pick Tray", text_size=12, active_default=True)
         self.press_place = PressButton(canvas=self.command_canvas, x=400, y=110, w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Place Tray", text_size=12, active_default=True)
 
         self.press_home = PressButton(canvas=self.command_canvas, x=680, y=50, w=128, h=30, r=15, active_color=Color.gray, inactive_color=Color.lightgray, text="Home", text_size=15, active_default=True)
