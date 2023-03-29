@@ -10,6 +10,7 @@ from components.button import PressButton, RadioButton, ToggleButton
 from components.shape import RoundRectangle
 from components.textbox import TextBox
 from components.photo import Photo
+from components.entry import Entry
 
 from function import *
 from keyboard import Keyboard
@@ -72,12 +73,14 @@ class App(tk.Tk):
         self.press_pick  = PressButton(canvas=self.canvas_command, x=400, y=80,  w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Pick Tray", text_size=12, active_default=True)
         self.press_place = PressButton(canvas=self.canvas_command, x=400, y=110, w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Place Tray", text_size=12, active_default=True)
         
-        self.entry_x_string = tk.StringVar() 
-        self.entry_x = tk.Entry(self, bg=Color.whitegray, bd=2, font="Inter-SemiBold", fg=Color.blue, selectforeground=Color.blue, highlightthickness=0, insertbackground=Color.blue, insertwidth=2, justify="center", textvariable=self.entry_x_string) 
-        self.canvas_command.create_window(400, 80, window=self.entry_x)
+        self.entry_x = Entry(master=self, canvas=self.canvas_command, x=400, y=80, color=Color.blue)
 
-        self.entry_y = tk.Entry(self, bg=Color.whitegray, bd=2, font="Inter-SemiBold", fg=Color.blue, selectforeground=Color.blue, highlightthickness=0, insertbackground=Color.blue, insertwidth=2, justify="center") 
-        self.canvas_command.create_window(400, 100, window=self.entry_y)
+        # self.entry_x_string = tk.StringVar() 
+        # self.entry_x = tk.Entry(self, bg=Color.whitegray, bd=2, font="Inter-SemiBold", fg=Color.blue, selectforeground=Color.blue, highlightthickness=0, insertbackground=Color.blue, insertwidth=2, justify="center", width=8, textvariable=self.entry_x_string) 
+        # self.canvas_command.create_window(400, 80, window=self.entry_x)
+
+        # self.entry_y = tk.Entry(self, bg=Color.whitegray, bd=2, font="Inter-SemiBold", fg=Color.blue, selectforeground=Color.blue, highlightthickness=0, insertbackground=Color.blue, insertwidth=2, justify="center", width=8) 
+        # self.canvas_command.create_window(400, 100, window=self.entry_y)
         
         self.text_movement = TextBox(self.canvas_command, 700, 25, "Movement", 16, Color.darkgray)
         self.press_home = PressButton(canvas=self.canvas_command, x=680, y=50, w=128, h=30, r=15, active_color=Color.gray, inactive_color=Color.lightgray, text="Home", text_size=15, active_default=True)
@@ -102,25 +105,6 @@ class App(tk.Tk):
     def remove_focus(self, event):
         self.focus()
 
-    def validate(self, value):
-        accept_character = "1234567890."
-        
-        #Check if have 2 or more .
-        if len(value.split(".")) > 2:
-            print(False)
-            return 0
-        
-        #Check if only have numbers and .
-        for character in str(value):
-            print(character)
-            if character not in accept_character:
-                print(False)
-                return 0
-        print(True)
-        return 0
-            
-
-
     def task(self):
 
         if self.operation_mode == "Tray" and self.radio_point.active:
@@ -144,7 +128,11 @@ class App(tk.Tk):
         self.navi.create_navigator()
 
         # print(self.entry_x.get())
-        self.validate(self.entry_x.get())
+        # self.validate()
+        if not self.entry_x.validate(self.entry_x.get_value()):
+            self.entry_x.error()
+        else:
+            self.entry_x.normal()
 
         self.after(10, self.task) 
 
