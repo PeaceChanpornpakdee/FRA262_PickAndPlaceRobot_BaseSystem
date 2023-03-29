@@ -23,17 +23,17 @@ class Keyboard():
         self.app.navi.laser_on = True
 
     def key_a(self, event):
-        self.app.pick_tray.origin_x -= 0.1
+        self.app.tray_pick.origin_x -= 0.1
     def key_d(self, event):
-        self.app.pick_tray.origin_x += 0.1
+        self.app.tray_pick.origin_x += 0.1
     def key_w(self, event):
-        self.app.pick_tray.origin_y += 0.1
+        self.app.tray_pick.origin_y += 0.1
     def key_s(self, event):
-        self.app.pick_tray.origin_y -= 0.1
+        self.app.tray_pick.origin_y -= 0.1
     def key_q(self, event):
-        self.app.pick_tray.orientation -= 1
+        self.app.tray_pick.orientation -= 1
     def key_e(self, event):
-        self.app.pick_tray.orientation += 1
+        self.app.tray_pick.orientation += 1
 
     def key_bind(self, app):
         app.bind("<KeyPress-Left>", self.key_left)
