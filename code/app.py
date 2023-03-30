@@ -115,6 +115,14 @@ class App(tk.Tk):
             self.radio_point.switch()
             self.operation_mode = "Tray"
 
+        if self.toggle_laser.active:
+            self.background_title.show()
+            self.entry_x.show()
+        else:
+            self.background_title.hide()
+            self.entry_x.hide()
+
+
         if self.press_run.pressed:
             print("Run")
             self.entry_x.disable()

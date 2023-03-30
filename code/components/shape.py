@@ -18,6 +18,12 @@ class Oval():
     def delete(self):
         self.canvas.delete(self.oval)
 
+    def hide(self):
+        self.canvas.itemconfigure(self.oval, state='hidden')
+
+    def show(self):
+        self.canvas.itemconfigure(self.oval, state='normal')
+
 
 class Rectangle():
     def __init__(self, canvas, x, y, w, h, color):
@@ -31,10 +37,16 @@ class Rectangle():
 
     def create(self):
         x, y, w, h = self.x, self.y, self.w, self.h
-        self.rectangle  = self.canvas.create_rectangle(x, y, x+w, y+h, fill=self.color, outline='')
+        self.rect  = self.canvas.create_rectangle(x, y, x+w, y+h, fill=self.color, outline='')
     
     def delete(self):
-        self.canvas.delete(self.rectangle)
+        self.canvas.delete(self.rect)
+
+    def hide(self):
+        self.canvas.itemconfigure(self.rect, state='hidden')
+
+    def show(self):
+        self.canvas.itemconfigure(self.rect, state='normal')
     
 
 class RoundRectangle():
@@ -67,3 +79,19 @@ class RoundRectangle():
         self.oval_4.delete()
         self.rec_1.delete()
         self.rec_2.delete()
+
+    def hide(self):
+        self.oval_1.hide()
+        self.oval_2.hide()
+        self.oval_3.hide()
+        self.oval_4.hide()
+        self.rec_1.hide()
+        self.rec_2.hide()
+
+    def show(self):
+        self.oval_1.show()
+        self.oval_2.show()
+        self.oval_3.show()
+        self.oval_4.show()
+        self.rec_1.show()
+        self.rec_2.show()

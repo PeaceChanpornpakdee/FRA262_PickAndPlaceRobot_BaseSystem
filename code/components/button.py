@@ -9,7 +9,7 @@ class Button():
     def create_click_area(self, shape, w, h):
         if shape == "rectangle":
             click_area = Rectangle(self.canvas, self.x, self.y, w, h, color="")
-            return click_area.rectangle
+            return click_area.rect
         if shape == "oval":
             click_area = Oval(self.canvas, self.x, self.y, w, fill_color="", outline_color="")
             return click_area.oval
