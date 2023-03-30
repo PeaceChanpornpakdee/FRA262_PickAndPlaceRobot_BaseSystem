@@ -142,6 +142,16 @@ class ToggleButton(Button):
         self.click_area = self.create_click_area("rectangle", w, h)
         self.canvas.tag_bind(self.click_area, "<ButtonRelease-1>", self.switch)
 
+    def activate(self):
+        self.round_rec.activate(self.active_color)
+        self.canvas.move(self.oval.oval, self.w-self.h, 0)
+        self.textbox.activate(self.active_text, self.active_color)
+    
+    def deactivate(self):
+        self.round_rec.deactivate(self.inactive_color)
+        self.canvas.move(self.oval.oval, self.h-self.w, 0)
+        self.textbox.deactivate(self.inactive_text, self.inactive_color)
+    
     def delete(self):
         self.round_rec.delete()
         self.oval.delete()
@@ -149,5 +159,7 @@ class ToggleButton(Button):
 
     def switch(self, event):
         self.active = not self.active
-        self.delete()
-        self.create()
+        if self.active:
+            self.activate()
+        else:
+            self.deactivate()

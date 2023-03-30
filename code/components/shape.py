@@ -23,6 +23,12 @@ class Oval():
 
     def show(self):
         self.canvas.itemconfigure(self.oval, state='normal')
+    
+    def activate(self, active_color):
+        self.canvas.itemconfigure(self.oval, fill=active_color)
+
+    def deactivate(self, inactive_color):
+        self.canvas.itemconfigure(self.oval, fill=inactive_color)
 
 
 class Rectangle():
@@ -47,6 +53,12 @@ class Rectangle():
 
     def show(self):
         self.canvas.itemconfigure(self.rect, state='normal')
+
+    def activate(self, active_color):
+        self.canvas.itemconfigure(self.rect, fill=active_color)
+
+    def deactivate(self, inactive_color):
+        self.canvas.itemconfigure(self.rect, fill=inactive_color)
     
 
 class RoundRectangle():
@@ -95,3 +107,19 @@ class RoundRectangle():
         self.oval_4.show()
         self.rec_1.show()
         self.rec_2.show()
+
+    def activate(self, active_color):
+        self.oval_1.activate(active_color)
+        self.oval_2.activate(active_color)
+        self.oval_3.activate(active_color)
+        self.oval_4.activate(active_color)
+        self.rec_1.activate(active_color)
+        self.rec_2.activate(active_color)
+
+    def deactivate(self, inactive_color):
+        self.oval_1.deactivate(inactive_color)
+        self.oval_2.deactivate(inactive_color)
+        self.oval_3.deactivate(inactive_color)
+        self.oval_4.deactivate(inactive_color)
+        self.rec_1.deactivate(inactive_color)
+        self.rec_2.deactivate(inactive_color)

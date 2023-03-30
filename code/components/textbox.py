@@ -13,3 +13,9 @@ class TextBox():
 
     def delete(self):
         self.canvas.delete(self.text)
+
+    def activate(self, active_text, active_color):
+        self.canvas.itemconfigure(self.text, text=active_text, fill=active_color)
+
+    def deactivate(self, inactive_text, inactive_color):
+        self.canvas.itemconfigure(self.text, text=inactive_text, fill=inactive_color)
