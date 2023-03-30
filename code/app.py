@@ -116,10 +116,10 @@ class App(tk.Tk):
             self.operation_mode = "Tray"
 
         if self.toggle_laser.active:
-            self.background_title.show()
+            # self.background_title.show()
             self.entry_x.show()
         else:
-            self.background_title.hide()
+            # self.background_title.hide()
             self.entry_x.hide()
 
 

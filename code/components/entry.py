@@ -16,7 +16,7 @@ class Entry():
         self.outer_rec = RoundRectangle(canvas=self.canvas, x=self.x,   y=self.y,   w=110, h=24, r=12, color=Color.gray)
         self.inner_rec = RoundRectangle(canvas=self.canvas, x=self.x+2, y=self.y+2, w=106, h=20, r=10, color=Color.whitegray)
         self.entry = tk.Entry(master=self.master, bg=Color.whitegray, bd=0, font="Inter-SemiBold", fg=self.color, selectforeground=self.color, highlightthickness=0, insertbackground=self.color, insertwidth=2, justify="center", width=8, textvariable=self.string_var) 
-        self.canvas.create_window(self.x+54, self.y+11, window=self.entry)
+        self.entry_window = self.canvas.create_window(self.x+54, self.y+11, window=self.entry)
 
     # def delete(self):
     #     self.entry.destroy()
@@ -28,10 +28,11 @@ class Entry():
 
     def hide(self):
         self.outer_rec.hide()
-    #     # self.entry.forget()
+        self.canvas.itemconfigure(self.entry_window, state='hidden')
 
     def show(self):
         self.outer_rec.show()
+        self.canvas.itemconfigure(self.entry_window, state='normal')
 
     def error(self):
         self.entry.config({ "fg": Color.red, "selectforeground": Color.red, "insertbackground": Color.red })
@@ -44,17 +45,11 @@ class Entry():
 
     def validate(self, value):
         valid_character = "1234567890."
-        
         #Check if have 2 or more .
         if len(value.split(".")) > 2:
-            print(False)
             return False
-        
         #Check if only have numbers and .
         for character in str(value):
-            print(character)
             if character not in valid_character:
-                print(False)
                 return False
-        print(True)
         return True
