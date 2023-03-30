@@ -117,6 +117,7 @@ class App(tk.Tk):
 
         if self.press_run.pressed:
             print("Run")
+            self.entry_x.disable()
             self.press_run.pressed = False
 
         #Remove in the Future

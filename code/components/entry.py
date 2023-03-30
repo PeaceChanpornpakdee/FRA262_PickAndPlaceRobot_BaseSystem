@@ -20,6 +20,9 @@ class Entry():
 
     # def delete(self):
     #     self.entry.destroy()
+    def disable(self):
+        self.entry.config({ "state": "disabled" })
+
     def error(self):
         self.entry.config({ "fg": Color.red, "selectforeground": Color.red, "insertbackground": Color.red })
 
