@@ -70,8 +70,8 @@ class App(tk.Tk):
         self.operation_mode = "Tray"
         self.radio_tray  = RadioButton(canvas=self.canvas_command, x=400, y=50, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Tray Mode  ",  text_size=12, active_default=True)
         self.radio_point = RadioButton(canvas=self.canvas_command, x=500, y=50, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Point Mode",   text_size=12, active_default=False)
-        self.press_pick  = PressButton(canvas=self.canvas_command, x=400, y=80,  w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Pick Tray", text_size=12, active_default=True)
-        self.press_place = PressButton(canvas=self.canvas_command, x=400, y=110, w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Place Tray", text_size=12, active_default=True)
+        # self.press_pick  = PressButton(canvas=self.canvas_command, x=400, y=80,  w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Pick Tray", text_size=12, active_default=True)
+        # self.press_place = PressButton(canvas=self.canvas_command, x=400, y=110, w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Place Tray", text_size=12, active_default=True)
         
         self.entry_x = Entry(master=self, canvas=self.canvas_command, x=400, y=80, color=Color.blue)
 

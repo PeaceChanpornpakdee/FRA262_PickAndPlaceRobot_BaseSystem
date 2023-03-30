@@ -1,5 +1,6 @@
 import tkinter as tk
 from components.color import Color
+from components.shape import RoundRectangle
 
 class Entry():
     def __init__(self, master, canvas, x, y, color):
@@ -12,8 +13,10 @@ class Entry():
         self.create()
 
     def create(self):
-        self.entry = tk.Entry(master=self.master, bg=Color.whitegray, bd=2, font="Inter-SemiBold", fg=self.color, selectforeground=self.color, highlightthickness=0, insertbackground=self.color, insertwidth=2, justify="center", width=8, textvariable=self.string_var) 
-        self.canvas.create_window(400, 100, window=self.entry)
+        self.outer_rec = RoundRectangle(canvas=self.canvas, x=self.x,   y=self.y,   w=110, h=24, r=12, color=Color.gray)
+        self.inner_rec = RoundRectangle(canvas=self.canvas, x=self.x+2, y=self.y+2, w=106, h=20, r=10, color=Color.whitegray)
+        self.entry = tk.Entry(master=self.master, bg=Color.whitegray, bd=0, font="Inter-SemiBold", fg=self.color, selectforeground=self.color, highlightthickness=0, insertbackground=self.color, insertwidth=2, justify="center", width=8, textvariable=self.string_var) 
+        self.canvas.create_window(self.x+54, self.y+11, window=self.entry)
 
     # def delete(self):
     #     self.entry.destroy()
