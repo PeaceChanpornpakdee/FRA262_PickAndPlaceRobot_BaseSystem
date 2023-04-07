@@ -42,11 +42,17 @@ class Entry():
 
     def validate(self, value):
         valid_character = "1234567890."
+
+        value = str(value)
+
         #Check if have 2 or more .
         if len(value.split(".")) > 2:
-            return False
-        #Check if only have numbers and .
-        for character in str(value):
-            if character not in valid_character:
-                return False
+            return False 
+        
+        #Check if only have numbers and . (and - at the beginning)
+        for i in range(len(value)):
+            if value[i] not in valid_character:
+                if i != 0 or value[i] != "-":
+                    return False
+
         return True
