@@ -13,3 +13,9 @@ class TextBox():
 
     def deactivate(self, inactive_text, inactive_color):
         self.canvas.itemconfigure(self.textbox, text=inactive_text, fill=inactive_color)
+
+    def hide(self):
+        self.canvas.itemconfigure(self.textbox, state='hidden')
+
+    def show(self):
+        self.canvas.itemconfigure(self.textbox, state='normal')

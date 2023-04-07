@@ -7,8 +7,7 @@ class Button():
     Button class
     """
     def create_click_area(self, w, h):
-        click_area = Rectangle(self.canvas, self.x, self.y, w, h, color="")
-        return click_area.rect
+        return Rectangle(self.canvas, self.x, self.y, w, h, color="")
         
 
 class PressButton(Button):
@@ -31,9 +30,17 @@ class PressButton(Button):
         self.round_rec = RoundRectangle(self.canvas, x, y, w, h, r, color=self.active_color)
         self.textbox = TextBox(self.canvas, x+w/2, y+h/2, self.text, self.text_size, Color.white)
         self.click_area = self.create_click_area(self.w, self.h)
-        self.canvas.tag_bind(self.click_area, "<ButtonRelease-1>", self.clicked)
+        self.canvas.tag_bind(self.click_area.rect, "<ButtonRelease-1>", self.clicked)
         if self.active == False:
             self.deactivate()
+
+    def hide(self):
+        self.round_rec.hide()
+        self.click_area.hide()
+
+    def show(self):
+        self.round_rec.show()
+        self.click_area.show()
 
     def activate(self):
         self.active = True
@@ -67,7 +74,7 @@ class RadioButton(Button):
         self.inner_oval = Oval(self.canvas, x+4, y+4, r-8, fill_color=self.active_color, outline_color="")
         self.textbox = TextBox(self.canvas, x+55, y+r/2, self.text, self.text_size, self.active_color)
         self.click_area = self.create_click_area(85, r)
-        self.canvas.tag_bind(self.click_area, "<ButtonRelease-1>", self.clicked)
+        self.canvas.tag_bind(self.click_area.rect, "<ButtonRelease-1>", self.clicked)
         if self.active == False:
             self.deactivate()
 
@@ -113,7 +120,7 @@ class ToggleButton(Button):
         self.oval      = Oval(self.canvas, x+w-h+3, y+3, h-6, fill_color=Color.white, outline_color="")
         self.textbox = TextBox(self.canvas, x+55, y+h/2, self.active_text, self.text_size, self.active_color)
         self.click_area = self.create_click_area(w, h)
-        self.canvas.tag_bind(self.click_area, "<ButtonRelease-1>", self.switch)
+        self.canvas.tag_bind(self.click_area.rect, "<ButtonRelease-1>", self.switch)
         if self.active == False:
             self.deactivate()
 
