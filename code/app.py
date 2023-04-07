@@ -60,11 +60,15 @@ class App(tk.Tk):
         self.background_command = RoundRectangle(canvas=self.canvas_command, x=0, y=0, w=840, h=150, r=20, color=Color.whitegray)
         
         self.text_end_eff   = TextBox(canvas=self.canvas_command, x=130, y=25,  text="End Effector", size=16, color=Color.darkgray)
-        self.text_laser     = TextBox(canvas=self.canvas_command, x=90, y=60,  text="Laser", size=13, color=Color.darkgray)
+        self.text_laser     = TextBox(canvas=self.canvas_command, x=90, y=62,  text="Laser", size=13, color=Color.darkgray)
         self.text_gripper   = TextBox(canvas=self.canvas_command, x=85, y=96, text="Gripper", size=13, color=Color.darkgray)
-        self.toggle_laser   = ToggleButton(canvas=self.canvas_command, x=115, y=50, w=36, h=20, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, active_default=True)
-        self.toggle_gripper = ToggleButton(canvas=self.canvas_command, x=115, y=86, w=36, h=20, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, active_default=True)
-
+        self.toggle_laser   = ToggleButton(canvas=self.canvas_command, x=115, y=52, w=36, h=20, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, active_default=False)
+        self.toggle_gripper = ToggleButton(canvas=self.canvas_command, x=115, y=86, w=36, h=20, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, active_default=False)
+        self.press_arrow    = PressButton(canvas=self.canvas_command, x=115, y=113, w=70, h=22, r=11, active_color=Color.gray, inactive_color=Color.lightgray, text="     Pick", text_size=12, active_default=False)
+        self.photo_arrow_pick  = Photo(canvas=self.canvas_command, file_name="arrow_pick",  x=130, y=124)
+        self.photo_arrow_place = Photo(canvas=self.canvas_command, file_name="arrow_place", x=130, y=124)
+        self.photo_arrow_place.hide()
+        self.direction_arrow = "pick"
 
         self.text_opera  = TextBox(canvas=self.canvas_command, x=425, y=25, text="Operation", size=16, color=Color.darkgray)
         self.operation_mode = "Tray"
@@ -86,15 +90,7 @@ class App(tk.Tk):
         self.text_y_entry.hide()
         self.text_mm_x_entry.hide()
         self.text_mm_y_entry.hide()
-        
-
-        # self.entry_x_string = tk.StringVar() 
-        # self.entry_x = tk.Entry(self, bg=Color.whitegray, bd=2, font="Inter-SemiBold", fg=Color.blue, selectforeground=Color.blue, highlightthickness=0, insertbackground=Color.blue, insertwidth=2, justify="center", width=8, textvariable=self.entry_x_string) 
-        # self.canvas_command.create_window(400, 80, window=self.entry_x)
-
-        # self.entry_y = tk.Entry(self, bg=Color.whitegray, bd=2, font="Inter-SemiBold", fg=Color.blue, selectforeground=Color.blue, highlightthickness=0, insertbackground=Color.blue, insertwidth=2, justify="center", width=8) 
-        # self.canvas_command.create_window(400, 100, window=self.entry_y)
-        
+                
         self.text_movement = TextBox(self.canvas_command, 725, 25, "Movement", 16, Color.darkgray)
         self.press_home = PressButton(canvas=self.canvas_command, x=655, y=50, w=128, h=30, r=15, active_color=Color.gray, inactive_color=Color.lightgray, text="Home", text_size=15, active_default=True)
         self.press_run  = PressButton(canvas=self.canvas_command, x=655, y=90, w=128, h=44, r=22, active_color=Color.blue, inactive_color=Color.lightgray, text="Run", text_size=22, active_default=True)
@@ -144,21 +140,62 @@ class App(tk.Tk):
             self.text_mm_x_entry.hide()
             self.text_mm_y_entry.hide()
 
-        # if self.toggle_laser.active:
-        #     # self.background_title.show()
-        #     self.entry_x.show()
-        # else:
-        #     # self.background_title.hide()
-        #     self.entry_x.hide()
+
+        if self.toggle_laser.pressed:
+            self.toggle_laser.switch()
+            if self.toggle_laser.active:
+                if self.toggle_gripper.active:
+                    self.toggle_gripper.switch()
+                    print("Protocol - Gripper Off")
+                print("Protocol - Laser On")
+            else:
+                print("Protocol - Laser Off")
+            self.toggle_laser.pressed = False
+
+        if self.toggle_gripper.pressed:
+            self.toggle_gripper.switch()
+            if self.toggle_gripper.active:
+                if self.toggle_laser.active:
+                    self.toggle_laser.switch()
+                    print("Protocol - Laser Off")
+                print("Protocol - Gripper On")
+            else:
+                print("Protocol - Gripper Off")
+            self.toggle_gripper.pressed = False
+
+        if self.toggle_gripper.active == False:
+            self.press_arrow.deactivate()
+        else:
+            self.press_arrow.activate()
+
+        if self.press_arrow.pressed:
+            if self.direction_arrow == "pick":
+                print("Protocol - Gripper Pick")
+                self.photo_arrow_pick.hide()
+                self.photo_arrow_place.show()
+                self.direction_arrow = "place"
+                self.press_arrow.change_text("     Place")
+            elif self.direction_arrow == "place":
+                print("Protocol - Gripper Place")
+                self.photo_arrow_place.hide()
+                self.photo_arrow_pick.show()
+                self.direction_arrow = "pick"
+                self.press_arrow.change_text("     Pick")
+            self.press_arrow.pressed = False
 
         if self.press_pick.pressed:
-            print("Pick!!")
+            print("Protocol - Set Pick Tray")
             self.press_pick.pressed = False
+
+        if self.press_place.pressed:
+            print("Protocol - Set Place Tray")
+            self.press_place.pressed = False
 
 
         if self.press_run.pressed:
-            print("Run")
+            print("Protocol - Run")
             self.entry_x.disable()
+            self.entry_y.disable()
             self.press_run.deactivate()
             self.press_run.pressed = False
 
@@ -170,8 +207,7 @@ class App(tk.Tk):
         self.navi.clear_navigator()
         self.navi.create_navigator()
 
-        # print(self.entry_x.get())
-        # self.validate()
+
         if not self.entry_x.validate(self.entry_x.get_value()):
             self.entry_x.error()
         else:

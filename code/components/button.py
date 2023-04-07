@@ -54,6 +54,8 @@ class PressButton(Button):
         if self.active:
             self.pressed = True
 
+    def change_text(self, text):
+        self.textbox.change_text(text)
 
 
 class RadioButton(Button):
@@ -116,11 +118,12 @@ class ToggleButton(Button):
         self.inactive_text  = inactive_text
         self.text_size = text_size
         self.active = active_default
+        self.pressed = False
         self.round_rec = RoundRectangle(self.canvas, x, y, w, h, h/2, self.active_color)
         self.oval      = Oval(self.canvas, x+w-h+3, y+3, h-6, fill_color=Color.white, outline_color="")
         self.textbox = TextBox(self.canvas, x+55, y+h/2, self.active_text, self.text_size, self.active_color)
         self.click_area = self.create_click_area(w, h)
-        self.canvas.tag_bind(self.click_area.rect, "<ButtonRelease-1>", self.switch)
+        self.canvas.tag_bind(self.click_area.rect, "<ButtonRelease-1>", self.clicked)
         if self.active == False:
             self.deactivate()
 
@@ -134,9 +137,12 @@ class ToggleButton(Button):
         self.canvas.move(self.oval.oval, self.h-self.w, 0)
         self.textbox.deactivate(self.inactive_text, self.inactive_color)
 
-    def switch(self, event):
+    def switch(self):
         self.active = not self.active
         if self.active:
             self.activate()
         else:
             self.deactivate()
+
+    def clicked(self, event):
+        self.pressed = True

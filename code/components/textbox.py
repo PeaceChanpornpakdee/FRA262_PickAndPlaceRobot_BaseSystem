@@ -19,3 +19,6 @@ class TextBox():
 
     def show(self):
         self.canvas.itemconfigure(self.textbox, state='normal')
+
+    def change_text(self, text):
+        self.canvas.itemconfigure(self.textbox, text=text)
