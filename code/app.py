@@ -49,10 +49,32 @@ class App(tk.Tk):
         self.photo_logo = Photo(canvas=self.canvas_field, file_name="logo", x=800, y=66)
 
         self.grid = Grid(canvas=self.canvas_field, offset_x=20, offset_y=120, row=70, column=30, color=Color.lightgray)
+        self.text_negative_x = TextBox(canvas=self.canvas_field, x=288, y=389, text="-x", size=15, color=Color.lightgray)
+        self.text_positive_x = TextBox(canvas=self.canvas_field, x=553, y=251, text="+x", size=15, color=Color.lightgray)
+        self.text_negative_y = TextBox(canvas=self.canvas_field, x=713, y=467, text="-y", size=15, color=Color.lightgray)
+        self.text_positive_y = TextBox(canvas=self.canvas_field, x=127, y=170, text="+y", size=15, color=Color.lightgray)
+        
         self.tray_pick = Tray(canvas=self.canvas_field, grid=self.grid) 
         self.target =  Target(canvas=self.canvas_field, grid=self.grid, grid_x=10, grid_y=10)
         self.navi = Navigator(canvas=self.canvas_field, grid=self.grid, grid_x=-5, grid_y=10, grid_z=8)
 
+        self.text_x_pos = TextBox(canvas=self.canvas_field, x=82, y=418+5,  text="x-Axis Position", size=12, color=Color.darkgray)
+        self.text_y_pos = TextBox(canvas=self.canvas_field, x=82, y=444+5,  text="y-Axis Position", size=12, color=Color.darkgray)
+        self.text_y_spd = TextBox(canvas=self.canvas_field, x=77, y=470+5,  text="y-Axis Speed", size=12, color=Color.darkgray)
+        self.text_y_acc = TextBox(canvas=self.canvas_field, x=95, y=496+5,  text="y-Axis Acceleration", size=12, color=Color.darkgray)
+
+        self.text_x_pos_num = TextBox(canvas=self.canvas_field, x=185, y=418+5,  text="- 12.2", size=12, color=Color.blue)
+        self.text_y_pos_num = TextBox(canvas=self.canvas_field, x=185, y=444+5,  text="26.4", size=12, color=Color.blue)
+        self.text_y_spd_num = TextBox(canvas=self.canvas_field, x=185, y=470+5,  text="400.0", size=12, color=Color.blue)
+        self.text_y_acc_num = TextBox(canvas=self.canvas_field, x=185, y=496+5,  text="300.0", size=12, color=Color.blue)
+
+        self.text_x_pos_mm = TextBox(canvas=self.canvas_field, x=228, y=418+5,  text="mm", size=11, color=Color.darkgray)
+        self.text_y_pos_mm = TextBox(canvas=self.canvas_field, x=228, y=444+5,  text="mm", size=11, color=Color.darkgray)
+        self.text_y_spd_mm = TextBox(canvas=self.canvas_field, x=233, y=470+5,  text="mm/s", size=11, color=Color.darkgray)
+        self.text_y_acc_mm = TextBox(canvas=self.canvas_field, x=233, y=496+5,  text="mm/s", size=11, color=Color.darkgray)
+        self.text_y_acc_2  = TextBox(canvas=self.canvas_field, x=250, y=494+5,  text="2", size=8, color=Color.darkgray)
+
+        # self.balloon_text = TextBox(canvas=self.canvas_field, x=200, y=100,  text="The maximum input is \n700 mm for width", size=11, color=Color.darkgray)        
 
 
         self.canvas_command = tk.Canvas(master=self, width=840, height=150, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge')
@@ -80,8 +102,8 @@ class App(tk.Tk):
         
         self.entry_x = Entry(master=self, canvas=self.canvas_command, x=364, y=82,  color=Color.blue)
         self.entry_y = Entry(master=self, canvas=self.canvas_command, x=364, y=112, color=Color.blue)
-        self.text_x_entry = TextBox(canvas=self.canvas_command, x=340, y=90,  text="x", size=13, color=Color.darkgray)
-        self.text_y_entry = TextBox(canvas=self.canvas_command, x=340, y=122,  text="y", size=13, color=Color.darkgray)
+        self.text_x_entry = TextBox(canvas=self.canvas_command, x=345, y=90,  text="x", size=13, color=Color.darkgray)
+        self.text_y_entry = TextBox(canvas=self.canvas_command, x=345, y=122,  text="y", size=13, color=Color.darkgray)
         self.text_mm_x_entry = TextBox(canvas=self.canvas_command, x=510, y=90,  text="mm", size=13, color=Color.darkgray)
         self.text_mm_y_entry = TextBox(canvas=self.canvas_command, x=510, y=122,  text="mm", size=13, color=Color.darkgray)
         self.entry_x.hide()
@@ -191,7 +213,10 @@ class App(tk.Tk):
             print("Protocol - Set Place Tray")
             self.press_place.pressed = False
 
-
+        if self.press_home.pressed:
+            print("Protocol - Home")
+            self.press_home.pressed = False
+        
         if self.press_run.pressed:
             print("Protocol - Run")
             self.entry_x.disable()
