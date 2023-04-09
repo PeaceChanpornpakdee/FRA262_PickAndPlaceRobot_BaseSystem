@@ -1,5 +1,6 @@
 from components.color import Color
 from components.shape import Oval, Rectangle, RoundRectangle
+from components.photo import Photo
 from components.textbox import TextBox
 
 class Button():
@@ -14,7 +15,7 @@ class PressButton(Button):
     """
     RectangleButton Class
     """
-    def __init__(self, canvas, x, y, w, h, r, active_color, inactive_color, text, text_size, active_default):
+    def __init__(self, canvas, x, y, w, h, r, active_color, inactive_color, text, text_size, active_default, image=None):
         self.canvas = canvas
         self.x = x
         self.y = y
@@ -26,9 +27,14 @@ class PressButton(Button):
         self.text = text
         self.text_size = text_size
         self.active = active_default
+        self.image = image
         self.pressed = False
         self.round_rec = RoundRectangle(self.canvas, x, y, w, h, r, color=self.active_color)
         self.textbox = TextBox(self.canvas, x+w/2, y+h/2, self.text, self.text_size, Color.white)
+        if self.image != None:
+            self.photo_arrow_pick  = Photo(canvas=canvas, file_name="arrow_pick",  x=130, y=124)
+            self.photo_arrow_place = Photo(canvas=canvas, file_name="arrow_place", x=130, y=124)
+            self.photo_arrow_place.hide()
         self.click_area = self.create_click_area(self.w, self.h)
         self.canvas.tag_bind(self.click_area.rect, "<ButtonRelease-1>", self.clicked)
         if self.active == False:

@@ -86,11 +86,8 @@ class App(tk.Tk):
         self.text_gripper   = TextBox(canvas=self.canvas_command, x=85, y=96, text="Gripper", size=13, color=Color.darkgray)
         self.toggle_laser   = ToggleButton(canvas=self.canvas_command, x=115, y=52, w=36, h=20, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, active_default=False)
         self.toggle_gripper = ToggleButton(canvas=self.canvas_command, x=115, y=86, w=36, h=20, active_color=Color.blue, active_text="On", inactive_color=Color.lightgray, inactive_text="Off", text_size=12, active_default=False)
-        self.press_arrow    = PressButton(canvas=self.canvas_command, x=115, y=113, w=70, h=22, r=11, active_color=Color.gray, inactive_color=Color.lightgray, text="     Pick", text_size=12, active_default=False)
-        self.photo_arrow_pick  = Photo(canvas=self.canvas_command, file_name="arrow_pick",  x=130, y=124)
-        self.photo_arrow_place = Photo(canvas=self.canvas_command, file_name="arrow_place", x=130, y=124)
-        self.photo_arrow_place.hide()
         self.direction_arrow = "pick"
+        self.press_arrow    = PressButton(canvas=self.canvas_command, x=115, y=113, w=70, h=22, r=11, active_color=Color.gray, inactive_color=Color.lightgray, text="     Pick", text_size=12, active_default=False, image="arrow")
 
         self.text_opera  = TextBox(canvas=self.canvas_command, x=425, y=25, text="Operation", size=16, color=Color.darkgray)
         self.operation_mode = "Tray"
@@ -193,14 +190,14 @@ class App(tk.Tk):
         if self.press_arrow.pressed:
             if self.direction_arrow == "pick":
                 print("Protocol - Gripper Pick")
-                self.photo_arrow_pick.hide()
-                self.photo_arrow_place.show()
+                self.press_arrow.photo_arrow_pick.hide()
+                self.press_arrow.photo_arrow_place.show()
                 self.direction_arrow = "place"
                 self.press_arrow.change_text("     Place")
             elif self.direction_arrow == "place":
                 print("Protocol - Gripper Place")
-                self.photo_arrow_place.hide()
-                self.photo_arrow_pick.show()
+                self.press_arrow.photo_arrow_place.hide()
+                self.press_arrow.photo_arrow_pick.show()
                 self.direction_arrow = "pick"
                 self.press_arrow.change_text("     Pick")
             self.press_arrow.pressed = False
