@@ -7,8 +7,8 @@ from components.tray import Tray
 from components.target import Target
 from components.navigator import Navigator
 from components.button import PressButton, RadioButton, ToggleButton
-from components.shape import RoundRectangle
-from components.textbox import TextBox
+from components.shape import RoundRectangle, Line
+from components.text import TextBox, MessageBox
 from components.photo import Photo
 from components.entry import Entry
 
@@ -56,7 +56,11 @@ class App(tk.Tk):
         
         self.tray_pick = Tray(canvas=self.canvas_field, grid=self.grid) 
         self.target =  Target(canvas=self.canvas_field, grid=self.grid, grid_x=10, grid_y=10)
-        self.navi = Navigator(canvas=self.canvas_field, grid=self.grid, grid_x=-5, grid_y=10, grid_z=8)
+        self.target.clear_target()
+        # self.navi = Navigator(canvas=self.canvas_field, grid=self.grid, grid_x=-5, grid_y=10, grid_z=8)
+        self.navi = Navigator(canvas=self.canvas_field, grid=self.grid, grid_x=0, grid_y=0, grid_z=8, pick_tray=self.tray_pick, place_tray=self.tray_pick)
+        self.message_navi  = MessageBox(canvas=self.canvas_field, x=510, y=200, text="Going Home", color=Color.gray, direction="NE")
+        self.message_laser = MessageBox(canvas=self.canvas_field, x=510, y=250, text="Laser On", color=Color.gray, direction="SE")
 
         self.text_x_pos = TextBox(canvas=self.canvas_field, x=82, y=418+5,  text="x-Axis Position", size=12, color=Color.darkgray)
         self.text_y_pos = TextBox(canvas=self.canvas_field, x=82, y=444+5,  text="y-Axis Position", size=12, color=Color.darkgray)
@@ -74,8 +78,7 @@ class App(tk.Tk):
         self.text_y_acc_mm = TextBox(canvas=self.canvas_field, x=233, y=496+5,  text="mm/s", size=11, color=Color.darkgray)
         self.text_y_acc_2  = TextBox(canvas=self.canvas_field, x=250, y=494+5,  text="2", size=8, color=Color.darkgray)
 
-        # self.balloon_text = TextBox(canvas=self.canvas_field, x=200, y=100,  text="The maximum input is \n700 mm for width", size=11, color=Color.darkgray)        
-
+        # self.message_error = MessageBox(canvas=self.canvas_field, x=810, y=490, text="Input x for Point Mode must be between -15.0 and 15.0", color=Color.red, direction="SE")
 
         self.canvas_command = tk.Canvas(master=self, width=840, height=150, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge')
         self.canvas_command.pack(pady=0)
@@ -114,9 +117,13 @@ class App(tk.Tk):
         self.press_home = PressButton(canvas=self.canvas_command, x=655, y=50, w=128, h=30, r=15, active_color=Color.gray, inactive_color=Color.lightgray, text="Home", text_size=15, active_default=True)
         self.press_run  = PressButton(canvas=self.canvas_command, x=655, y=90, w=128, h=44, r=22, active_color=Color.blue, inactive_color=Color.lightgray, text="Run", text_size=22, active_default=True)
 
+        self.line_separate_1 = Line(canvas=self.canvas_command, point_1=(260, 20), point_2=(260, 140), width=2, color=Color.lightgray)
+        self.line_separate_2 = Line(canvas=self.canvas_command, point_1=(595, 20), point_2=(595, 140), width=2, color=Color.lightgray)
 
-        self.canvas_command.create_line((260, 20), (260, 140), width=2, fill=Color.lightgray)
-        self.canvas_command.create_line((595, 20), (595, 140), width=2, fill=Color.lightgray)
+
+        self.running = False
+        self.homing = False
+
 
         if self.mode == "Developer":
             keyboard = Keyboard(self)
@@ -135,6 +142,7 @@ class App(tk.Tk):
 
     def task(self):
 
+        #Click Point Mode
         if self.operation_mode == "Tray" and self.radio_point.active:
             self.radio_tray.switch()
             self.operation_mode = "Point"
@@ -146,7 +154,10 @@ class App(tk.Tk):
             self.text_y_entry.show()
             self.text_mm_x_entry.show()
             self.text_mm_y_entry.show()
+            self.tray_pick.clear_tray()
+            self.target.create_target()
 
+        #Click Tray Mode
         elif self.operation_mode == "Point" and self.radio_tray.active:
             self.radio_point.switch()
             self.operation_mode = "Tray"
@@ -158,6 +169,8 @@ class App(tk.Tk):
             self.text_y_entry.hide()
             self.text_mm_x_entry.hide()
             self.text_mm_y_entry.hide()
+            self.target.clear_target()
+            self.tray_pick.create_tray()
 
 
         if self.toggle_laser.pressed:
@@ -167,8 +180,10 @@ class App(tk.Tk):
                     self.toggle_gripper.switch()
                     print("Protocol - Gripper Off")
                 print("Protocol - Laser On")
+                self.navi.navigator_laser.show()
             else:
                 print("Protocol - Laser Off")
+                self.navi.navigator_laser.hide()
             self.toggle_laser.pressed = False
 
         if self.toggle_gripper.pressed:
@@ -177,6 +192,7 @@ class App(tk.Tk):
                 if self.toggle_laser.active:
                     self.toggle_laser.switch()
                     print("Protocol - Laser Off")
+                    self.navi.navigator_laser.hide()
                 print("Protocol - Gripper On")
             else:
                 print("Protocol - Gripper Off")
@@ -212,22 +228,29 @@ class App(tk.Tk):
 
         if self.press_home.pressed:
             print("Protocol - Home")
+            self.homing = True
             self.press_home.pressed = False
         
         if self.press_run.pressed:
             print("Protocol - Run")
+            self.running = True
             self.entry_x.disable()
             self.entry_y.disable()
             self.press_run.deactivate()
             self.press_run.pressed = False
 
+        if self.homing or self.running:
+            self.navi.move_to(10, 10)
+            # print(self.navi.grid_x, self.navi.grid_y)
+            # self.navi.clear_navigator()
+            # self.navi.create_navigator()
+
         #Remove in the Future
-        self.tray_pick.clear_tray()
-        self.tray_pick.create_tray()
-        self.target.clear_target()
-        self.target.create_target()
-        self.navi.clear_navigator()
-        self.navi.create_navigator()
+        # self.tray_pick.clear_tray()
+        # self.tray_pick.create_tray()
+        # self.target.clear_target()
+        # self.target.create_target()
+        
 
 
         if not self.entry_x.validate(self.entry_x.get_value()):
