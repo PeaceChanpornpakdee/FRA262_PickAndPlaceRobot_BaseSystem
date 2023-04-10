@@ -23,6 +23,11 @@ class Oval():
     def deactivate(self, inactive_color):
         self.canvas.itemconfigure(self.oval, fill=inactive_color)
 
+    def move_to(self, x, y):
+        self.canvas.move(self.oval, x-self.x, y-self.y)
+        self.x = x
+        self.y = y
+
 
 class Rectangle():
     def __init__(self, canvas, x, y, w, h, color):
@@ -45,6 +50,11 @@ class Rectangle():
 
     def deactivate(self, inactive_color):
         self.canvas.itemconfigure(self.rect, fill=inactive_color)
+
+    def move_to(self, x, y):
+        self.canvas.move(self.rect, x-self.x, y-self.y)
+        self.x = x
+        self.y = y
     
 
 class RoundRectangle():
@@ -97,3 +107,64 @@ class RoundRectangle():
         self.oval_4.deactivate(inactive_color)
         self.rec_1.deactivate(inactive_color)
         self.rec_2.deactivate(inactive_color)
+
+    def move_to(self, x, y):
+        self.x = x
+        self.y = y
+        self.oval_1.move_to(x, y)
+        self.oval_2.move_to(x+self.w-2*self.r, y)
+        self.oval_3.move_to(x, y+self.h-2*self.r)
+        self.oval_4.move_to(x+self.w-2*self.r, y+self.h-2*self.r)
+        self.rec_1.move_to(x+self.r, y)
+        self.rec_2.move_to(x, y+self.r)
+
+
+class Polygon():
+    """
+    Polygon Class
+    """
+    def __init__(self, canvas, points, color):
+        self.canvas = canvas
+        self.points = points
+        self.color = color
+        self.polygon = self.canvas.create_polygon(*points, fill=self.color, outline="")
+
+    def move(self, x_shift, y_shift):
+        self.canvas.move(self.polygon, x_shift, y_shift)
+
+
+class FreeOval():
+    """
+    Free Oval Class
+    """
+    def __init__(self, canvas, point_1, point_2, color):
+        self.canvas = canvas
+        self.point_1 = point_1
+        self.point_2 = point_2
+        self.color = color
+        self.free_oval = self.canvas.create_oval(self.point_1, self.point_2, fill=self.color, outline='')
+
+    def move(self, x_shift, y_shift):
+        self.canvas.move(self.free_oval, x_shift, y_shift)
+
+
+class Line():
+    """
+    Line Class
+    """
+    def __init__(self, canvas, point_1, point_2, width, color):
+        self.canvas = canvas
+        self.point_1 = point_1
+        self.point_2 = point_2
+        self.width = width
+        self.color = color
+        self.line = self.canvas.create_line(point_1, point_2, width=self.width, fill=self.color)
+
+    def hide(self):
+        self.canvas.itemconfigure(self.line, state='hidden')
+
+    def show(self):
+        self.canvas.itemconfigure(self.line, state='normal')
+
+    def move(self, x_shift, y_shift):
+        self.canvas.move(self.line, x_shift, y_shift)
