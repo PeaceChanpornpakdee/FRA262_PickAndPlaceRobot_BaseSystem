@@ -1,7 +1,7 @@
 from components.color import Color
 from components.shape import Oval, Rectangle, RoundRectangle
 from components.photo import Photo
-from components.textbox import TextBox
+from components.text import TextBox
 
 class Button():
     """
