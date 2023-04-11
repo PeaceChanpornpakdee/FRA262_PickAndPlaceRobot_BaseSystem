@@ -79,6 +79,7 @@ class App(tk.Tk):
         self.text_y_acc_2  = TextBox(canvas=self.canvas_field, x=250, y=494+5,  text="2", size=8, color=Color.darkgray)
 
         # self.message_error = MessageBox(canvas=self.canvas_field, x=810, y=490, text="Input x for Point Mode must be between -15.0 and 15.0", color=Color.red, direction="SE")
+        self.background_title.resize(100, 100)
 
         self.canvas_command = tk.Canvas(master=self, width=840, height=150, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge')
         self.canvas_command.pack(pady=0)
@@ -157,6 +158,27 @@ class App(tk.Tk):
             self.target.move_to(self.point_target_x, self.point_target_y)
             self.entry_x.set_text(self.point_target_x)
             self.entry_y.set_text(self.point_target_y)
+
+    def validate_entry(self):
+        self.entry_x_value = self.entry_x.get_value()
+        self.entry_y_value = self.entry_y.get_value()
+
+        entry_normal = True
+
+        if self.entry_x.validate(self.entry_x_value, 15) != 0:
+            self.entry_x.error()
+            entry_normal = False
+        else:
+            self.entry_x.normal()
+
+        if self.entry_y.validate(self.entry_y_value, 35) != 0:
+            self.entry_y.error()
+            entry_normal = False
+        else:
+            self.entry_y.normal()
+
+        # if not entry_normal:
+
 
     def task(self):
 
@@ -264,18 +286,7 @@ class App(tk.Tk):
         # self.tray_pick.clear_tray()
         # self.tray_pick.create_tray()
         
-        self.entry_x_value = self.entry_x.get_value()
-        self.entry_y_value = self.entry_y.get_value()
-
-        if self.entry_x.validate(self.entry_x_value, 15) != 0:
-            self.entry_x.error()
-        else:
-            self.entry_x.normal()
-
-        if self.entry_y.validate(self.entry_y_value, 35) != 0:
-            self.entry_y.error()
-        else:
-            self.entry_y.normal()
+        self.validate_entry()
 
         self.after(10, self.task) 
 

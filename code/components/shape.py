@@ -55,6 +55,11 @@ class Rectangle():
         self.canvas.move(self.rect, x-self.x, y-self.y)
         self.x = x
         self.y = y
+
+    def resize(self, w, h):
+        self.canvas.coords(self.rect, self.x, self.y, self.x+w, self.y+h)
+        self.w = w
+        self.h = h
     
 
 class RoundRectangle():
@@ -117,6 +122,13 @@ class RoundRectangle():
         self.oval_4.move_to(x+self.w-2*self.r, y+self.h-2*self.r)
         self.rec_1.move_to(x+self.r, y)
         self.rec_2.move_to(x, y+self.r)
+
+    def resize(self, w, h):
+        self.rec_1.resize(w-2*self.r, h)
+        self.rec_2.resize(w, h-2*self.r)
+        self.oval_2.move_to(self.x+w-2*self.r, self.y)
+        self.oval_3.move_to(self.x,            self.y+h-2*self.r)
+        self.oval_4.move_to(self.x+w-2*self.r, self.y+h-2*self.r)
 
 
 class Polygon():
