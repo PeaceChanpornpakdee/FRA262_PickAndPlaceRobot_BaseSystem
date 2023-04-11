@@ -63,26 +63,26 @@ class MessageBox():
         if self.direction == "NW":
             tail_points = (
                 (self.x-4, self.y-4),
-                (self.x+4, self.y),
-                (self.x,   self.y+4)
+                (self.x+5, self.y),
+                (self.x+1, self.y+4)
             )
         elif self.direction == "NE":
             tail_points = (
                 (self.w+self.x+4, self.y-4),
-                (self.w+self.x-4, self.y),
-                (self.w+self.x,   self.y+4)
+                (self.w+self.x-5, self.y),
+                (self.w+self.x-1, self.y+4)
             )
         elif self.direction == "SW":
             tail_points = (
                 (self.x-4, self.h+self.y+4),
-                (self.x+4, self.h+self.y),
-                (self.x,   self.h+self.y-4)
+                (self.x+5, self.h+self.y),
+                (self.x+1, self.h+self.y-4)
             )
         elif self.direction == "SE":
             tail_points = (
                 (self.w+self.x+4, self.h+self.y+4),
-                (self.w+self.x-4, self.h+self.y),
-                (self.w+self.x,   self.h+self.y-4)
+                (self.w+self.x-5, self.h+self.y),
+                (self.w+self.x-1, self.h+self.y-4)
             )
         self.tail = self.canvas.create_polygon(*tail_points, fill=self.color, outline="")
 
