@@ -145,7 +145,7 @@ class App(tk.Tk):
 
     def remove_focus(self, event):
         self.focus()
-        if self.entry_x.validate(self.entry_x_value) and self.entry_y.validate(self.entry_y_value):
+        if self.entry_x.validate(self.entry_x_value, 15) == 0 and self.entry_y.validate(self.entry_y_value, 35) == 0:
             if self.entry_x_value != self.point_target_x:
                 self.point_target_x = float(self.entry_x_value)
             if self.entry_y_value != self.point_target_y:
@@ -275,12 +275,12 @@ class App(tk.Tk):
         self.entry_x_value = self.entry_x.get_value()
         self.entry_y_value = self.entry_y.get_value()
 
-        if not self.entry_x.validate(self.entry_x_value):
+        if self.entry_x.validate(self.entry_x_value, 15) != 0:
             self.entry_x.error()
         else:
             self.entry_x.normal()
 
-        if not self.entry_y.validate(self.entry_y_value):
+        if self.entry_y.validate(self.entry_y_value, 35) != 0:
             self.entry_y.error()
         else:
             self.entry_y.normal()

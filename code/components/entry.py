@@ -45,19 +45,46 @@ class Entry():
     def get_value(self):
         return self.entry.get()
 
-    def validate(self, value):
+    def validate(self, value, limit):
+        """
+        Parameters
+            value (str) : Entry's value 
+            limit (int) : Limit of entry's value
+        
+        Return
+            Error code (int) : Error code where
+                0 = Normal
+                1 = Error Empty value
+                2 = Error 2 or more .
+                3 = Error have unsupported character
+                4 = Error over limit
+        """
         valid_character = "1234567890."
 
         value = str(value)
 
+        #Check if is an empty string
+        if len(value) == 0:
+            return 1
+        
+        #Check if have just -
+        if value == "-":
+            return 1
+
         #Check if have 2 or more .
         if len(value.split(".")) > 2:
-            return False 
+            return 2
         
         #Check if only have numbers and . (and - at the beginning)
         for i in range(len(value)):
             if value[i] not in valid_character:
                 if i != 0 or value[i] != "-":
-                    return False
+                    return 3
+                
+        #Check if value is over limit
+        if float(value) > limit:
+            return 4
+        if float(value) < -limit:
+            return 4
 
-        return True
+        return 0
