@@ -75,7 +75,6 @@ class MessageBox():
     def move_to(self, x, y):
         self.textbox.move_to(x+10, y+9)
         self.rectangle_box.move_to(x, y)
-        
 
     def find_width(self):
         if self.text == "Going Home":
@@ -90,9 +89,15 @@ class MessageBox():
             self.w = 90
         elif self.text == "Gripper Place":
             self.w = 95
-        elif self.text == "Input x for Point Mode must be between -15.0 and 15.0":
+        elif self.text == Error.code_1:
+            self.w = 228
+        elif self.text == Error.code_2:
+            self.w = 266
+        elif self.text == Error.code_3:
+            self.w = 260
+        elif self.text == Error.code_4x:
             self.w = 321
-        elif self.text == "Input y for Point Mode must be between -35.0 and 35.0":
+        elif self.text == Error.code_4y:
             self.w = 327
         else:
             self.w = int(len(self.text) * 7.5)
@@ -109,3 +114,10 @@ class MessageBox():
     #     self.canvas.delete(self.navigator_top)
     #     self.canvas.delete(self.navigator_left)
     #     self.canvas.delete(self.navigator_right)
+
+class Error:
+    code_1  = "Input for Point Mode cannot be empty"
+    code_2  = "Input for Point Mode cannot have 2 or more ."
+    code_3  = "Input for Point Mode cannot have character"
+    code_4x = "Input x for Point Mode must be between -15.0 and 15.0"
+    code_4y = "Input y for Point Mode must be between -35.0 and 35.0"

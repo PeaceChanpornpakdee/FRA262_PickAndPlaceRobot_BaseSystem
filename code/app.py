@@ -8,7 +8,7 @@ from components.target import Target
 from components.navigator import Navigator
 from components.button import PressButton, RadioButton, ToggleButton
 from components.shape import RoundRectangle, Line
-from components.text import TextBox, MessageBox
+from components.text import TextBox, MessageBox, Error
 from components.photo import Photo
 from components.entry import Entry
 
@@ -143,7 +143,7 @@ class App(tk.Tk):
 
     def out_entry(self, event):
         self.focus()
-        if self.entry_x.validate(self.entry_x_value, 15) == 0 and self.entry_y.validate(self.entry_y_value, 35) == 0:
+        if self.validate_entry() == "Normal":
             if self.entry_x_value != self.point_target_x:
                 self.point_target_x = float(self.entry_x_value)
             if self.entry_y_value != self.point_target_y:
@@ -163,21 +163,43 @@ class App(tk.Tk):
         self.entry_x_value = self.entry_x.get_value()
         self.entry_y_value = self.entry_y.get_value()
 
-        entry_normal = True
+        validate_x_result = self.entry_x.validate(self.entry_x_value, 15)
+        validate_y_result = self.entry_y.validate(self.entry_y_value, 35)
 
-        if self.entry_x.validate(self.entry_x_value, 15) != 0:
-            self.entry_x.error()
-            entry_normal = False
-        else:
-            self.entry_x.normal()
+        validate_result = "Normal"
 
-        if self.entry_y.validate(self.entry_y_value, 35) != 0:
+        if validate_y_result != 0:
             self.entry_y.error()
-            entry_normal = False
+            validate_result = self.interpret_validate(validate_y_result, "y")
         else:
             self.entry_y.normal()
 
-        # if not entry_normal:
+        if validate_x_result != 0:
+            self.entry_x.error()
+            validate_result = self.interpret_validate(validate_x_result, "x")
+        else:
+            self.entry_x.normal()
+
+        if validate_result != "Normal":
+            self.message_error.change_text(validate_result)
+            self.message_error.show()
+        else:
+            self.message_error.hide()
+
+        return validate_result
+    
+    def interpret_validate(self, validate_result, entry):
+        if validate_result == 1:
+            return Error.code_1
+        if validate_result == 2:
+            return Error.code_2
+        if validate_result == 3:
+            return Error.code_3        
+        if validate_result == 4:
+            if entry == "x":
+                return Error.code_4x
+            if entry == "y":
+                return Error.code_4y
 
 
     def task(self):
@@ -234,11 +256,8 @@ class App(tk.Tk):
                     print("Protocol - Laser Off")
                     self.navi.navigator_laser.hide()
                 print("Protocol - Gripper On")
-                self.message_error.change_text("Gripper Pick")
-                self.message_error.show()
             else:
                 print("Protocol - Gripper Off")
-                self.message_error.hide()
             self.toggle_gripper.pressed = False
 
         if self.toggle_gripper.active == False:
@@ -275,11 +294,16 @@ class App(tk.Tk):
             self.press_home.pressed = False
         
         if self.press_run.pressed:
-            print("Protocol - Run")
+            if self.operation_mode == "Tray":
+                print("Protocol - Run Tray")
+            elif self.operation_mode == "Point":
+                print("Protocol - Set Goal Point")
+                print("Protocol - Run Point")
             self.running = True
             self.entry_x.disable()
             self.entry_y.disable()
             self.press_run.deactivate()
+            self.press_home.deactivate()
             self.press_run.pressed = False
 
         if self.homing or self.running:

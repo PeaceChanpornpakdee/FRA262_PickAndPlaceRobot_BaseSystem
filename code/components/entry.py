@@ -63,12 +63,15 @@ class Entry():
 
         value = str(value)
 
+        # Remove blank space
+        value = value.replace(" ", "")
+
         #Check if is an empty string
         if len(value) == 0:
             return 1
         
         #Check if have just -
-        if value == "-":
+        if value == "-" or value == ".":
             return 1
 
         #Check if have 2 or more .
