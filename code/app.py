@@ -135,15 +135,12 @@ class App(tk.Tk):
             keyboard = Keyboard(self)
             keyboard.key_bind(self)
 
-        # app.bind("<ButtonRelease-1>", mouse_position)
-        # app.bind("<Motion>", mouse_position)
-        # canvas_field.canvas.bind("<Motion>", mouse_position)
         self.canvas_field.bind("<ButtonRelease-1>", self.mouse_position)
 
-        self.bind("<Return>", self.remove_focus)
-        self.canvas_command.bind("<Button-1>", self.remove_focus)
+        self.bind("<Return>", self.out_entry)
+        self.canvas_command.bind("<Button-1>", self.out_entry)
 
-    def remove_focus(self, event):
+    def out_entry(self, event):
         self.focus()
         if self.entry_x.validate(self.entry_x_value, 15) == 0 and self.entry_y.validate(self.entry_y_value, 35) == 0:
             if self.entry_x_value != self.point_target_x:
@@ -262,15 +259,10 @@ class App(tk.Tk):
 
         if self.homing or self.running:
             self.navi.move_to(10, 10)
-            # print(self.navi.grid_x, self.navi.grid_y)
-            # self.navi.clear_navigator()
-            # self.navi.create_navigator()
 
         #Remove in the Future
         # self.tray_pick.clear_tray()
         # self.tray_pick.create_tray()
-        # self.target.clear_target()
-        # self.target.create_target()
         
         self.entry_x_value = self.entry_x.get_value()
         self.entry_y_value = self.entry_y.get_value()
