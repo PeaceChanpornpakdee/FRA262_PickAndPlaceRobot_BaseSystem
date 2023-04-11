@@ -54,11 +54,12 @@ class App(tk.Tk):
         self.text_negative_y = TextBox(canvas=self.canvas_field, x=713, y=467, text="-y", size=15, color=Color.lightgray)
         self.text_positive_y = TextBox(canvas=self.canvas_field, x=127, y=170, text="+y", size=15, color=Color.lightgray)
         
-        self.tray_pick = Tray(canvas=self.canvas_field, grid=self.grid) 
+        self.tray_pick = Tray(canvas=self.canvas_field, grid=self.grid, navi=None) 
         self.target =  Target(canvas=self.canvas_field, grid=self.grid, grid_x=10, grid_y=10)
-        self.target.clear_target()
-        # self.navi = Navigator(canvas=self.canvas_field, grid=self.grid, grid_x=-5, grid_y=10, grid_z=8)
-        self.navi = Navigator(canvas=self.canvas_field, grid=self.grid, grid_x=0, grid_y=0, grid_z=8, pick_tray=self.tray_pick, place_tray=self.tray_pick)
+        self.target.hide()
+        self.navi = Navigator(canvas=self.canvas_field, grid=self.grid, grid_x=-5, grid_y=10, grid_z=8, pick_tray=self.tray_pick, place_tray=self.tray_pick)
+        self.tray_pick.navi = self.navi
+        
         self.message_navi  = MessageBox(canvas=self.canvas_field, x=510, y=200, text="Going Home", color=Color.gray, direction="NE")
         self.message_laser = MessageBox(canvas=self.canvas_field, x=510, y=250, text="Laser On", color=Color.gray, direction="SE")
 
@@ -155,7 +156,7 @@ class App(tk.Tk):
             self.text_mm_x_entry.show()
             self.text_mm_y_entry.show()
             self.tray_pick.clear_tray()
-            self.target.create_target()
+            self.target.show()
 
         #Click Tray Mode
         elif self.operation_mode == "Point" and self.radio_tray.active:
@@ -169,7 +170,7 @@ class App(tk.Tk):
             self.text_y_entry.hide()
             self.text_mm_x_entry.hide()
             self.text_mm_y_entry.hide()
-            self.target.clear_target()
+            self.target.hide()
             self.tray_pick.create_tray()
 
 

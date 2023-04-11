@@ -18,11 +18,11 @@ class Navigator():
         self.over_tray = False
 
         navigator_points = self.map_points()
+        self.navigator_laser = Line(canvas=self.canvas, point_1=navigator_points["navigator_laser"][0], point_2=navigator_points["navigator_laser"][1], width=2, color=Color.red)
         self.navigator_top   = Polygon(canvas=self.canvas, points=navigator_points["navigator_top"], color="#FFD18C")
         self.navigator_left  = Polygon(canvas=self.canvas, points=navigator_points["navigator_left"], color="#FFB545")
         self.navigator_right = Polygon(canvas=self.canvas, points=navigator_points["navigator_right"], color="#EAA031")
-        self.navigator_laser = Line(canvas=self.canvas, point_1=navigator_points["navigator_laser"][0], point_2=navigator_points["navigator_laser"][1], width=2, color=Color.red)
-        self.navigator_oval  = FreeOval(canvas=self.canvas, point_1=navigator_points["navigator_oval"][0], point_2=navigator_points["navigator_oval"][1], color=Color.red)
+        self.navigator_oval  = FreeOval(canvas=self.canvas, point_1=navigator_points["navigator_oval"][0], point_2=navigator_points["navigator_oval"][1], fill_color=Color.red)
         self.navigator_laser.hide()
 
     def map_points(self):
@@ -75,11 +75,13 @@ class Navigator():
 
     def laser_tray(self):
         overlap_objects = self.canvas.find_overlapping(self.pixel_x-4, self.pixel_y-2+self.grid_z*8, self.pixel_x+4, self.pixel_y+2+self.grid_z*8)
-        if self.pick_tray.tray_bottom in overlap_objects or self.place_tray.tray_bottom in overlap_objects:
+        if self.pick_tray.tray_bottom.polygon in overlap_objects or self.place_tray.tray_bottom.polygon in overlap_objects:
             if not self.over_tray:
                 self.navigator_oval.move(0, -4)
+                self.navigator_laser.move(0, -4)
                 self.over_tray = True
         else:
             if self.over_tray:
                 self.navigator_oval.move(0, 4)
+                self.navigator_laser.move(0, 4)
                 self.over_tray = False

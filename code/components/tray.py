@@ -1,13 +1,15 @@
 from components.color import Color
+from components.shape import Polygon, FreeOval
 import math
 
 class Tray():
     """
     Tray class
     """
-    def __init__(self, canvas, grid):
+    def __init__(self, canvas, grid, navi):
         self.canvas = canvas
         self.grid = grid
+        self.navi = navi
         self.origin_x = 0
         self.origin_y = 0
         self.orientation = 0
@@ -18,22 +20,31 @@ class Tray():
 
     def create_tray(self):
         tray_points = self.map_tray_points()
-        self.tray_bottom = self.canvas.create_polygon(*tray_points["bottom_tray"], fill=Color.gray, outline="")
-        self.tray_top    = self.canvas.create_polygon(*tray_points["top_tray"],    fill=Color.lightgray, outline="")
-        self.tray_left   = self.canvas.create_polygon(*tray_points["left_wall"],   fill=Color.middlegray, outline="")
-        self.tray_right  = self.canvas.create_polygon(*tray_points["right_wall"],  fill=Color.gray, outline="")
+        self.tray_bottom = Polygon(canvas=self.canvas, points=tray_points["bottom_tray"], color=Color.gray)
+        self.tray_top    = Polygon(canvas=self.canvas, points=tray_points["top_tray"],    color=Color.lightgray)
+        self.tray_left   = Polygon(canvas=self.canvas, points=tray_points["left_wall"],   color=Color.middlegray)
+        self.tray_right  = Polygon(canvas=self.canvas, points=tray_points["right_wall"],  color=Color.gray)
         self.tray_holes  = []
         for row in range(3):
             for column in range(3):
-                self.tray_holes.append(self.canvas.create_oval(*(tray_points["holes"][row][column]), fill=Color.gray, outline=''))
+                self.tray_holes.append(FreeOval(canvas=self.canvas, point_1=tray_points["holes"][row][column][0], point_2=tray_points["holes"][row][column][1], fill_color=Color.gray))
+        self.navi_front()
+
+    def navi_front(self):
+        if self.navi != None:
+            self.canvas.tag_raise(self.navi.navigator_laser.line, "all")
+            self.canvas.tag_raise(self.navi.navigator_left.polygon, "all")
+            self.canvas.tag_raise(self.navi.navigator_right.polygon, "all")
+            self.canvas.tag_raise(self.navi.navigator_top.polygon, "all")
+            self.canvas.tag_raise(self.navi.navigator_oval.free_oval, "all")
 
     def clear_tray(self):
-        self.canvas.delete(self.tray_top)
-        self.canvas.delete(self.tray_bottom)
-        self.canvas.delete(self.tray_left)
-        self.canvas.delete(self.tray_right)
+        self.tray_top.clear()
+        self.tray_bottom.clear()
+        self.tray_left.clear()
+        self.tray_right.clear()
         for i in range(9):
-            self.canvas.delete(self.tray_holes[i])
+            self.tray_holes[i].clear()
 
     def map_tray_points(self):
         self.tray_diagonal = (self.tray_width**2 + self.tray_height**2) ** 0.5

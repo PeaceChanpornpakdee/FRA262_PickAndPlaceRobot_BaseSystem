@@ -132,20 +132,33 @@ class Polygon():
     def move(self, x_shift, y_shift):
         self.canvas.move(self.polygon, x_shift, y_shift)
 
+    def clear(self):
+        self.canvas.delete(self.polygon)
+
 
 class FreeOval():
     """
     Free Oval Class
     """
-    def __init__(self, canvas, point_1, point_2, color):
+    def __init__(self, canvas, point_1, point_2, fill_color, outline_color=""):
         self.canvas = canvas
         self.point_1 = point_1
         self.point_2 = point_2
-        self.color = color
-        self.free_oval = self.canvas.create_oval(self.point_1, self.point_2, fill=self.color, outline='')
+        self.fill_color = fill_color
+        self.outline_color = outline_color
+        self.free_oval = self.canvas.create_oval(self.point_1, self.point_2, fill=self.fill_color, outline=self.outline_color, width=2)
 
     def move(self, x_shift, y_shift):
         self.canvas.move(self.free_oval, x_shift, y_shift)
+
+    def clear(self):
+        self.canvas.delete(self.free_oval)
+
+    def hide(self):
+        self.canvas.itemconfigure(self.free_oval, state='hidden')
+
+    def show(self):
+        self.canvas.itemconfigure(self.free_oval, state='normal')
 
 
 class Line():
