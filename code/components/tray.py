@@ -6,13 +6,13 @@ class Tray():
     """
     Tray class
     """
-    def __init__(self, canvas, grid, navi):
+    def __init__(self, canvas, grid, origin_x, origin_y, orientation, navi):
         self.canvas = canvas
         self.grid = grid
         self.navi = navi
-        self.origin_x = 0
-        self.origin_y = 0
-        self.orientation = 0
+        self.origin_x = origin_x
+        self.origin_y = origin_y
+        self.orientation = orientation
         self.tray_width = 6
         self.tray_height = 5
         self.tray_thick = 0.5

@@ -53,14 +53,17 @@ class App(tk.Tk):
         self.text_negative_y = TextBox(canvas=self.canvas_field, x=713, y=467, text="-y", size=15, color=Color.lightgray)
         self.text_positive_y = TextBox(canvas=self.canvas_field, x=127, y=170, text="+y", size=15, color=Color.lightgray)
         
-        self.tray_pick = Tray(canvas=self.canvas_field, grid=self.grid, navi=None) 
+        self.tray_pick = Tray(canvas=self.canvas_field, grid=self.grid, origin_x=-15, origin_y=30, orientation=0, navi=None) 
+        self.tray_place = Tray(canvas=self.canvas_field, grid=self.grid, origin_x=9, origin_y=-35, orientation=0, navi=None) 
+       
         self.target =  Target(canvas=self.canvas_field, grid=self.grid, grid_x=0, grid_y=0)
         self.target.hide()
-        self.navi = Navigator(canvas=self.canvas_field, grid=self.grid, grid_x=-5, grid_y=10, grid_z=8, pick_tray=self.tray_pick, place_tray=self.tray_pick)
+        self.navi = Navigator(canvas=self.canvas_field, grid=self.grid, grid_x=0, grid_y=0, grid_z=8, pick_tray=self.tray_pick, place_tray=self.tray_place)
         self.tray_pick.navi = self.navi
         
-        self.message_navi  = MessageBox(canvas=self.canvas_field, x=405, y=247, text="Going Home", color=Color.blue, direction="NW")
-        self.message_laser = MessageBox(canvas=self.canvas_field, x=405, y=295, text="Gripper Pick", color=Color.blue, direction="SW")
+        self.message_navi  = MessageBox(canvas=self.canvas_field, x=434, y=246,    text="Going Home", color=Color.blue, direction="NW", margin="Left")
+        self.message_laser = MessageBox(canvas=self.canvas_field, x=434, y=246+48, text="Gripper Pick", color=Color.blue, direction="SW", margin="Left")
+        self.message_laser.hide()
 
         self.text_x_pos = TextBox(canvas=self.canvas_field, x=82, y=418+5,  text="x-Axis Position", size=12, color=Color.darkgray)
         self.text_y_pos = TextBox(canvas=self.canvas_field, x=82, y=444+5,  text="y-Axis Position", size=12, color=Color.darkgray)
@@ -78,7 +81,7 @@ class App(tk.Tk):
         self.text_y_acc_mm = TextBox(canvas=self.canvas_field, x=233, y=496+5,  text="mm/s", size=11, color=Color.darkgray)
         self.text_y_acc_2  = TextBox(canvas=self.canvas_field, x=250, y=494+5,  text="2", size=8, color=Color.darkgray)
 
-        self.message_error = MessageBox(canvas=self.canvas_field, x=810, y=490, text="Input x for Point Mode must be between -15.0 and 15.0", color=Color.red, direction="SE")
+        self.message_error = MessageBox(canvas=self.canvas_field, x=810, y=490, text="Input x for Point Mode must be between -15.0 and 15.0", color=Color.red, direction="SE", margin="Right")
         self.message_error.hide()
 
         self.canvas_command = tk.Canvas(master=self, width=840, height=150, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge')
@@ -217,6 +220,7 @@ class App(tk.Tk):
             self.text_mm_x_entry.show()
             self.text_mm_y_entry.show()
             self.tray_pick.clear_tray()
+            self.tray_place.clear_tray()
             self.target.show()
 
         #Click Tray Mode
@@ -233,6 +237,7 @@ class App(tk.Tk):
             self.text_mm_y_entry.hide()
             self.target.hide()
             self.tray_pick.create_tray()
+            self.tray_place.create_tray()
 
 
         if self.toggle_laser.pressed:
@@ -240,6 +245,7 @@ class App(tk.Tk):
             if self.toggle_laser.active:
                 if self.toggle_gripper.active:
                     self.toggle_gripper.switch()
+                    self.message_laser.hide()
                     print("Protocol - Gripper Off")
                 print("Protocol - Laser On")
                 self.navi.navigator_laser.show()
@@ -257,6 +263,7 @@ class App(tk.Tk):
                     self.navi.navigator_laser.hide()
                 print("Protocol - Gripper On")
             else:
+                self.message_laser.hide()
                 print("Protocol - Gripper Off")
             self.toggle_gripper.pressed = False
 
@@ -272,20 +279,25 @@ class App(tk.Tk):
                 self.press_arrow.photo_arrow_place.show()
                 self.direction_arrow = "place"
                 self.press_arrow.change_text("     Place")
+                self.message_laser.change_text("Gripper Pick")
             elif self.direction_arrow == "place":
                 print("Protocol - Gripper Place")
                 self.press_arrow.photo_arrow_place.hide()
                 self.press_arrow.photo_arrow_pick.show()
                 self.direction_arrow = "pick"
                 self.press_arrow.change_text("     Pick")
+                self.message_laser.change_text("Gripper Place")
+            self.message_laser.show()
             self.press_arrow.pressed = False
 
         if self.press_pick.pressed:
             print("Protocol - Set Pick Tray")
+            self.tray_pick.create_tray()
             self.press_pick.pressed = False
 
         if self.press_place.pressed:
             print("Protocol - Set Place Tray")
+            self.tray_place.create_tray()
             self.press_place.pressed = False
 
         if self.press_home.pressed:

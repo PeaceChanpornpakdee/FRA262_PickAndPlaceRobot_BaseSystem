@@ -4,19 +4,22 @@ class Keyboard():
     """
     def __init__(self, app):
         self.app = app
+
+    def move_to(self, grid_x, grid_y):
+        self.app.navi.move_to(grid_x, grid_y)
+        pixel_x, pixel_y = self.app.grid.map_3D_to_2D(grid_x, grid_y, self.app.navi.grid_z)
+        self.app.message_navi.move_to (pixel_x+14, pixel_y-10)
+        self.app.message_laser.move_to(pixel_x+14, pixel_y+38)
         
     def key_left(self, event):
-        self.app.navi.move_to(self.app.navi.grid_x-0.1, self.app.navi.grid_y)
-        self.app.target.move_to(self.app.target.grid_x-0.1, self.app.target.grid_y)
+        self.move_to(self.app.navi.grid_x-0.5, self.app.navi.grid_y)
     def key_right(self, event):
-        self.app.navi.move_to(self.app.navi.grid_x+0.1, self.app.navi.grid_y)
-        self.app.target.move_to(self.app.target.grid_x+0.1, self.app.target.grid_y)
+        self.move_to(self.app.navi.grid_x+0.5, self.app.navi.grid_y)
     def key_up(self, event):
-        self.app.navi.move_to(self.app.navi.grid_x, self.app.navi.grid_y+0.1)
-        self.app.target.move_to(self.app.target.grid_x, self.app.target.grid_y+0.1)
+        self.move_to(self.app.navi.grid_x, self.app.navi.grid_y+0.5)
     def key_down(self, event):
-        self.app.navi.move_to(self.app.navi.grid_x, self.app.navi.grid_y-0.1)
-        self.app.target.move_to(self.app.target.grid_x, self.app.target.grid_y-0.1)
+        self.move_to(self.app.navi.grid_x, self.app.navi.grid_y-0.5)
+
     def key_a(self, event):
         self.app.tray_pick.origin_x -= 0.1
     def key_d(self, event):

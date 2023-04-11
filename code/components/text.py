@@ -36,13 +36,17 @@ class TextBox():
 
 
 class MessageBox():
-    def __init__(self, canvas, x, y, text, color, direction):
+    def __init__(self, canvas, x, y, text, color, direction, margin):
         self.canvas = canvas
         self.text = text
-        self.original_x = x
-        self.y = y
+        self.margin = margin
         self.find_width()
+        # self.left_x = x
+        # self.right_x = self.left_x - self.w
+        # self.x = self.left_x
         self.h = 20
+        self.x = x
+        self.y = y
         self.r = 6
         self.color = color
         self.direction = direction
@@ -71,10 +75,23 @@ class MessageBox():
         self.find_width()
         self.rectangle_box.resize(w=self.w, h=self.h)
         self.move_to(self.x, self.y)
+        # if self.margin == "Right":
+        #     self.move_to(self.right_x, self.y)
+        # elif self.margin == "Left":
+        #     self.move_to(self.left_x, self.y)
 
     def move_to(self, x, y):
-        self.textbox.move_to(x+10, y+9)
-        self.rectangle_box.move_to(x, y)
+        x_move_to = x
+        y_move_to = y
+        if self.margin == "Right":
+            x_move_to = self.x - self.w
+        x_shift = x_move_to - self.x
+        y_shift = y_move_to - self.y
+        self.textbox.move_to(x_move_to+10, y_move_to+9)
+        self.rectangle_box.move_to(x_move_to, y_move_to)
+        self.tail.move(x_shift, y_shift)
+        self.x = x
+        self.y = y
 
     def find_width(self):
         if self.text == "Going Home":
@@ -83,8 +100,6 @@ class MessageBox():
             self.w = 95
         elif self.text == "Going to Place":
             self.w = 100
-        elif self.text == "Laser On":
-            self.w = 70
         elif self.text == "Gripper Pick":
             self.w = 90
         elif self.text == "Gripper Place":
@@ -101,7 +116,6 @@ class MessageBox():
             self.w = 327
         else:
             self.w = int(len(self.text) * 7.5)
-        self.x = self.original_x - self.w
 
     # def create(self):
     #     self.create_tail()
