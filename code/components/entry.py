@@ -14,6 +14,7 @@ class Entry():
         self.inner_rec = RoundRectangle(canvas=self.canvas, x=self.x+2, y=self.y+2, w=116, h=20, r=10, color=Color.whitegray)
         self.entry = tk.Entry(master=self.master, bg=Color.whitegray, bd=0, font="Inter-SemiBold", fg=self.color, selectforeground=self.color, highlightthickness=0, insertbackground=self.color, insertwidth=2, justify="center", width=8, textvariable=self.string_var) 
         self.entry_window = self.canvas.create_window(self.x+59, self.y+11, window=self.entry)
+        self.set_text("0.0")
 
     def hide(self):
         self.outer_rec.hide()
@@ -36,6 +37,10 @@ class Entry():
     
     def enable(self):
         self.entry.config({ "state": "normal" })
+
+    def set_text(self, text):
+        self.entry.delete(0, 'end')
+        self.entry.insert(0, str(text))
 
     def get_value(self):
         return self.entry.get()

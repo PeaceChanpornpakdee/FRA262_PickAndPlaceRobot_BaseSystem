@@ -12,7 +12,6 @@ from components.text import TextBox, MessageBox
 from components.photo import Photo
 from components.entry import Entry
 
-from function import *
 from keyboard import Keyboard
 
 class App(tk.Tk):
@@ -55,7 +54,7 @@ class App(tk.Tk):
         self.text_positive_y = TextBox(canvas=self.canvas_field, x=127, y=170, text="+y", size=15, color=Color.lightgray)
         
         self.tray_pick = Tray(canvas=self.canvas_field, grid=self.grid, navi=None) 
-        self.target =  Target(canvas=self.canvas_field, grid=self.grid, grid_x=10, grid_y=10)
+        self.target =  Target(canvas=self.canvas_field, grid=self.grid, grid_x=0, grid_y=0)
         self.target.hide()
         self.navi = Navigator(canvas=self.canvas_field, grid=self.grid, grid_x=-5, grid_y=10, grid_z=8, pick_tray=self.tray_pick, place_tray=self.tray_pick)
         self.tray_pick.navi = self.navi
@@ -125,6 +124,12 @@ class App(tk.Tk):
         self.running = False
         self.homing = False
 
+        self.point_target_x = 0
+        self.point_target_y = 0
+        self.entry_normal = True
+        self.entry_x_value = "0.0"
+        self.entry_y_value = "0.0"
+
 
         if self.mode == "Developer":
             keyboard = Keyboard(self)
@@ -133,13 +138,28 @@ class App(tk.Tk):
         # app.bind("<ButtonRelease-1>", mouse_position)
         # app.bind("<Motion>", mouse_position)
         # canvas_field.canvas.bind("<Motion>", mouse_position)
-        self.canvas_field.bind("<ButtonRelease-1>", mouse_position)
+        self.canvas_field.bind("<ButtonRelease-1>", self.mouse_position)
 
         self.bind("<Return>", self.remove_focus)
         self.canvas_command.bind("<Button-1>", self.remove_focus)
 
     def remove_focus(self, event):
         self.focus()
+        if self.entry_x.validate(self.entry_x_value) and self.entry_y.validate(self.entry_y_value):
+            if self.entry_x_value != self.point_target_x:
+                self.point_target_x = float(self.entry_x_value)
+            if self.entry_y_value != self.point_target_y:
+                self.point_target_y = float(self.entry_y_value)
+            self.target.move_to(self.point_target_x, self.point_target_y)
+
+    def mouse_position(self, event):
+        if self.operation_mode == "Point":
+            grid_x, grid_y = self.grid.map_2D_to_3D(event.x, event.y)
+            self.point_target_x = int(grid_x*10) / 10  # Reduce to 1 decimal point
+            self.point_target_y = int(grid_y*10) / 10  # Reduce to 1 decimal point
+            self.target.move_to(self.point_target_x, self.point_target_y)
+            self.entry_x.set_text(self.point_target_x)
+            self.entry_y.set_text(self.point_target_y)
 
     def task(self):
 
@@ -252,14 +272,15 @@ class App(tk.Tk):
         # self.target.clear_target()
         # self.target.create_target()
         
+        self.entry_x_value = self.entry_x.get_value()
+        self.entry_y_value = self.entry_y.get_value()
 
-
-        if not self.entry_x.validate(self.entry_x.get_value()):
+        if not self.entry_x.validate(self.entry_x_value):
             self.entry_x.error()
         else:
             self.entry_x.normal()
 
-        if not self.entry_y.validate(self.entry_y.get_value()):
+        if not self.entry_y.validate(self.entry_y_value):
             self.entry_y.error()
         else:
             self.entry_y.normal()
