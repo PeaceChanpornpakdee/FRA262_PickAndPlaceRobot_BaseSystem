@@ -8,17 +8,39 @@ class Keyboard():
     def move_to(self, grid_x, grid_y):
         self.app.navi.move_to(grid_x, grid_y)
         pixel_x, pixel_y = self.app.grid.map_3D_to_2D(grid_x, grid_y, self.app.navi.grid_z)
-        self.app.message_navi.move_to (pixel_x+14, pixel_y-10)
-        self.app.message_laser.move_to(pixel_x+14, pixel_y+38)
+        if grid_x <= 0:
+            # Message box = Navi's right
+            self.app.message_navi.align = "Left"
+            self.app.message_laser.align = "Left"
+            self.app.message_navi.move_to (pixel_x+14, pixel_y-10)
+            self.app.message_laser.move_to(pixel_x+14, pixel_y+38)
+            self.app.message_navi.generate_tail_points()
+            self.app.message_laser.generate_tail_points()
+            self.app.message_navi.tail.recreate (self.app.message_navi.tail_points["NW"])
+            self.app.message_laser.tail.recreate(self.app.message_laser.tail_points["SW"])
+        else:
+            # Message box = Navi's left
+            self.app.message_navi.align = "Right"
+            self.app.message_laser.align = "Right"
+            self.app.message_navi.move_to (pixel_x-14, pixel_y-10)
+            self.app.message_laser.move_to(pixel_x-14, pixel_y+38)
+            self.app.message_navi.generate_tail_points()
+            self.app.message_laser.generate_tail_points()
+            self.app.message_navi.tail.recreate (self.app.message_navi.tail_points["NE"])
+            self.app.message_laser.tail.recreate(self.app.message_laser.tail_points["SE"])
         
     def key_left(self, event):
-        self.move_to(self.app.navi.grid_x-0.5, self.app.navi.grid_y)
+        if self.app.navi.grid_x > -15:
+            self.move_to(self.app.navi.grid_x-0.5, self.app.navi.grid_y)
     def key_right(self, event):
-        self.move_to(self.app.navi.grid_x+0.5, self.app.navi.grid_y)
+        if self.app.navi.grid_x < 15:
+            self.move_to(self.app.navi.grid_x+0.5, self.app.navi.grid_y)
     def key_up(self, event):
-        self.move_to(self.app.navi.grid_x, self.app.navi.grid_y+0.5)
+        if self.app.navi.grid_y < 35:
+            self.move_to(self.app.navi.grid_x, self.app.navi.grid_y+0.5)
     def key_down(self, event):
-        self.move_to(self.app.navi.grid_x, self.app.navi.grid_y-0.5)
+        if self.app.navi.grid_y > -35:
+            self.move_to(self.app.navi.grid_x, self.app.navi.grid_y-0.5)
 
     def key_a(self, event):
         self.app.tray_pick.origin_x -= 0.1

@@ -36,14 +36,11 @@ class TextBox():
 
 
 class MessageBox():
-    def __init__(self, canvas, x, y, text, color, direction, margin):
+    def __init__(self, canvas, x, y, text, color, direction, align):
         self.canvas = canvas
         self.text = text
-        self.margin = margin
+        self.align = align
         self.find_width()
-        # self.left_x = x
-        # self.right_x = self.left_x - self.w
-        # self.x = self.left_x
         self.h = 20
         self.x = x
         self.y = y
@@ -51,14 +48,20 @@ class MessageBox():
         self.color = color
         self.direction = direction
         self.tail_points = {}
-        self.tail_points["NW"] = ((self.x-4, self.y-4), (self.x+5, self.y), (self.x+1, self.y+4))
-        self.tail_points["NE"] = ((self.w+self.x+4, self.y-4), (self.w+self.x-5, self.y), (self.w+self.x-1, self.y+4))
-        self.tail_points["SW"] = ((self.x-4, self.h+self.y+4), (self.x+5, self.h+self.y), (self.x+1, self.h+self.y-4))
-        self.tail_points["SE"] = ((self.w+self.x+4, self.h+self.y+4), (self.w+self.x-5, self.h+self.y), (self.w+self.x-1, self.h+self.y-4))
+        self.generate_tail_points()
         self.tail = Polygon(canvas=self.canvas, points=self.tail_points[self.direction], color=self.color)
         self.rectangle_box = RoundRectangle(canvas=self.canvas, x=self.x, y=self.y, w=self.w, h=self.h, r=self.r, color=self.color)
         self.textbox = TextBox(canvas=self.canvas, x=self.x+10, y=self.y+9, text=self.text, size=11, color=Color.white, anchor="w")
         
+    def generate_tail_points(self):
+        offset = 0
+        if self.align == "Right":
+            offset = -self.w
+        self.tail_points["NW"] = ((offset+self.x-4, self.y-4),               (offset+self.x+5, self.y),               (offset+self.x+1, self.y+4))
+        self.tail_points["NE"] = ((offset+self.w+self.x+4, self.y-4),        (offset+self.w+self.x-5, self.y),        (offset+self.w+self.x-1, self.y+4))
+        self.tail_points["SW"] = ((offset+self.x-4, self.h+self.y+4),        (offset+self.x+5, self.h+self.y),        (offset+self.x+1, self.h+self.y-4))
+        self.tail_points["SE"] = ((offset+self.w+self.x+4, self.h+self.y+4), (offset+self.w+self.x-5, self.h+self.y), (offset+self.w+self.x-1, self.h+self.y-4))
+    
     def hide(self):
         self.tail.hide()
         self.rectangle_box.hide()
@@ -75,18 +78,15 @@ class MessageBox():
         self.find_width()
         self.rectangle_box.resize(w=self.w, h=self.h)
         self.move_to(self.x, self.y)
-        # if self.margin == "Right":
-        #     self.move_to(self.right_x, self.y)
-        # elif self.margin == "Left":
-        #     self.move_to(self.left_x, self.y)
 
     def move_to(self, x, y):
         x_move_to = x
         y_move_to = y
-        if self.margin == "Right":
-            x_move_to = self.x - self.w
         x_shift = x_move_to - self.x
         y_shift = y_move_to - self.y
+        if self.align == "Right":
+            x_move_to = x - self.w
+            x_shift = x_move_to - self.x + self.w
         self.textbox.move_to(x_move_to+10, y_move_to+9)
         self.rectangle_box.move_to(x_move_to, y_move_to)
         self.tail.move(x_shift, y_shift)
@@ -117,17 +117,6 @@ class MessageBox():
         else:
             self.w = int(len(self.text) * 7.5)
 
-    # def create(self):
-    #     self.create_tail()
-    #     self.rectangle_box = RoundRectangle(canvas=self.canvas, x=self.x, y=self.y, w=self.w, h=self.h, r=self.r, color=self.color)
-    #     self.textbox = self.canvas.create_text((self.x+10,self.y+9), text=self.text, fill=Color.white, font=("Inter-SemiBold", 11), anchor="w")
-
-    # def delete(self):
-    #     self.canvas.delete(self.navigator_laser)
-    #     self.canvas.delete(self.tail)
-    #     self.canvas.delete(self.navigator_top)
-    #     self.canvas.delete(self.navigator_left)
-    #     self.canvas.delete(self.navigator_right)
 
 class Error:
     code_1  = "Input for Point Mode cannot be empty"

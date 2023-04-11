@@ -61,8 +61,8 @@ class App(tk.Tk):
         self.navi = Navigator(canvas=self.canvas_field, grid=self.grid, grid_x=0, grid_y=0, grid_z=8, pick_tray=self.tray_pick, place_tray=self.tray_place)
         self.tray_pick.navi = self.navi
         
-        self.message_navi  = MessageBox(canvas=self.canvas_field, x=434, y=246,    text="Going Home", color=Color.blue, direction="NW", margin="Left")
-        self.message_laser = MessageBox(canvas=self.canvas_field, x=434, y=246+48, text="Gripper Pick", color=Color.blue, direction="SW", margin="Left")
+        self.message_navi  = MessageBox(canvas=self.canvas_field, x=434, y=246,    text="Going Home", color=Color.blue, direction="NW", align="Left")
+        self.message_laser = MessageBox(canvas=self.canvas_field, x=434, y=246+48, text="Gripper Pick", color=Color.blue, direction="SW", align="Left")
         self.message_laser.hide()
 
         self.text_x_pos = TextBox(canvas=self.canvas_field, x=82, y=418+5,  text="x-Axis Position", size=12, color=Color.darkgray)
@@ -81,7 +81,7 @@ class App(tk.Tk):
         self.text_y_acc_mm = TextBox(canvas=self.canvas_field, x=233, y=496+5,  text="mm/s", size=11, color=Color.darkgray)
         self.text_y_acc_2  = TextBox(canvas=self.canvas_field, x=250, y=494+5,  text="2", size=8, color=Color.darkgray)
 
-        self.message_error = MessageBox(canvas=self.canvas_field, x=810, y=490, text="Input x for Point Mode must be between -15.0 and 15.0", color=Color.red, direction="SE", margin="Right")
+        self.message_error = MessageBox(canvas=self.canvas_field, x=810, y=490, text="Input x for Point Mode must be between -15.0 and 15.0", color=Color.red, direction="SE", align="Right")
         self.message_error.hide()
 
         self.canvas_command = tk.Canvas(master=self, width=840, height=150, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge')

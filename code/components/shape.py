@@ -155,6 +155,13 @@ class Polygon():
     def show(self):
         self.canvas.itemconfigure(self.polygon, state='normal')
 
+    def recreate(self, points):
+        polygon_points = []
+        for i in range(len(points)):
+            polygon_points.append(points[i][0])
+            polygon_points.append(points[i][1])
+        self.canvas.coords(self.polygon, *polygon_points)
+
 
 class FreeOval():
     """
