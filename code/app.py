@@ -59,8 +59,8 @@ class App(tk.Tk):
         self.navi = Navigator(canvas=self.canvas_field, grid=self.grid, grid_x=-5, grid_y=10, grid_z=8, pick_tray=self.tray_pick, place_tray=self.tray_pick)
         self.tray_pick.navi = self.navi
         
-        self.message_navi  = MessageBox(canvas=self.canvas_field, x=510, y=200, text="Going Home", color=Color.gray, direction="NE")
-        self.message_laser = MessageBox(canvas=self.canvas_field, x=510, y=250, text="Laser On", color=Color.gray, direction="SE")
+        self.message_navi  = MessageBox(canvas=self.canvas_field, x=405, y=247, text="Going Home", color=Color.blue, direction="NW")
+        self.message_laser = MessageBox(canvas=self.canvas_field, x=405, y=295, text="Gripper Pick", color=Color.blue, direction="SW")
 
         self.text_x_pos = TextBox(canvas=self.canvas_field, x=82, y=418+5,  text="x-Axis Position", size=12, color=Color.darkgray)
         self.text_y_pos = TextBox(canvas=self.canvas_field, x=82, y=444+5,  text="y-Axis Position", size=12, color=Color.darkgray)
