@@ -79,7 +79,7 @@ class App(tk.Tk):
         self.text_y_acc_2  = TextBox(canvas=self.canvas_field, x=250, y=494+5,  text="2", size=8, color=Color.darkgray)
 
         self.message_error = MessageBox(canvas=self.canvas_field, x=810, y=490, text="Input x for Point Mode must be between -15.0 and 15.0", color=Color.red, direction="SE")
-        self.background_title.resize(100, 100)
+        self.message_error.hide()
 
         self.canvas_command = tk.Canvas(master=self, width=840, height=150, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge')
         self.canvas_command.pack(pady=0)
@@ -234,8 +234,11 @@ class App(tk.Tk):
                     print("Protocol - Laser Off")
                     self.navi.navigator_laser.hide()
                 print("Protocol - Gripper On")
+                self.message_error.change_text("Gripper Pick")
+                self.message_error.show()
             else:
                 print("Protocol - Gripper Off")
+                self.message_error.hide()
             self.toggle_gripper.pressed = False
 
         if self.toggle_gripper.active == False:

@@ -129,6 +129,8 @@ class RoundRectangle():
         self.oval_2.move_to(self.x+w-2*self.r, self.y)
         self.oval_3.move_to(self.x,            self.y+h-2*self.r)
         self.oval_4.move_to(self.x+w-2*self.r, self.y+h-2*self.r)
+        self.w = w
+        self.h = h
 
 
 class Polygon():
@@ -146,6 +148,12 @@ class Polygon():
 
     def clear(self):
         self.canvas.delete(self.polygon)
+
+    def hide(self):
+        self.canvas.itemconfigure(self.polygon, state='hidden')
+
+    def show(self):
+        self.canvas.itemconfigure(self.polygon, state='normal')
 
 
 class FreeOval():
