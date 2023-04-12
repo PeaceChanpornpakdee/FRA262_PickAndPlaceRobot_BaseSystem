@@ -13,6 +13,7 @@ from components.photo import Photo
 from components.entry import Entry
 
 from keyboard import Keyboard
+from protocol import Protocol
 
 class App(tk.Tk):
     def __init__(self):
@@ -36,6 +37,10 @@ class App(tk.Tk):
         pyglet.font.add_file('font/Inter-SemiBold.ttf')
         # Create Components
         self.create_components()
+        # Counting Time
+        self.time_ms = 0
+        # Prepare Protocol
+        self.protocol = Protocol(self)
 
     def task(self):
         # Handle Buttons
@@ -49,8 +54,15 @@ class App(tk.Tk):
         self.handle_press_run()
         # Validate Entry Value
         self.validate_entry()
+        # Perform Protocol Every 1 s
+        if self.time_ms >= 1000:
+            self.time_ms = 0
+            self.protocol.heartbeat()
+            self.protocol.routine()
+
         # Loop every 10 ms
         self.after(10, self.task) 
+        self.time_ms += 10
 
         # if self.homing or self.running:
         #     self.navi.move_to(10, 10)
