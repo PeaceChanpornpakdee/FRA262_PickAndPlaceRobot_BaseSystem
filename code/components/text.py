@@ -36,10 +36,11 @@ class TextBox():
 
 
 class MessageBox():
-    def __init__(self, canvas, x, y, text, color, direction, align):
+    def __init__(self, canvas, x, y, text, color, direction, align, size):
         self.canvas = canvas
         self.text = text
         self.align = align
+        self.size = size
         self.find_width()
         self.h = 20
         self.x = x
@@ -51,7 +52,7 @@ class MessageBox():
         self.generate_tail_points()
         self.tail = Polygon(canvas=self.canvas, points=self.tail_points[self.direction], color=self.color)
         self.rectangle_box = RoundRectangle(canvas=self.canvas, x=self.x, y=self.y, w=self.w, h=self.h, r=self.r, color=self.color)
-        self.textbox = TextBox(canvas=self.canvas, x=self.x+10, y=self.y+9, text=self.text, size=11, color=Color.white, anchor="w")
+        self.textbox = TextBox(canvas=self.canvas, x=self.x+10, y=self.y+9, text=self.text, size=self.size, color=Color.white, anchor="w")
         
     def generate_tail_points(self):
         offset = 0
@@ -105,15 +106,15 @@ class MessageBox():
         elif self.text == "Gripper Place":
             self.w = 95
         elif self.text == Error.code_1:
-            self.w = 228
+            self.w = 237
         elif self.text == Error.code_2:
-            self.w = 266
+            self.w = 275
         elif self.text == Error.code_3:
-            self.w = 260
+            self.w = 271
         elif self.text == Error.code_4x:
-            self.w = 321
+            self.w = 336
         elif self.text == Error.code_4y:
-            self.w = 327
+            self.w = 340
         else:
             self.w = int(len(self.text) * 7.5)
 
