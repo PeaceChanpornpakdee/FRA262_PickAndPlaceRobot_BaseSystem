@@ -58,6 +58,7 @@ class MessageBox():
         offset = 0
         if self.align == "Right":
             offset = -self.w
+        self.tail_points["C"]  = ((offset+self.x, self.y), (offset+self.x, self.y), (offset+self.x, self.y))
         self.tail_points["NW"] = ((offset+self.x-4, self.y-4),               (offset+self.x+5, self.y),               (offset+self.x+1, self.y+4))
         self.tail_points["NE"] = ((offset+self.w+self.x+4, self.y-4),        (offset+self.w+self.x-5, self.y),        (offset+self.w+self.x-1, self.y+4))
         self.tail_points["SW"] = ((offset+self.x-4, self.h+self.y+4),        (offset+self.x+5, self.h+self.y),        (offset+self.x+1, self.h+self.y-4))

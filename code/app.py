@@ -41,6 +41,7 @@ class App(tk.Tk):
         self.time_ms = 0
         # Prepare Protocol
         self.protocol = Protocol(self)
+        self.connection = True
 
     def task(self):
         # Handle Buttons
@@ -57,8 +58,12 @@ class App(tk.Tk):
         # Perform Protocol Every 1 s
         if self.time_ms >= 1000:
             self.time_ms = 0
-            self.protocol.heartbeat()
+            self.connection = self.protocol.heartbeat()
             self.protocol.routine()
+
+        # If Connection is Disconnected
+        if not self.connection:
+            self.handle_disconnected()
 
         # Loop every 10 ms
         self.after(10, self.task) 
@@ -118,6 +123,9 @@ class App(tk.Tk):
         # Error Message Box
         self.message_error = MessageBox(canvas=self.canvas_field, x=810, y=490, text="Input x for Point Mode must be between -15.0 and 15.0", color=Color.red, direction="SE", align="Right", size=12)
         self.message_error.hide()
+        # Connection Message Box
+        self.message_connection = MessageBox(canvas=self.canvas_field, x=334, y=45, text="Connection Disconnected", color=Color.red, direction="C", align="Right", size=12)
+        self.message_connection.hide()
 
         # Command Canvas (Lower)
         self.canvas_command = tk.Canvas(master=self, width=840, height=150, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge')
@@ -182,7 +190,7 @@ class App(tk.Tk):
             keyboard.key_bind(self)
         
     def mouse_position(self, event):
-        if self.operation_mode == "Point":
+        if self.operation_mode == "Point" and self.connection:
             # Convert Pixel to Grid
             grid_x, grid_y = self.grid.map_2D_to_3D(event.x, event.y)
             # Reduce to 1 decimal point
@@ -361,6 +369,15 @@ class App(tk.Tk):
             self.press_run.deactivate()
             self.press_home.deactivate()
             self.press_run.pressed = False
+
+    def handle_disconnected(self):
+        self.message_connection.show()
+        self.press_pick.deactivate()
+        self.press_place.deactivate()
+        self.entry_x.disable()
+        self.entry_y.disable()
+        self.press_run.deactivate()
+        self.press_home.deactivate()
 
 
 if __name__ == "__main__":

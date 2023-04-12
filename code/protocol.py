@@ -7,8 +7,11 @@ class Protocol():
 
     def heartbeat(self):
         print("Read - Heartbeat Protocol")
-        if "Ya" == "Ya":
+        if "Ya" != "Ya":
             print("Write - Heartbeat Protocol = Hi")
+            return True
+        else:
+            return False
 
     def routine(self):
         print("""Read
