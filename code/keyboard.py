@@ -54,6 +54,8 @@ class Keyboard():
         self.app.tray_pick.orientation -= 1
     def key_e(self, event):
         self.app.tray_pick.orientation += 1
+    def key_z(self, event):
+        self.app.new_connection = False
 
     def key_bind(self, app):
         app.bind("<KeyPress-Left>", self.key_left)
@@ -66,3 +68,4 @@ class Keyboard():
         app.bind("<KeyPress-s>", self.key_s)
         app.bind("<KeyPress-q>", self.key_q)
         app.bind("<KeyPress-e>", self.key_e)
+        app.bind("<KeyPress-z>", self.key_z)

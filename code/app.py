@@ -42,6 +42,7 @@ class App(tk.Tk):
         # Prepare Protocol
         self.protocol = Protocol(self)
         self.connection = True
+        self.new_connection = True
 
     def task(self):
         # Handle Buttons
@@ -58,23 +59,25 @@ class App(tk.Tk):
         # Perform Protocol Every 1 s
         if self.time_ms >= 1000:
             self.time_ms = 0
-            self.connection = self.protocol.heartbeat()
+            # self.connection = self.protocol.heartbeat()
+            self.new_connection = self.protocol.heartbeat()
             self.protocol.routine()
 
-        # If Connection is Disconnected
-        if not self.connection:
-            self.handle_disconnected()
-
-        # Loop every 10 ms
-        self.after(10, self.task) 
-        self.time_ms += 10
+        # If Connection is Changed 
+        if self.connection != self.new_connection:
+            # Update Connection Value
+            self.connection = self.new_connection
+            if not self.connection: # If Disconnected
+                self.handle_disconnected()
+            else: # If Reconnected
+                self.handle_connected()
 
         # if self.homing or self.running:
         #     self.navi.move_to(10, 10)
 
-        #Remove in the Future
-        # self.tray_pick.clear_tray()
-        # self.tray_pick.create_tray()
+        # Loop every 10 ms
+        self.after(10, self.task) 
+        self.time_ms += 10
 
     def create_components(self):
         # Field Canvas (Upper)
@@ -381,6 +384,26 @@ class App(tk.Tk):
         self.entry_y.disable()
         self.press_run.deactivate()
         self.press_home.deactivate()
+        self.text_x_pos_num.deactivate(self.text_x_pos_num.text, Color.lightgray)
+        self.text_y_pos_num.deactivate(self.text_y_pos_num.text, Color.lightgray)
+        self.text_y_spd_num.deactivate(self.text_y_spd_num.text, Color.lightgray)
+        self.text_y_acc_num.deactivate(self.text_y_acc_num.text, Color.lightgray)
+        
+    def handle_connected(self):
+        self.message_connection.hide()
+        self.toggle_laser.activate()
+        self.toggle_gripper.activate()
+        self.press_arrow.activate()
+        self.press_pick.activate()
+        self.press_place.activate()
+        self.entry_x.enable()
+        self.entry_y.enable()
+        self.press_run.activate()
+        self.press_home.activate()
+        self.text_x_pos_num.activate(self.text_x_pos_num.text, Color.blue)
+        self.text_y_pos_num.activate(self.text_y_pos_num.text, Color.blue)
+        self.text_y_spd_num.activate(self.text_y_spd_num.text, Color.blue)
+        self.text_y_acc_num.activate(self.text_y_acc_num.text, Color.blue)
 
 
 if __name__ == "__main__":
