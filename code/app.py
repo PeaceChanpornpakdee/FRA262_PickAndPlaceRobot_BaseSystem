@@ -287,7 +287,7 @@ class App(tk.Tk):
             self.press_arrow.pressed = False
 
     def handle_radio_operation(self):
-        #Click Point Mode
+        # Click Point Mode
         if self.operation_mode == "Tray" and self.radio_point.active:
             self.radio_tray.switch()
             self.operation_mode = "Point"
@@ -302,7 +302,7 @@ class App(tk.Tk):
             self.tray_pick.clear_tray()
             self.tray_place.clear_tray()
             self.target.show()
-        #Click Tray Mode
+        # Click Tray Mode
         elif self.operation_mode == "Point" and self.radio_tray.active:
             self.radio_point.switch()
             self.operation_mode = "Tray"
