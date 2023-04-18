@@ -61,7 +61,7 @@ class App(tk.Tk):
             self.time_ms = 0
             # self.connection = self.protocol.heartbeat()
             self.new_connection = self.protocol.heartbeat()
-            self.protocol.routine()
+            # self.protocol.routine()
 
         # If Connection is Changed 
         if self.connection != self.new_connection:
@@ -294,21 +294,22 @@ class App(tk.Tk):
 
     def handle_press_arrow(self):
         if self.press_arrow.pressed:
-            if self.direction_arrow == "pick":
-                print("Protocol - Gripper Pick")
-                self.press_arrow.photo_arrow_pick.hide()
-                self.press_arrow.photo_arrow_place.show()
-                self.direction_arrow = "place"
-                self.press_arrow.change_text("     Place")
-                self.message_laser.change_text("Gripper Pick")
-            elif self.direction_arrow == "place":
-                print("Protocol - Gripper Place")
-                self.press_arrow.photo_arrow_place.hide()
-                self.press_arrow.photo_arrow_pick.show()
-                self.direction_arrow = "pick"
-                self.press_arrow.change_text("     Pick")
-                self.message_laser.change_text("Gripper Place")
-            self.message_laser.show()
+            if self.toggle_gripper.on: 
+                if self.direction_arrow == "pick":
+                    print("Protocol - Gripper Pick")
+                    self.press_arrow.photo_arrow_pick.hide()
+                    self.press_arrow.photo_arrow_place.show()
+                    self.direction_arrow = "place"
+                    self.press_arrow.change_text("     Place")
+                    self.message_laser.change_text("Gripper Pick")
+                elif self.direction_arrow == "place":
+                    print("Protocol - Gripper Place")
+                    self.press_arrow.photo_arrow_place.hide()
+                    self.press_arrow.photo_arrow_pick.show()
+                    self.direction_arrow = "pick"
+                    self.press_arrow.change_text("     Pick")
+                    self.message_laser.change_text("Gripper Place")
+                self.message_laser.show()
             self.press_arrow.pressed = False
 
     def handle_radio_operation(self):
