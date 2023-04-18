@@ -211,9 +211,13 @@ class App(tk.Tk):
         self.focus()
         # Move Target according to Entry's value if value is normal 
         if self.validate_entry() == "Normal":
-            # Convert String (Entry's value) to Float
-            self.point_target_x = float(self.entry_x_value)
-            self.point_target_y = float(self.entry_y_value)
+            # Convert String (Entry's value) to Float and Reduce to 1 decimal point
+            self.point_target_x = int( float(self.entry_x_value)*10 ) / 10
+            self.point_target_y = int( float(self.entry_y_value)*10 ) / 10
+            # Set Entry Text
+            self.entry_x.set_text(str(self.point_target_x))
+            self.entry_y.set_text(str(self.point_target_y))
+            # Move Target
             self.target.move_to(self.point_target_x, self.point_target_y)
 
     def validate_entry(self):
@@ -287,7 +291,7 @@ class App(tk.Tk):
                 print("Protocol - Gripper Off")
             self.toggle_gripper.pressed = False
 
-        if self.toggle_gripper.active == False:
+        if self.toggle_gripper.on == False:
             self.press_arrow.deactivate()
         else:
             self.press_arrow.activate()
@@ -349,6 +353,7 @@ class App(tk.Tk):
     def handle_press_tray_pick(self):
         if self.press_pick.pressed:
             print("Protocol - Set Pick Tray")
+            self.tray_pick.clear_tray()
             self.tray_pick.create_tray()
             self.show_tray_pick = True
             self.press_pick.pressed = False
@@ -356,6 +361,7 @@ class App(tk.Tk):
     def handle_press_tray_place(self):
         if self.press_place.pressed:
             print("Protocol - Set Place Tray")
+            self.tray_place.clear_tray()
             self.tray_place.create_tray()
             self.show_tray_place = True
             self.press_place.pressed = False
