@@ -201,7 +201,6 @@ class App(tk.Tk):
             # Reduce to 1 decimal point
             self.point_target_x = round(float(grid_x)+0.0000001, 1)
             self.point_target_y = round(float(grid_y)+0.0000001, 1)
-            print(self.point_target_x, self.point_target_y)
             # Move Target to Desired Grid Position
             self.target.move_to(self.point_target_x, self.point_target_y)
             # Set Text in Entry
@@ -215,7 +214,6 @@ class App(tk.Tk):
             # Convert String (Entry's value) to Float and Reduce to 1 decimal point
             self.point_target_x = round(float(self.entry_x_value)+0.0000001, 1)
             self.point_target_y = round(float(self.entry_y_value)+0.0000001, 1)
-            print(self.point_target_x, self.point_target_y)
             # Set Entry Text
             self.entry_x.set_text(str(self.point_target_x))
             self.entry_y.set_text(str(self.point_target_y))
@@ -293,10 +291,11 @@ class App(tk.Tk):
                 print("Protocol - Gripper Off")
             self.toggle_gripper.pressed = False
 
-        if self.toggle_gripper.on == False:
-            self.press_arrow.deactivate()
-        else:
-            self.press_arrow.activate()
+        if self.connection:
+            if self.toggle_gripper.on == False:
+                self.press_arrow.deactivate()
+            else:
+                self.press_arrow.activate()
 
     def handle_press_arrow(self):
         if self.press_arrow.pressed:
