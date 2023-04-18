@@ -199,8 +199,9 @@ class App(tk.Tk):
             # Convert Pixel to Grid
             grid_x, grid_y = self.grid.map_2D_to_3D(event.x, event.y)
             # Reduce to 1 decimal point
-            self.point_target_x = int(grid_x*10) / 10
-            self.point_target_y = int(grid_y*10) / 10
+            self.point_target_x = round(float(grid_x)+0.0000001, 1)
+            self.point_target_y = round(float(grid_y)+0.0000001, 1)
+            print(self.point_target_x, self.point_target_y)
             # Move Target to Desired Grid Position
             self.target.move_to(self.point_target_x, self.point_target_y)
             # Set Text in Entry
@@ -212,8 +213,9 @@ class App(tk.Tk):
         # Move Target according to Entry's value if value is normal 
         if self.validate_entry() == "Normal":
             # Convert String (Entry's value) to Float and Reduce to 1 decimal point
-            self.point_target_x = int( float(self.entry_x_value)*10 ) / 10
-            self.point_target_y = int( float(self.entry_y_value)*10 ) / 10
+            self.point_target_x = round(float(self.entry_x_value)+0.0000001, 1)
+            self.point_target_y = round(float(self.entry_y_value)+0.0000001, 1)
+            print(self.point_target_x, self.point_target_y)
             # Set Entry Text
             self.entry_x.set_text(str(self.point_target_x))
             self.entry_y.set_text(str(self.point_target_y))
