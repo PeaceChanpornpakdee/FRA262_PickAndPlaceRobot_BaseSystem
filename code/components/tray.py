@@ -17,6 +17,7 @@ class Tray():
         self.tray_height = 5
         self.tray_thick = 0.5
         self.create_tray()
+        self.clear_tray()
 
     def create_tray(self):
         tray_points = self.map_tray_points()

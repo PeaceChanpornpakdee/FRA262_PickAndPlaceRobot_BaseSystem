@@ -98,6 +98,8 @@ class App(tk.Tk):
         # Tray
         self.tray_pick = Tray(canvas=self.canvas_field, grid=self.grid, origin_x=-15, origin_y=30, orientation=0, navi=None) 
         self.tray_place = Tray(canvas=self.canvas_field, grid=self.grid, origin_x=9, origin_y=-35, orientation=0, navi=None) 
+        self.show_tray_pick  = False
+        self.show_tray_place = False
         # Target
         self.target =  Target(canvas=self.canvas_field, grid=self.grid, grid_x=0, grid_y=0)
         self.target.hide()
@@ -338,19 +340,23 @@ class App(tk.Tk):
             self.text_mm_x_entry.hide()
             self.text_mm_y_entry.hide()
             self.target.hide()
-            self.tray_pick.create_tray()
-            self.tray_place.create_tray()
+            if self.show_tray_pick:
+                self.tray_pick.create_tray()
+            if self.show_tray_place:
+                self.tray_place.create_tray()
 
     def handle_press_tray_pick(self):
         if self.press_pick.pressed:
             print("Protocol - Set Pick Tray")
             self.tray_pick.create_tray()
+            self.show_tray_pick = True
             self.press_pick.pressed = False
 
     def handle_press_tray_place(self):
         if self.press_place.pressed:
             print("Protocol - Set Place Tray")
             self.tray_place.create_tray()
+            self.show_tray_place = True
             self.press_place.pressed = False
 
     def handle_press_home(self):
