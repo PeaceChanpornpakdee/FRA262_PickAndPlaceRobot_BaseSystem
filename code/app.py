@@ -196,16 +196,17 @@ class App(tk.Tk):
         
     def mouse_position(self, event):
         if self.operation_mode == "Point" and self.connection:
-            # Convert Pixel to Grid
-            grid_x, grid_y = self.grid.map_2D_to_3D(event.x, event.y)
-            # Reduce to 1 decimal point
-            self.point_target_x = round(float(grid_x)+0.0000001, 1)
-            self.point_target_y = round(float(grid_y)+0.0000001, 1)
-            # Move Target to Desired Grid Position
-            self.target.move_to(self.point_target_x, self.point_target_y)
-            # Set Text in Entry
-            self.entry_x.set_text(self.point_target_x)
-            self.entry_y.set_text(self.point_target_y)
+            if not self.running and not self.homing:
+                # Convert Pixel to Grid
+                grid_x, grid_y = self.grid.map_2D_to_3D(event.x, event.y)
+                # Reduce to 1 decimal point
+                self.point_target_x = round(float(grid_x)+0.0000001, 1)
+                self.point_target_y = round(float(grid_y)+0.0000001, 1)
+                # Move Target to Desired Grid Position
+                self.target.move_to(self.point_target_x, self.point_target_y)
+                # Set Text in Entry
+                self.entry_x.set_text(self.point_target_x)
+                self.entry_y.set_text(self.point_target_y)
 
     def out_entry(self, event):
         if self.operation_mode == "Point":
