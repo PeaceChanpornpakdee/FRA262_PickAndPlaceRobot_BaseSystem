@@ -2,7 +2,7 @@ class Color:
     white       = "#FFFFFF"
     whitegray   = "#EAEAEA"
     lightgray   = "#C2BFBF"
-    middlegray  = "#A4A4A4"
+    middlegray  = "#AAAAAA"
     gray        = "#8C8C8C"
     darkgray    = "#3C4048"
     lightblue   = "#0AD1DA"

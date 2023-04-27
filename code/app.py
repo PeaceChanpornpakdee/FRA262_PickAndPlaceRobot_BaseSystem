@@ -147,8 +147,8 @@ class App(tk.Tk):
         self.text_laser     = TextBox(canvas=self.canvas_command, x=90, y=62,  text="Laser", size=13, color=Color.darkgray)
         self.text_gripper   = TextBox(canvas=self.canvas_command, x=85, y=96, text="Gripper", size=13, color=Color.darkgray)
             # Toggle and Press Button
-        self.toggle_laser   = ToggleButton(canvas=self.canvas_command, x=115, y=52, w=36, h=20, on_color=Color.blue, on_text="On", off_color=Color.lightgray, off_text="Off", text_size=12, on_default=False)
-        self.toggle_gripper = ToggleButton(canvas=self.canvas_command, x=115, y=86, w=36, h=20, on_color=Color.blue, on_text="On", off_color=Color.lightgray, off_text="Off", text_size=12, on_default=False)
+        self.toggle_laser   = ToggleButton(canvas=self.canvas_command, x=115, y=52, w=36, h=20, on_color=Color.blue, on_text="On", off_color=Color.gray, off_text="Off", text_size=12, on_default=False)
+        self.toggle_gripper = ToggleButton(canvas=self.canvas_command, x=115, y=86, w=36, h=20, on_color=Color.blue, on_text="On", off_color=Color.gray, off_text="Off", text_size=12, on_default=False)
         self.direction_arrow = "pick"
         self.press_arrow    = PressButton(canvas=self.canvas_command, x=115, y=113, w=70, h=22, r=11, active_color=Color.gray, inactive_color=Color.lightgray, text="     Pick", text_size=12, active_default=False, image="arrow")
         # Operation Section

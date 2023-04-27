@@ -25,7 +25,7 @@ class Tray():
         tray_points = self.map_tray_points()
         self.tray_bottom = Polygon(canvas=self.canvas, points=tray_points["bottom_tray"], color=Color.gray)
         self.tray_top    = Polygon(canvas=self.canvas, points=tray_points["top_tray"],    color="#C2C2C2")
-        self.tray_left   = Polygon(canvas=self.canvas, points=tray_points["left_wall"],   color=Color.middlegray)
+        self.tray_left   = Polygon(canvas=self.canvas, points=tray_points["left_wall"],   color="#A4A4A4")
         self.tray_right  = Polygon(canvas=self.canvas, points=tray_points["right_wall"],  color=Color.gray)
         self.tray_holes  = []
         for row in range(3):
