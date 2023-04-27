@@ -149,8 +149,8 @@ class App(tk.Tk):
         self.text_opera  = TextBox(canvas=self.canvas_command, x=425, y=25, text="Operation", size=16, color=Color.darkgray)
         self.operation_mode = "Tray"
             # Mode Radio Button
-        self.radio_tray  = RadioButton(canvas=self.canvas_command, x=330, y=50, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Tray Mode  ",  text_size=12, active_default=True)
-        self.radio_point = RadioButton(canvas=self.canvas_command, x=440, y=50, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Point Mode",   text_size=12, active_default=False)
+        self.radio_tray  = RadioButton(canvas=self.canvas_command, x=330, y=50, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Tray Mode  ",  text_size=12, on_default=True)
+        self.radio_point = RadioButton(canvas=self.canvas_command, x=440, y=50, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Point Mode",   text_size=12, on_default=False)
             # Set Tray Press Button
         self.press_pick  = PressButton(canvas=self.canvas_command, x=330, y=82,  w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Pick Tray", text_size=12, active_default=True)
         self.press_place = PressButton(canvas=self.canvas_command, x=330, y=112, w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Place Tray", text_size=12, active_default=True)
@@ -345,8 +345,8 @@ class App(tk.Tk):
 
     def handle_radio_operation(self):
         # Click Point Mode
-        if self.operation_mode == "Tray" and self.radio_point.active:
-            self.radio_tray.deactivate()
+        if self.operation_mode == "Tray" and self.radio_point.on:
+            self.radio_tray.turn_off()
             self.operation_mode = "Point"
             self.press_pick.hide()
             self.press_place.hide()
@@ -360,8 +360,8 @@ class App(tk.Tk):
             self.tray_place.clear_tray()
             self.target.show()
         # Click Tray Mode
-        elif self.operation_mode == "Point" and self.radio_tray.active:
-            self.radio_point.deactivate()
+        elif self.operation_mode == "Point" and self.radio_tray.on:
+            self.radio_point.turn_off()
             self.operation_mode = "Tray"
             self.press_pick.show()
             self.press_place.show()
@@ -423,6 +423,8 @@ class App(tk.Tk):
                 self.handle_toggle_gripper()
             self.toggle_laser.deactivate()
             self.toggle_gripper.deactivate()
+            self.radio_tray.deactivate()
+            self.radio_point.deactivate()
             self.press_arrow.deactivate()
             self.press_pick.deactivate()
             self.press_place.deactivate()

@@ -68,7 +68,7 @@ class RadioButton(Button):
     """
     RadioButton class
     """
-    def __init__(self, canvas, x, y, r, active_color, inactive_color, text, text_size, active_default):
+    def __init__(self, canvas, x, y, r, active_color, inactive_color, text, text_size, on_default):
         self.canvas = canvas
         self.x = x
         self.y = y
@@ -77,30 +77,37 @@ class RadioButton(Button):
         self.inactive_color = inactive_color
         self.text = text
         self.text_size = text_size
-        self.active = active_default
+        self.active = True
+        self.on = on_default
         self.outer_oval = Oval(self.canvas, x, y, r, fill_color="", outline_color=self.active_color)
         self.inner_oval = Oval(self.canvas, x+4, y+4, r-8, fill_color=self.active_color, outline_color="")
         self.textbox = TextBox(self.canvas, x+55, y+r/2, self.text, self.text_size, self.active_color)
         self.click_area = self.create_click_area(85, r)
         self.canvas.tag_bind(self.click_area.rect, "<ButtonRelease-1>", self.clicked)
-        if self.active == False:
-            self.deactivate()
+        if self.on == False:
+            self.turn_off()
 
-    def activate(self):
-        self.active = True
+    def turn_on(self):
+        self.on = True
         self.canvas.itemconfigure(self.outer_oval.oval, outline=self.active_color)
         self.inner_oval.show()
         self.textbox.activate(self.text, self.active_color)
     
-    def deactivate(self):
-        self.active = False
+    def turn_off(self):
+        self.on = False
         self.canvas.itemconfigure(self.outer_oval.oval, outline=self.inactive_color)
         self.inner_oval.hide()
         self.textbox.deactivate(self.text, self.inactive_color)
 
     def clicked(self, event):
-        if not self.active:
-            self.activate()
+        if self.active and not self.on:
+            self.turn_on()
+
+    def activate(self):
+        self.active = True
+    
+    def deactivate(self):
+        self.active = False
 
 
 class ToggleButton(Button):
