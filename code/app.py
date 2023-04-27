@@ -260,14 +260,16 @@ class App(tk.Tk):
                 self.press_run.deactivate()
             else:
                 self.message_error.hide()
-                self.press_run.activate()
+                if not self.running and not self.homing:
+                    self.press_run.activate()
             # Return Validation Result
             return validate_result
 
         else:
             self.message_error.hide()
             if self.show_tray_pick and self.show_tray_place:
-                self.press_run.activate()
+                if not self.running and not self.homing:
+                    self.press_run.activate()
             else:
                 self.press_run.deactivate()
     
@@ -333,12 +335,11 @@ class App(tk.Tk):
                 self.turn_off_gripper()
             self.toggle_gripper.pressed = False
 
-        if self.connection:
-            if not self.running and not self.homing:
-                if self.toggle_gripper.on == False:
-                    self.press_arrow.deactivate()
-                else:
-                    self.press_arrow.activate()
+        if self.connection and not self.running:
+            if self.toggle_gripper.on == False:
+                self.press_arrow.deactivate()
+            else:
+                self.press_arrow.activate()
 
     def handle_press_arrow(self):
         if self.press_arrow.pressed:
@@ -424,6 +425,15 @@ class App(tk.Tk):
         if self.press_home.pressed:
             print("Protocol - Home")
             self.homing = True
+            self.radio_tray.deactivate()
+            self.radio_point.deactivate()
+            self.press_arrow.deactivate()
+            self.press_pick.deactivate()
+            self.press_place.deactivate()
+            self.entry_x.disable()
+            self.entry_y.disable()
+            self.press_run.deactivate()
+            self.press_home.deactivate()
             self.press_home.pressed = False
 
     def handle_press_run(self):
