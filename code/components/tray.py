@@ -6,10 +6,12 @@ class Tray():
     """
     Tray class
     """
-    def __init__(self, canvas, grid, origin_x, origin_y, orientation, navi):
+    def __init__(self, canvas, grid, origin_x, origin_y, orientation):
         self.canvas = canvas
         self.grid = grid
-        self.navi = navi
+        self.navi = None
+        self.message_navi = None
+        self.message_laser = None
         self.origin_x = origin_x
         self.origin_y = origin_y
         self.orientation = orientation
@@ -38,6 +40,22 @@ class Tray():
             self.canvas.tag_raise(self.navi.navigator_right.polygon, "all")
             self.canvas.tag_raise(self.navi.navigator_top.polygon, "all")
             self.canvas.tag_raise(self.navi.navigator_oval.free_oval, "all")
+            self.canvas.tag_raise(self.message_navi.tail.polygon, "all")
+            self.canvas.tag_raise(self.message_navi.rectangle_box.oval_1.oval, "all")
+            self.canvas.tag_raise(self.message_navi.rectangle_box.oval_2.oval, "all")
+            self.canvas.tag_raise(self.message_navi.rectangle_box.oval_3.oval, "all")
+            self.canvas.tag_raise(self.message_navi.rectangle_box.oval_4.oval, "all")
+            self.canvas.tag_raise(self.message_navi.rectangle_box.rec_1.rect, "all")
+            self.canvas.tag_raise(self.message_navi.rectangle_box.rec_2.rect, "all")
+            self.canvas.tag_raise(self.message_navi.textbox.textbox, "all")
+            self.canvas.tag_raise(self.message_laser.tail.polygon, "all")
+            self.canvas.tag_raise(self.message_laser.rectangle_box.oval_1.oval, "all")
+            self.canvas.tag_raise(self.message_laser.rectangle_box.oval_2.oval, "all")
+            self.canvas.tag_raise(self.message_laser.rectangle_box.oval_3.oval, "all")
+            self.canvas.tag_raise(self.message_laser.rectangle_box.oval_4.oval, "all")
+            self.canvas.tag_raise(self.message_laser.rectangle_box.rec_1.rect, "all")
+            self.canvas.tag_raise(self.message_laser.rectangle_box.rec_2.rect, "all")
+            self.canvas.tag_raise(self.message_laser.textbox.textbox, "all")
 
     def clear_tray(self):
         self.tray_top.clear()

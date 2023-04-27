@@ -96,8 +96,8 @@ class App(tk.Tk):
         self.text_negative_y = TextBox(canvas=self.canvas_field, x=713, y=467, text="-y", size=15, color=Color.lightgray)
         self.text_positive_y = TextBox(canvas=self.canvas_field, x=127, y=170, text="+y", size=15, color=Color.lightgray)
         # Tray
-        self.tray_pick = Tray(canvas=self.canvas_field, grid=self.grid, origin_x=-15, origin_y=30, orientation=0, navi=None) 
-        self.tray_place = Tray(canvas=self.canvas_field, grid=self.grid, origin_x=9, origin_y=-35, orientation=0, navi=None) 
+        self.tray_pick = Tray(canvas=self.canvas_field, grid=self.grid, origin_x=-15, origin_y=30, orientation=0) 
+        self.tray_place = Tray(canvas=self.canvas_field, grid=self.grid, origin_x=9, origin_y=-35, orientation=0) 
         self.show_tray_pick  = False
         self.show_tray_place = False
         # Target
@@ -107,10 +107,15 @@ class App(tk.Tk):
         self.point_target_y = 0
         # Navigator
         self.navi = Navigator(canvas=self.canvas_field, grid=self.grid, grid_x=0, grid_y=0, grid_z=8, pick_tray=self.tray_pick, place_tray=self.tray_place)
-        self.tray_pick.navi = self.navi
         self.message_navi  = MessageBox(canvas=self.canvas_field, x=434, y=246,    text="Going Home", color=Color.blue, direction="NW", align="Left", size=11)
         self.message_laser = MessageBox(canvas=self.canvas_field, x=434, y=246+48, text="Gripper Pick", color=Color.blue, direction="SW", align="Left", size=11)
         self.message_laser.hide()
+        self.tray_pick.navi = self.navi
+        self.tray_pick.message_navi = self.message_navi
+        self.tray_pick.message_laser = self.message_laser
+        self.tray_place.navi = self.navi
+        self.tray_place.message_navi = self.message_navi
+        self.tray_place.message_laser = self.message_laser
         # Status Text
         self.text_x_pos = TextBox(canvas=self.canvas_field, x=82, y=418+5,  text="x-Axis Position", size=12, color=Color.darkgray)
         self.text_y_pos = TextBox(canvas=self.canvas_field, x=82, y=444+5,  text="y-Axis Position", size=12, color=Color.darkgray)
