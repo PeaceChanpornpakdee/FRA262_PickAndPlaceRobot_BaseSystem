@@ -208,45 +208,50 @@ class App(tk.Tk):
             self.entry_y.set_text(self.point_target_y)
 
     def out_entry(self, event):
-        self.focus()
-        # Move Target according to Entry's value if value is normal 
-        if self.validate_entry() == "Normal":
-            # Convert String (Entry's value) to Float and Reduce to 1 decimal point
-            self.point_target_x = round(float(self.entry_x_value)+0.0000001, 1)
-            self.point_target_y = round(float(self.entry_y_value)+0.0000001, 1)
-            # Set Entry Text
-            self.entry_x.set_text(str(self.point_target_x))
-            self.entry_y.set_text(str(self.point_target_y))
-            # Move Target
-            self.target.move_to(self.point_target_x, self.point_target_y)
+        if self.operation_mode == "Point":
+            self.focus()
+            # Move Target according to Entry's value if value is normal 
+            if self.validate_entry() == "Normal":
+                # Convert String (Entry's value) to Float and Reduce to 1 decimal point
+                self.point_target_x = round(float(self.entry_x_value)+0.0000001, 1)
+                self.point_target_y = round(float(self.entry_y_value)+0.0000001, 1)
+                # Set Entry Text
+                self.entry_x.set_text(str(self.point_target_x))
+                self.entry_y.set_text(str(self.point_target_y))
+                # Move Target
+                self.target.move_to(self.point_target_x, self.point_target_y)
 
     def validate_entry(self):
-        # Get value from Entry
-        self.entry_x_value = self.entry_x.get_value()
-        self.entry_y_value = self.entry_y.get_value()
-        # Validate Entry's Value
-        validate_x_result = self.entry_x.validate(self.entry_x_value, 15)
-        validate_y_result = self.entry_y.validate(self.entry_y_value, 35)
-        # Interpret Validation Result
-        validate_result = "Normal"
-        if validate_y_result != 0:
-            self.entry_y.error() # Entry Error (Red Text)
-            validate_result = self.interpret_validate(validate_y_result, "y")
-        else:
-            self.entry_y.normal()
-        if validate_x_result != 0:
-            self.entry_x.error() # Entry Error (Red Text)
-            validate_result = self.interpret_validate(validate_x_result, "x")
-        else:
-            self.entry_x.normal() # Entry Normal (Blue Text)
-        # Display Error Message if Entry Error
-        if validate_result != "Normal":
-            self.message_error.change_text(validate_result)
-            self.message_error.show()
+        if self.operation_mode == "Point":
+            # Get value from Entry
+            self.entry_x_value = self.entry_x.get_value()
+            self.entry_y_value = self.entry_y.get_value()
+            # Validate Entry's Value
+            validate_x_result = self.entry_x.validate(self.entry_x_value, 15)
+            validate_y_result = self.entry_y.validate(self.entry_y_value, 35)
+            # Interpret Validation Result
+            validate_result = "Normal"
+            if validate_y_result != 0:
+                self.entry_y.error() # Entry Error (Red Text)
+                validate_result = self.interpret_validate(validate_y_result, "y")
+            else:
+                self.entry_y.normal()
+            if validate_x_result != 0:
+                self.entry_x.error() # Entry Error (Red Text)
+                validate_result = self.interpret_validate(validate_x_result, "x")
+            else:
+                self.entry_x.normal() # Entry Normal (Blue Text)
+            # Display Error Message if Entry Error
+            if validate_result != "Normal":
+                self.message_error.change_text(validate_result)
+                self.message_error.show()
+            else:
+                self.message_error.hide()
+            # Return Validation Result
+            return validate_result
+
         else:
             self.message_error.hide()
-        # Return Validation Result
-        return validate_result
     
     def interpret_validate(self, validate_result, entry):
         # Convert Number Code from Validation Result to Error Text
@@ -261,34 +266,53 @@ class App(tk.Tk):
                 return Error.code_4x
             if entry == "y":
                 return Error.code_4y
-        
+
+    def turn_on_laser(self):
+        print("Protocol - Laser On")
+        self.toggle_laser.turn_on()
+        self.navi.navigator_laser.show()
+    
+    def turn_off_laser(self):
+        print("Protocol - Laser Off")
+        self.toggle_laser.turn_off()
+        self.navi.navigator_laser.hide()
+
+    def turn_on_gripper(self):
+        print("Protocol - Gripper On")
+        self.toggle_gripper.turn_on()
+        self.message_laser.show()
+
+    def turn_off_gripper(self):
+        print("Protocol - Gripper Off")
+        self.toggle_gripper.turn_off()
+        self.message_laser.hide()
+
     def handle_toggle_laser(self):
         if self.toggle_laser.pressed:
-            self.toggle_laser.switch()
-            if self.toggle_laser.on:
+            print("handle_toggle_laser")
+            # Turn Laser On
+            if not self.toggle_laser.on:
+                # Turn Gripper Off First
                 if self.toggle_gripper.on:
-                    self.toggle_gripper.switch()
-                    self.message_laser.hide()
-                    print("Protocol - Gripper Off")
-                print("Protocol - Laser On")
-                self.navi.navigator_laser.show()
+                    self.turn_off_gripper()
+                self.turn_on_laser()
+            # Turn Laser Off
             else:
-                print("Protocol - Laser Off")
-                self.navi.navigator_laser.hide()
+                self.turn_off_laser()
             self.toggle_laser.pressed = False
 
     def handle_toggle_gripper(self):
         if self.toggle_gripper.pressed:
-            self.toggle_gripper.switch()
-            if self.toggle_gripper.on:
+            print("handle_toggle_gripper")
+            # Turn Gripper On
+            if not self.toggle_gripper.on:
+                # Turn Laser Off First
                 if self.toggle_laser.on:
-                    self.toggle_laser.switch()
-                    print("Protocol - Laser Off")
-                    self.navi.navigator_laser.hide()
-                print("Protocol - Gripper On")
+                    self.turn_off_laser()
+                self.turn_on_gripper()
+            # Turn Gripper Off
             else:
-                self.message_laser.hide()
-                print("Protocol - Gripper Off")
+                self.turn_off_gripper()
             self.toggle_gripper.pressed = False
 
         if self.connection:
@@ -320,7 +344,7 @@ class App(tk.Tk):
     def handle_radio_operation(self):
         # Click Point Mode
         if self.operation_mode == "Tray" and self.radio_point.active:
-            self.radio_tray.switch()
+            self.radio_tray.deactivate()
             self.operation_mode = "Point"
             self.press_pick.hide()
             self.press_place.hide()
@@ -335,7 +359,7 @@ class App(tk.Tk):
             self.target.show()
         # Click Tray Mode
         elif self.operation_mode == "Point" and self.radio_tray.active:
-            self.radio_point.switch()
+            self.radio_point.deactivate()
             self.operation_mode = "Tray"
             self.press_pick.show()
             self.press_place.show()
@@ -353,16 +377,26 @@ class App(tk.Tk):
 
     def handle_press_tray_pick(self):
         if self.press_pick.pressed:
+            # Close Gripper & Open Laser First
+            if not self.toggle_laser.on:
+                self.toggle_laser.pressed = True
+                self.handle_toggle_laser()
             print("Protocol - Set Pick Tray")
             self.tray_pick.clear_tray()
+            # Wait for Origin & Orientation
             self.tray_pick.create_tray()
             self.show_tray_pick = True
             self.press_pick.pressed = False
 
     def handle_press_tray_place(self):
         if self.press_place.pressed:
+            # Close Gripper & Open Laser First
+            if not self.toggle_laser.on:
+                self.toggle_laser.pressed = True
+                self.handle_toggle_laser()
             print("Protocol - Set Place Tray")
             self.tray_place.clear_tray()
+            # Wait for Origin & Orientation
             self.tray_place.create_tray()
             self.show_tray_place = True
             self.press_place.pressed = False
@@ -381,6 +415,15 @@ class App(tk.Tk):
                 print("Protocol - Set Goal Point")
                 print("Protocol - Run Point")
             self.running = True
+            if self.toggle_laser.on:
+                self.turn_off_laser()
+            if self.toggle_gripper.on:
+                self.turn_off_gripper()
+            self.toggle_laser.deactivate()
+            self.toggle_gripper.deactivate()
+            self.press_arrow.deactivate()
+            self.press_pick.deactivate()
+            self.press_place.deactivate()
             self.entry_x.disable()
             self.entry_y.disable()
             self.press_run.deactivate()

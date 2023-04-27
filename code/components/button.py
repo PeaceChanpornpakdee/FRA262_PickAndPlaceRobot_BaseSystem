@@ -87,25 +87,20 @@ class RadioButton(Button):
             self.deactivate()
 
     def activate(self):
+        self.active = True
         self.canvas.itemconfigure(self.outer_oval.oval, outline=self.active_color)
         self.inner_oval.show()
         self.textbox.activate(self.text, self.active_color)
     
     def deactivate(self):
+        self.active = False
         self.canvas.itemconfigure(self.outer_oval.oval, outline=self.inactive_color)
         self.inner_oval.hide()
         self.textbox.deactivate(self.text, self.inactive_color)
 
-    def switch(self):
-        self.active = not self.active
-        if self.active:
-            self.activate()
-        else:
-            self.deactivate()
-
     def clicked(self, event):
         if not self.active:
-            self.switch()
+            self.activate()
 
 
 class ToggleButton(Button):
@@ -135,21 +130,16 @@ class ToggleButton(Button):
             self.turn_off()
 
     def turn_on(self):
+        self.on = True
         self.round_rec.activate(self.on_color)
         self.canvas.move(self.oval.oval, self.w-self.h, 0)
         self.textbox.activate(self.on_text, self.on_color)
     
     def turn_off(self):
+        self.on = False
         self.round_rec.deactivate(self.off_color)
         self.canvas.move(self.oval.oval, self.h-self.w, 0)
         self.textbox.deactivate(self.off_text, self.off_color)
-
-    def switch(self):
-        self.on = not self.on
-        if self.on:
-            self.turn_on()
-        else:
-            self.turn_off()
 
     def clicked(self, event):
         if self.active:
