@@ -210,7 +210,11 @@ class App(tk.Tk):
 
     def round_value(self, value):
         value = float(value)
-        decimal_point = int(abs(value) * 100) % 10
+        if value >= 0:
+            decimal_point = int(abs(value+0.0000000001) * 100) % 10
+        else:
+            decimal_point = int(abs(value-0.0000000001) * 100) % 10
+
         if decimal_point < 5:
             return int(value*10)/10
         else:
