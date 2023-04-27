@@ -176,7 +176,7 @@ class App(tk.Tk):
         self.press_home = PressButton(canvas=self.canvas_command, x=655, y=50, w=128, h=30, r=15, active_color=Color.gray, inactive_color=Color.lightgray, text="Home", text_size=15, active_default=True)
         self.homing = False
             # Run Press Button
-        self.press_run  = PressButton(canvas=self.canvas_command, x=655, y=90, w=128, h=44, r=22, active_color=Color.blue, inactive_color=Color.lightgray, text="Run", text_size=22, active_default=True)
+        self.press_run  = PressButton(canvas=self.canvas_command, x=655, y=90, w=128, h=44, r=22, active_color=Color.blue, inactive_color=Color.lightgray, text="Run", text_size=22, active_default=False)
         self.running = False
         # Section Seperator
         self.line_separate_1 = Line(canvas=self.canvas_command, point_1=(260, 20), point_2=(260, 140), width=2, color=Color.lightgray)
@@ -257,13 +257,19 @@ class App(tk.Tk):
             if validate_result != "Normal":
                 self.message_error.change_text(validate_result)
                 self.message_error.show()
+                self.press_run.deactivate()
             else:
                 self.message_error.hide()
+                self.press_run.activate()
             # Return Validation Result
             return validate_result
 
         else:
             self.message_error.hide()
+            if self.show_tray_pick and self.show_tray_place:
+                self.press_run.activate()
+            else:
+                self.press_run.deactivate()
     
     def interpret_validate(self, validate_result, entry):
         # Convert Number Code from Validation Result to Error Text
