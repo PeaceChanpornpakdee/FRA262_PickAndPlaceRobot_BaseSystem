@@ -317,10 +317,11 @@ class App(tk.Tk):
             self.toggle_gripper.pressed = False
 
         if self.connection:
-            if self.toggle_gripper.on == False:
-                self.press_arrow.deactivate()
-            else:
-                self.press_arrow.activate()
+            if not self.running and not self.homing:
+                if self.toggle_gripper.on == False:
+                    self.press_arrow.deactivate()
+                else:
+                    self.press_arrow.activate()
 
     def handle_press_arrow(self):
         if self.press_arrow.pressed:
@@ -416,10 +417,10 @@ class App(tk.Tk):
                 print("Protocol - Set Goal Point")
                 print("Protocol - Run Point")
             self.running = True
-            if self.toggle_laser.on:
-                self.turn_off_laser()
-            if self.toggle_gripper.on:
-                self.turn_off_gripper()
+            # Close Laser & Open Gripper First
+            if not self.toggle_gripper.on:
+                self.toggle_gripper.pressed = True
+                self.handle_toggle_gripper()
             self.toggle_laser.deactivate()
             self.toggle_gripper.deactivate()
             self.press_arrow.deactivate()
