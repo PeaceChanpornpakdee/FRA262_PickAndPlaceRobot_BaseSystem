@@ -215,7 +215,11 @@ class App(tk.Tk):
                 self.entry_y.set_text(self.point_target_y)
 
     def round_value(self, value):
+        # Remove blank space
+        value = str(value).replace(" ", "")
+        # Convert String to Float
         value = float(value)
+        # Round
         if value >= 0:
             decimal_point = int(abs(value+0.0000000001) * 100) % 10
         else:

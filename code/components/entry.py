@@ -73,6 +73,11 @@ class Entry():
         #Check if have just -
         if value == "-" or value == ".":
             return 1
+        
+        #Check if begin with -.
+        if len(value) >= 2:
+            if value[:2] == "-.":
+                return 1
 
         #Check if have 2 or more .
         if len(value.split(".")) > 2:
