@@ -82,6 +82,9 @@ class App(tk.Tk):
         self.time_ms += 10
 
     def create_components(self):
+        """
+        This function creates each UI components
+        """
         # Field Canvas (Upper)
         self.canvas_field = tk.Canvas(master=self, width=840, height=540, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge')
         self.canvas_field.pack(pady=30)
@@ -203,6 +206,10 @@ class App(tk.Tk):
             keyboard.key_bind(self)
         
     def mouse_position(self, event):
+        """
+        This function is called when user click on the grid during point mode,
+        then move the target and change entry text
+        """
         if self.operation_mode == "Point" and self.connection:
             if not self.running and not self.homing:
                 # Convert Pixel to Grid
@@ -217,6 +224,9 @@ class App(tk.Tk):
                 self.entry_y.set_text(self.point_target_y)
 
     def round_value(self, value):
+        """
+        This function rounds value to 1 decimal digit (round up when >= .05)
+        """
         # Remove blank space
         value = str(value).replace(" ", "")
         # Convert String to Float
@@ -236,6 +246,9 @@ class App(tk.Tk):
                 return int(value*10-1)/10
 
     def out_entry(self, event):
+        """
+        This function is called when user click outside the entry or press enter
+        """
         if self.operation_mode == "Point":
             self.focus()
             # Move Target according to Entry's value if value is normal 
@@ -250,6 +263,9 @@ class App(tk.Tk):
                 self.target.move_to(self.point_target_x, self.point_target_y)
 
     def validate_entry(self):
+        """
+        This function validates input in entry and show error message
+        """
         if self.operation_mode == "Point":
             # Get value from Entry
             self.entry_x_value = self.entry_x.get_value()
@@ -290,7 +306,9 @@ class App(tk.Tk):
                 self.press_run.deactivate()
     
     def interpret_validate(self, validate_result, entry):
-        # Convert Number Code from Validation Result to Error Text
+        """
+        This function converts number code from validation result to error text
+        """
         if validate_result == 1:
             return Error.code_1
         if validate_result == 2:
@@ -304,28 +322,42 @@ class App(tk.Tk):
                 return Error.code_4y
 
     def turn_on_laser(self):
+        """
+        This function turns on end-effector's laser with protocol, turn on laser toggle, show laser on UI's navigator
+        """
         print("Protocol - Laser On")
         self.toggle_laser.turn_on()
         self.navi.navigator_laser.show()
     
     def turn_off_laser(self):
+        """
+        This function turns off end-effector's laser with protocol, turn off laser toggle, hide laser on UI's navigator
+        """
         print("Protocol - Laser Off")
         self.toggle_laser.turn_off()
         self.navi.navigator_laser.hide()
 
     def turn_on_gripper(self):
+        """
+        This function turns on end-effector's gripper with protocol, turn on gripper toggle, show laser messagebox
+        """
         print("Protocol - Gripper On")
         self.toggle_gripper.turn_on()
         self.message_laser.show()
 
     def turn_off_gripper(self):
+        """
+        This function turns off end-effector's gripper with protocol, turn off gripper toggle, hide laser messagebox
+        """
         print("Protocol - Gripper Off")
         self.toggle_gripper.turn_off()
         self.message_laser.hide()
 
     def handle_toggle_laser(self):
+        """
+        This function handles when user press laser toggle
+        """
         if self.toggle_laser.pressed:
-            print("handle_toggle_laser")
             # Turn Laser On
             if not self.toggle_laser.on:
                 # Turn Gripper Off First
@@ -338,8 +370,10 @@ class App(tk.Tk):
             self.toggle_laser.pressed = False
 
     def handle_toggle_gripper(self):
+        """
+        This function handles when user press gripper toggle
+        """
         if self.toggle_gripper.pressed:
-            print("handle_toggle_gripper")
             # Turn Gripper On
             if not self.toggle_gripper.on:
                 # Turn Laser Off First
@@ -358,6 +392,9 @@ class App(tk.Tk):
                 self.press_arrow.activate()
 
     def handle_press_arrow(self):
+        """
+        This function handles when user press arrow (pick/place) button
+        """
         if self.press_arrow.pressed:
             if self.toggle_gripper.on: 
                 if self.direction_arrow == "pick":
@@ -378,6 +415,9 @@ class App(tk.Tk):
             self.press_arrow.pressed = False
 
     def handle_radio_operation(self):
+        """
+        This function handles when user press radio button (choose operation mode)
+        """
         # Click Point Mode
         if self.operation_mode == "Tray" and self.radio_point.on:
             self.radio_tray.turn_off()
@@ -412,6 +452,9 @@ class App(tk.Tk):
                 self.tray_place.create_tray()
 
     def handle_press_tray_pick(self):
+        """
+        This function handles when user press "Set Pick Tray" button
+        """
         if self.press_pick.pressed:
             # Close Gripper & Open Laser First
             if not self.toggle_laser.on:
@@ -425,6 +468,9 @@ class App(tk.Tk):
             self.press_pick.pressed = False
 
     def handle_press_tray_place(self):
+        """
+        This function handles when user press "Set Place Tray" button
+        """
         if self.press_place.pressed:
             # Close Gripper & Open Laser First
             if not self.toggle_laser.on:
@@ -438,6 +484,9 @@ class App(tk.Tk):
             self.press_place.pressed = False
 
     def handle_press_home(self):
+        """
+        This function handles when user press "Home" button
+        """
         if self.press_home.pressed:
             print("Protocol - Home")
             self.homing = True
@@ -463,6 +512,9 @@ class App(tk.Tk):
             self.press_home.pressed = False
 
     def handle_press_run(self):
+        """
+        This function handles when user press "Run" button
+        """
         if self.press_run.pressed:
             if self.operation_mode == "Tray":
                 print("Protocol - Run Tray")
@@ -490,6 +542,9 @@ class App(tk.Tk):
             self.press_run.pressed = False
 
     def handle_disconnected(self):
+        """
+        This function handles when connection miss a heartbeat
+        """
         self.message_connection.show()
         self.toggle_laser.deactivate()
         self.toggle_gripper.deactivate()
@@ -506,6 +561,9 @@ class App(tk.Tk):
         self.text_y_acc_num.deactivate(self.text_y_acc_num.text, Color.lightgray)
         
     def handle_connected(self):
+        """
+        This function handles when connection obtain a heartbeat again
+        """
         self.message_connection.hide()
         self.text_x_pos_num.activate(self.text_x_pos_num.text, Color.blue)
         self.text_y_pos_num.activate(self.text_y_pos_num.text, Color.blue)
