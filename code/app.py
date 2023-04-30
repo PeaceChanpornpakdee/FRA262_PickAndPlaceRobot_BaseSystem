@@ -439,9 +439,17 @@ class App(tk.Tk):
         if self.press_home.pressed:
             print("Protocol - Home")
             self.homing = True
+            # Close Laser
+            if self.toggle_laser.on:
+                self.turn_off_laser()
+            # Close Gripper
+            if self.toggle_gripper.on:
+                self.turn_off_gripper()
+            self.toggle_laser.deactivate()
+            self.toggle_gripper.deactivate()
+            self.press_arrow.deactivate()
             self.radio_tray.deactivate()
             self.radio_point.deactivate()
-            self.press_arrow.deactivate()
             self.press_pick.deactivate()
             self.press_place.deactivate()
             self.entry_x.disable()
@@ -466,9 +474,9 @@ class App(tk.Tk):
                 self.handle_toggle_gripper()
             self.toggle_laser.deactivate()
             self.toggle_gripper.deactivate()
+            self.press_arrow.deactivate()
             self.radio_tray.deactivate()
             self.radio_point.deactivate()
-            self.press_arrow.deactivate()
             self.press_pick.deactivate()
             self.press_place.deactivate()
             self.entry_x.disable()
@@ -497,19 +505,20 @@ class App(tk.Tk):
         
     def handle_connected(self):
         self.message_connection.hide()
-        self.toggle_laser.activate()
-        self.toggle_gripper.activate()
-        self.press_arrow.activate()
-        self.press_pick.activate()
-        self.press_place.activate()
-        self.entry_x.enable()
-        self.entry_y.enable()
-        self.press_run.activate()
-        self.press_home.activate()
-        self.text_x_pos_num.activate(self.text_x_pos_num.text, Color.blue)
-        self.text_y_pos_num.activate(self.text_y_pos_num.text, Color.blue)
-        self.text_y_spd_num.activate(self.text_y_spd_num.text, Color.blue)
-        self.text_y_acc_num.activate(self.text_y_acc_num.text, Color.blue)
+        if not self.running and not self.homing:
+            self.toggle_laser.activate()
+            self.toggle_gripper.activate()
+            self.press_arrow.activate()
+            self.press_pick.activate()
+            self.press_place.activate()
+            self.entry_x.enable()
+            self.entry_y.enable()
+            self.press_run.activate()
+            self.press_home.activate()
+            self.text_x_pos_num.activate(self.text_x_pos_num.text, Color.blue)
+            self.text_y_pos_num.activate(self.text_y_pos_num.text, Color.blue)
+            self.text_y_spd_num.activate(self.text_y_spd_num.text, Color.blue)
+            self.text_y_acc_num.activate(self.text_y_acc_num.text, Color.blue)
 
 
 if __name__ == "__main__":
