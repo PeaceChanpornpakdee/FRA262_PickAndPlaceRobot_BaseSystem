@@ -507,6 +507,10 @@ class App(tk.Tk):
         
     def handle_connected(self):
         self.message_connection.hide()
+        self.text_x_pos_num.activate(self.text_x_pos_num.text, Color.blue)
+        self.text_y_pos_num.activate(self.text_y_pos_num.text, Color.blue)
+        self.text_y_spd_num.activate(self.text_y_spd_num.text, Color.blue)
+        self.text_y_acc_num.activate(self.text_y_acc_num.text, Color.blue)
         if not self.running and not self.homing:
             self.toggle_laser.activate()
             self.toggle_gripper.activate()
@@ -517,10 +521,6 @@ class App(tk.Tk):
             self.entry_y.enable()
             self.press_run.activate()
             self.press_home.activate()
-            self.text_x_pos_num.activate(self.text_x_pos_num.text, Color.blue)
-            self.text_y_pos_num.activate(self.text_y_pos_num.text, Color.blue)
-            self.text_y_spd_num.activate(self.text_y_spd_num.text, Color.blue)
-            self.text_y_acc_num.activate(self.text_y_acc_num.text, Color.blue)
 
 
 if __name__ == "__main__":
