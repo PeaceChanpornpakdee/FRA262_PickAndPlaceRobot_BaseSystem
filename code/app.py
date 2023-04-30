@@ -40,6 +40,7 @@ class App(tk.Tk):
         # Counting Time
         self.time_ms = 0
         # Prepare Protocol
+        self.usb_connect = True
         self.protocol = Protocol(self)
         self.connection = True
         self.new_connection = True
@@ -57,20 +58,21 @@ class App(tk.Tk):
         # Validate Entry Value
         self.validate_entry()
         # Perform Protocol Every 1 s
-        if self.time_ms >= 1000:
-            self.time_ms = 0
-            # self.connection = self.protocol.heartbeat()
-            self.new_connection = self.protocol.heartbeat()
-            # self.protocol.routine()
+        if self.usb_connect:
+            if self.time_ms >= 1000:
+                self.time_ms = 0
+                self.new_connection = self.protocol.heartbeat()
+                if self.new_connection: # If Connected
+                    self.protocol.routine()
 
-        # If Connection is Changed 
-        if self.connection != self.new_connection:
-            # Update Connection Value
-            self.connection = self.new_connection
-            if not self.connection: # If Disconnected
-                self.handle_disconnected()
-            else: # If Reconnected
-                self.handle_connected()
+            # If Connection is Changed 
+            if self.connection != self.new_connection:
+                # Update Connection Value
+                self.connection = self.new_connection
+                if not self.connection: # If Disconnected
+                    self.handle_disconnected()
+                else: # If Reconnected
+                    self.handle_connected()
 
         # if self.homing or self.running:
         #     self.navi.move_to(10, 10)
