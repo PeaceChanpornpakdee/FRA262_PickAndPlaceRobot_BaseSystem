@@ -32,6 +32,13 @@ class Protocol():
                 return int(binary_str[start_digit])
         else:
             return binary_str[start_digit : end_digit+1]
+        
+    # def bit_wise_operate(self, register, max_len):
+    #     data=[]
+    #     for i in range(max_len):
+    #         bit = (register>>i)&0x01
+    #         data.append(bit)
+    #     return data
 
     def heartbeat(self):
         # If read heartbeat as "Ya"
@@ -45,7 +52,6 @@ class Protocol():
 
     def routine(self):
         self.register = self.client.read_holding_registers(address=0x00, count=0x46, slave=self.slave_address).registers
-        print(self.register)
         self.read_base_system_status()
         self.read_end_effector_status()
         self.read_y_axis_moving_status()
@@ -61,11 +67,11 @@ class Protocol():
         self.client.write_register(address=0x00, value=18537, slave=self.slave_address)
 
     def read_base_system_status(self):
-        if self.get_binary_digit(self.register[0x01], 0) == 1:
+        if self.get_binary_digit(self.register[0x01], 5) == 1:
             self.base_system_status = "Home"
-        elif self.get_binary_digit(self.register[0x01], 1) == 1:
+        elif self.get_binary_digit(self.register[0x01], 6) == 1:
             self.base_system_status = "Run Tray Mode"
-        elif self.get_binary_digit(self.register[0x01], 2) == 1:
+        elif self.get_binary_digit(self.register[0x01], 7) == 1:
             self.base_system_status = "Run Point Mode"
         else:
             self.base_system_status = "Idle"
@@ -79,21 +85,19 @@ class Protocol():
             print('WARNING : GripperPicking and GripperPlacing are both working.')
 
     def read_y_axis_moving_status(self):
-        print(self.register[0x10])
-        if self.get_binary_digit(self.register[0x10], 0) == 1:
+        if self.get_binary_digit(self.register[0x10], 5) == 1:
             self.y_axis_moving_status = "Jog"
-        elif self.get_binary_digit(self.register[0x10], 1) == 1:
+        elif self.get_binary_digit(self.register[0x10], 6) == 1:
             self.y_axis_moving_status = "Go Pick"
-        elif self.get_binary_digit(self.register[0x10], 2) == 1:
+        elif self.get_binary_digit(self.register[0x10], 7) == 1:
             self.y_axis_moving_status = "Go Place"
         else:
             self.y_axis_moving_status = "Idle"
 
     def read_x_axis_moving_status(self):
-        print(self.register[0x40])
-        if self.get_binary_digit(self.register[0x40], 0) == 1:
+        if self.get_binary_digit(self.register[0x40], 6) == 1:
             self.x_axis_moving_status = "Home"
-        elif self.get_binary_digit(self.register[0x40], 1) == 1:
+        elif self.get_binary_digit(self.register[0x40], 7) == 1:
             self.x_axis_moving_status = "Run"
         else:
             self.x_axis_moving_status = "Idle"
