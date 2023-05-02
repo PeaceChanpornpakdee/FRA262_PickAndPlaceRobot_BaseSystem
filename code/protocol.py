@@ -17,34 +17,29 @@ class Protocol():
         print('Connection Status :', self.client.connect())
 
     def get_binary_digit(self, number, start_digit, end_digit=-1):
-        binary_list = []
+        # Convert base 10 to base 2
+        binary_num = ""
         while number > 0:
-            binary_list.append(number % 2)
-            number //= 2
-        binary_list.reverse()
-        binary_str = ''.join(str(bit) for bit in binary_list)
-        if len(binary_str) < 8:
-            binary_str = "0"*(8-len(binary_str)) + binary_str
+            binary_num = str(number % 2) + binary_num
+            number = number // 2
+        # Fill to 8 digits
+        if len(binary_num) < 8:
+            binary_num = "0"*(8-len(binary_num)) + binary_num
+        # Return single digit
         if end_digit == -1:
-            if binary_str[start_digit] == "-":
-                return binary_str[start_digit]
+            if binary_num[start_digit] == "-":
+                # Return as string for "-"
+                return binary_num[start_digit]
             else:
-                return int(binary_str[start_digit])
+                # Return as integer for number
+                return int(binary_num[start_digit])
+        # Return multiple digits
         else:
-            return binary_str[start_digit : end_digit+1]
-        
-    # def bit_wise_operate(self, register, max_len):
-    #     data=[]
-    #     for i in range(max_len):
-    #         bit = (register>>i)&0x01
-    #         data.append(bit)
-    #     return data
+            return binary_num[start_digit : end_digit+1]
 
     def heartbeat(self):
-        # If read heartbeat as "Ya"
-        if self.read_hearbeat() == 22881:
-            # Write heartbeat as "Hi"
-            self.write_heartbeat()
+        if self.read_hearbeat() == 22881: # Read heartbeat as "Ya"
+            self.write_heartbeat() # Write heartbeat as "Hi"
             return True
         else:
             # return False
@@ -57,7 +52,15 @@ class Protocol():
         self.read_y_axis_moving_status()
         self.read_x_axis_moving_status()
 
-        print(self.base_system_status, self.y_axis_moving_status, self.x_axis_moving_status)
+        print(self.base_system_status)
+        print("Laser:", self.laser_on)
+        print(self.y_axis_moving_status)
+        print(self.x_axis_moving_status)
+        print()
+
+        self.write_end_effector_status("Laser Off")
+
+
 
     def read_hearbeat(self):
         hearbeat_value = self.client.read_holding_registers(address=0x00, count=1, slave=self.slave_address).registers
@@ -67,14 +70,31 @@ class Protocol():
         self.client.write_register(address=0x00, value=18537, slave=self.slave_address)
 
     def read_base_system_status(self):
-        if self.get_binary_digit(self.register[0x01], 5) == 1:
+        if self.get_binary_digit(self.register[0x01], 0) == 1:
+            self.base_system_status = "Set Pick Tray"
+        elif self.get_binary_digit(self.register[0x01], 1) == 1:
+            self.base_system_status = "Set Place Tray"
+        elif self.get_binary_digit(self.register[0x01], 2) == 1:
             self.base_system_status = "Home"
-        elif self.get_binary_digit(self.register[0x01], 6) == 1:
+        elif self.get_binary_digit(self.register[0x01], 3) == 1:
             self.base_system_status = "Run Tray Mode"
-        elif self.get_binary_digit(self.register[0x01], 7) == 1:
+        elif self.get_binary_digit(self.register[0x01], 4) == 1:
             self.base_system_status = "Run Point Mode"
         else:
             self.base_system_status = "Idle"
+
+    def write_base_system_status(self, command):
+        if command == "Set Pick Tray":
+            self.base_system_status_register = 0b10000000
+        elif command == "Set Place Tray":
+            self.base_system_status_register = 0b01000000
+        elif command == "Home":
+            self.base_system_status_register = 0b00100000
+        elif command == "Run Tray Mode":
+            self.base_system_status_register = 0b00010000
+        elif command == "Run Point Mode":
+            self.base_system_status_register = 0b00001000
+        self.client.write_register(address=0x01, value=self.base_system_status_register, slave=self.slave_address)
 
     def read_end_effector_status(self):
         self.laser_on      = self.get_binary_digit(self.register[0x02], 0)
@@ -84,20 +104,44 @@ class Protocol():
         if self.gripper_pick and self.gripper_place:
             print('WARNING : GripperPicking and GripperPlacing are both working.')
 
+    def write_end_effector_status(self, command):
+        if command == "Laser On":
+            self.end_effector_status_register = 0b10000000
+        elif command == "Laser Off":
+            self.end_effector_status_register = 0b00000000
+        elif command == "Gripper Power On":
+            self.end_effector_status_register = 0b01000000
+        elif command == "Gripper Power Off":
+            self.end_effector_status_register = 0b00000000
+        elif command == "Gripper Pick":
+            self.end_effector_status_register = 0b00100000
+        elif command == "Gripper Place":
+            self.end_effector_status_register = 0b00010000
+        self.client.write_register(address=0x02, value=self.end_effector_status_register, slave=self.slave_address)
+
     def read_y_axis_moving_status(self):
-        if self.get_binary_digit(self.register[0x10], 5) == 1:
+        if self.get_binary_digit(self.register[0x10], 0) == 1:
             self.y_axis_moving_status = "Jog"
-        elif self.get_binary_digit(self.register[0x10], 6) == 1:
+        elif self.get_binary_digit(self.register[0x10], 1) == 1:
+            self.y_axis_moving_status = "Home"
+        elif self.get_binary_digit(self.register[0x10], 2) == 1:
             self.y_axis_moving_status = "Go Pick"
-        elif self.get_binary_digit(self.register[0x10], 7) == 1:
+        elif self.get_binary_digit(self.register[0x10], 3) == 1:
             self.y_axis_moving_status = "Go Place"
+        elif self.get_binary_digit(self.register[0x10], 4) == 1:
+            self.y_axis_moving_status = "Go Point"
         else:
             self.y_axis_moving_status = "Idle"
 
     def read_x_axis_moving_status(self):
-        if self.get_binary_digit(self.register[0x40], 6) == 1:
+        if self.get_binary_digit(self.register[0x40], 0) == 1:
             self.x_axis_moving_status = "Home"
-        elif self.get_binary_digit(self.register[0x40], 7) == 1:
+        elif self.get_binary_digit(self.register[0x40], 1) == 1:
             self.x_axis_moving_status = "Run"
         else:
             self.x_axis_moving_status = "Idle"
+
+    def read_y_axis_actual_motion(self):
+        # self.y_axis_actual_pos = self.get_binary_digit(self.register[0x11], 7, )
+        self.y_axis_actual_spd = 0
+        self.y_axis_actual_acc = 0
