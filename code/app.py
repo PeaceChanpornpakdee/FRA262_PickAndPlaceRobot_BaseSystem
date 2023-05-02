@@ -13,7 +13,7 @@ from components.photo import Photo
 from components.entry import Entry
 
 from keyboard import Keyboard
-from protocol import Protocol
+from protocol import Protocol_Y
 
 class App(tk.Tk):
     def __init__(self):
@@ -41,7 +41,7 @@ class App(tk.Tk):
         self.time_ms = 0
         # Prepare Protocol
         self.usb_connect = True
-        self.protocol = Protocol(self)
+        self.protocol_y = Protocol_Y(self)
         self.connection = True
         self.new_connection = True
 
@@ -59,11 +59,15 @@ class App(tk.Tk):
         self.validate_entry()
         # Perform Protocol Every 1 s
         if self.usb_connect:
-            if self.time_ms >= 1000:
+            if self.time_ms >= 200:
+                import time
+                start_time = time.time()
                 self.time_ms = 0
-                self.new_connection = self.protocol.heartbeat()
+                self.new_connection = self.protocol_y.heartbeat()
                 if self.new_connection: # If Connected
-                    self.protocol.routine()
+                    self.protocol_y.routine()
+                end_time = time.time()
+                print((end_time-start_time)*1000, "ms")
 
             # If Connection is Changed 
             if self.connection != self.new_connection:
