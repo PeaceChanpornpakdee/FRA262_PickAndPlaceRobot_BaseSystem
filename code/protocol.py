@@ -16,7 +16,7 @@ class Protocol_Y():
         self.client.connect()
         print('Connection Status :', self.client.connect())
 
-    def decimal_to_binary(self, decimal_num, start_digit, end_digit=-1):
+    def decimal_to_binary(self, decimal_num):
         """
         This function converts base 10 to base 2
         """
@@ -24,15 +24,10 @@ class Protocol_Y():
         while decimal_num > 0:
             binary_num = str(decimal_num % 2) + binary_num
             decimal_num = decimal_num // 2
-        # Fill to 8 digits
-        if len(binary_num) < 8:
-            binary_num = "0"*(8-len(binary_num)) + binary_num
-        # Return single digit
-        if end_digit == -1:
-            return int(binary_num[start_digit])
-        # Return multiple digits
-        else:
-            return binary_num[start_digit : end_digit+1]
+        # Fill to 16 digits with 0
+        if len(binary_num) < 16:
+            binary_num = "0"*(16-len(binary_num)) + binary_num
+        return binary_num
         
     def binary_to_decimal(self, binary_num):
         """
@@ -42,6 +37,12 @@ class Protocol_Y():
         for i in range(len(binary_num)):
             decimal_num += int(binary_num[i]) * (2 ** (len(binary_num)-i-1))
         return decimal_num
+    
+    def binary_crop(self, digit, binary_num):
+        """
+        This function crops the last n digits of the binary number
+        """
+        return binary_num[len(binary_num)-digit:]
         
     def heartbeat(self):
         if self.read_hearbeat() == 22881: # Read heartbeat as "Ya"
@@ -73,97 +74,109 @@ class Protocol_Y():
         self.client.write_register(address=0x00, value=18537, slave=self.slave_address)
 
     def read_base_system_status(self):
-        if self.decimal_to_binary(self.register[0x01], 0) == 1:
+        base_system_status_binary = self.binary_crop(5, self.decimal_to_binary(self.register[0x01]))
+        if base_system_status_binary[0] == "1":
             self.base_system_status = "Set Pick Tray"
-        elif self.decimal_to_binary(self.register[0x01], 1) == 1:
+        elif base_system_status_binary[1] == "1":
             self.base_system_status = "Set Place Tray"
-        elif self.decimal_to_binary(self.register[0x01], 2) == 1:
+        elif base_system_status_binary[2] == "1":
             self.base_system_status = "Home"
-        elif self.decimal_to_binary(self.register[0x01], 3) == 1:
+        elif base_system_status_binary[3] == "1":
             self.base_system_status = "Run Tray Mode"
-        elif self.decimal_to_binary(self.register[0x01], 4) == 1:
+        elif base_system_status_binary[4] == "1":
             self.base_system_status = "Run Point Mode"
         else:
             self.base_system_status = "Idle"
 
     def write_base_system_status(self, command):
         if command == "Set Pick Tray":
-            self.base_system_status_register = 0b10000000
+            self.base_system_status_register = 0b10000
         elif command == "Set Place Tray":
-            self.base_system_status_register = 0b01000000
+            self.base_system_status_register = 0b01000
         elif command == "Home":
-            self.base_system_status_register = 0b00100000
+            self.base_system_status_register = 0b00100
         elif command == "Run Tray Mode":
-            self.base_system_status_register = 0b00010000
+            self.base_system_status_register = 0b00010
         elif command == "Run Point Mode":
-            self.base_system_status_register = 0b00001000
+            self.base_system_status_register = 0b00001
         self.client.write_register(address=0x01, value=self.base_system_status_register, slave=self.slave_address)
 
     def read_end_effector_status(self):
-        self.laser_on      = self.decimal_to_binary(self.register[0x02], 0)
-        self.gripper_power = self.decimal_to_binary(self.register[0x02], 1)
-        self.gripper_pick  = self.decimal_to_binary(self.register[0x02], 2)
-        self.gripper_place = self.decimal_to_binary(self.register[0x02], 3)
-        if self.gripper_pick and self.gripper_place:
-            print('WARNING : GripperPicking and GripperPlacing are both working.')
+        end_effector_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x02]))
+        self.laser_on      = end_effector_status_binary[0]
+        self.gripper_power = end_effector_status_binary[1]
+        self.gripper_pick  = end_effector_status_binary[2]
+        self.gripper_place = end_effector_status_binary[3]
 
     def write_end_effector_status(self, command):
         if command == "Laser On":
-            self.end_effector_status_register = 0b10000000
+            self.end_effector_status_register = 0b1000
         elif command == "Laser Off":
-            self.end_effector_status_register = 0b00000000
+            self.end_effector_status_register = 0b0000
         elif command == "Gripper Power On":
-            self.end_effector_status_register = 0b01000000
+            self.end_effector_status_register = 0b0100
         elif command == "Gripper Power Off":
-            self.end_effector_status_register = 0b00000000
+            self.end_effector_status_register = 0b0000
         elif command == "Gripper Pick":
-            self.end_effector_status_register = 0b00100000
+            self.end_effector_status_register = 0b0010
         elif command == "Gripper Place":
-            self.end_effector_status_register = 0b00010000
+            self.end_effector_status_register = 0b0001
         self.client.write_register(address=0x02, value=self.end_effector_status_register, slave=self.slave_address)
 
     def read_y_axis_moving_status(self):
-        if self.decimal_to_binary(self.register[0x10], 0) == 1:
+        y_axis_moving_status_binary = self.binary_crop(5, self.decimal_to_binary(self.register[0x10]))
+        if y_axis_moving_status_binary[0] == "1":
             self.y_axis_moving_status = "Jog"
-        elif self.decimal_to_binary(self.register[0x10], 1) == 1:
+        elif y_axis_moving_status_binary[1] == "1":
             self.y_axis_moving_status = "Home"
-        elif self.decimal_to_binary(self.register[0x10], 2) == 1:
+        elif y_axis_moving_status_binary[2] == "1":
             self.y_axis_moving_status = "Go Pick"
-        elif self.decimal_to_binary(self.register[0x10], 3) == 1:
+        elif y_axis_moving_status_binary[3] == "1":
             self.y_axis_moving_status = "Go Place"
-        elif self.decimal_to_binary(self.register[0x10], 4) == 1:
+        elif y_axis_moving_status_binary[4] == "1":
             self.y_axis_moving_status = "Go Point"
         else:
             self.y_axis_moving_status = "Idle"
 
     def read_y_axis_actual_motion(self):
-        self.y_axis_actual_pos = self.decimal_to_binary(self.register[0x11], 1, 15)
+        y_axis_actual_pos_binary = self.decimal_to_binary(self.register[0x11])
+        self.y_axis_actual_pos = self.binary_crop(15, y_axis_actual_pos_binary)
         self.y_axis_actual_pos = self.binary_to_decimal(self.y_axis_actual_pos) / 10
-        if self.decimal_to_binary(self.register[0x11], 0) == 1: # Negative digit
+        if y_axis_actual_pos_binary[0] == "1":  # Negative digit
             self.y_axis_actual_pos = -self.y_axis_actual_pos
         self.y_axis_actual_spd = self.register[0x12] / 10
         self.y_axis_actual_acc = self.register[0x13] / 10
 
     def read_pick_tray_position(self):
-        self.pick_tray_origin_x = self.decimal_to_binary(self.register[0x20], 1, 15)
+        # Origin x
+        pick_tray_origin_x_binary = self.decimal_to_binary(self.register[0x20])
+        self.pick_tray_origin_x = self.binary_crop(15, pick_tray_origin_x_binary)
         self.pick_tray_origin_x = self.binary_to_decimal(self.pick_tray_origin_x) / 10
-        if self.decimal_to_binary(self.register[0x20], 0) == 1: # Negative digit
+        if pick_tray_origin_x_binary[0] == "1": # Negative digit
             self.pick_tray_origin_x = -self.pick_tray_origin_x
-        self.pick_tray_origin_y = self.decimal_to_binary(self.register[0x21], 1, 15)
+        # Origin y
+        pick_tray_origin_y_binary = self.decimal_to_binary(self.register[0x21])
+        self.pick_tray_origin_y = self.binary_crop(15, pick_tray_origin_y_binary)
         self.pick_tray_origin_y = self.binary_to_decimal(self.pick_tray_origin_y) / 10
-        if self.decimal_to_binary(self.register[0x21], 0) == 1: # Negative digit
+        if pick_tray_origin_y_binary[0] == "1": # Negative digit
             self.pick_tray_origin_y = -self.pick_tray_origin_y
+        # Orientation
         self.pick_tray_orientation = self.register[0x22] / 100
 
     def read_place_tray_position(self):
-        self.place_tray_origin_x = self.decimal_to_binary(self.register[0x23], 1, 15)
+        # Origin x
+        place_tray_origin_x_binary = self.decimal_to_binary(self.register[0x23])
+        self.place_tray_origin_x = self.binary_crop(15, place_tray_origin_x_binary)
         self.place_tray_origin_x = self.binary_to_decimal(self.place_tray_origin_x) / 10
-        if self.decimal_to_binary(self.register[0x23], 0) == 1: # Negative digit
+        if place_tray_origin_x_binary[0] == "1": # Negative digit
             self.place_tray_origin_x = -self.place_tray_origin_x
-        self.place_tray_origin_y = self.decimal_to_binary(self.register[0x24], 1, 15)
+        # Origin y
+        place_tray_origin_y_binary = self.decimal_to_binary(self.register[0x24])
+        self.place_tray_origin_y = self.binary_crop(15, place_tray_origin_y_binary)
         self.place_tray_origin_y = self.binary_to_decimal(self.place_tray_origin_y) / 10
-        if self.decimal_to_binary(self.register[0x24], 0) == 1: # Negative digit
+        if place_tray_origin_y_binary[0] == "1": # Negative digit
             self.place_tray_origin_y = -self.place_tray_origin_y
+        # Orientation
         self.place_tray_orientation = self.register[0x25] / 100
 
     def write_goal_point(self, x, y):
@@ -177,37 +190,38 @@ class Protocol_Y():
         self.client.write_register(address=0x31, value=self.goal_point_y_register, slave=self.slave_address)
 
     def read_x_axis_moving_status(self):
-        if self.decimal_to_binary(self.register[0x40], 0) == 1:
+        x_axis_moving_status_binary = self.binary_crop(2, self.decimal_to_binary(self.register[0x40]))
+        if x_axis_moving_status_binary[0] == "1":
             self.x_axis_moving_status = "Home"
-        elif self.decimal_to_binary(self.register[0x40], 1) == 1:
+        elif x_axis_moving_status_binary[1] == "1":
             self.x_axis_moving_status = "Run"
         else:
             self.x_axis_moving_status = "Idle"
 
     def write_x_axis_moving_status(self, command):
         if command == "Home":
-            self.x_axis_moving_status_register = 0b10000000
+            self.x_axis_moving_status_register = 0b10
         elif command == "Run":
-            self.x_axis_moving_status_register = 0b01000000
+            self.x_axis_moving_status_register = 0b01
         elif command == "Idle":
-            self.x_axis_moving_status_register = 0x00
+            self.x_axis_moving_status_register = 0b00
         self.client.write_register(address=0x46, value=self.x_axis_moving_status_register, slave=self.slave_address)
 
     def read_x_axis_target_motion(self):
-        self.x_axis_target_pos = self.decimal_to_binary(self.register[0x41], 1, 15)
+        x_axis_target_pos_binary = self.decimal_to_binary(self.register[0x41])
+        self.x_axis_target_pos = self.binary_crop(15, x_axis_target_pos_binary)
         self.x_axis_target_pos = self.binary_to_decimal(self.x_axis_target_pos) / 10
-        if self.decimal_to_binary(self.register[0x41], 0) == 1: # Negative digit
+        if x_axis_target_pos_binary[0] == "1": # Negative digit
             self.x_axis_target_pos = -self.x_axis_target_pos
         self.x_axis_target_spd = self.register[0x42] / 10
         self.x_axis_target_acc = self.register[0x43] / 10
 
-    def write_x_axis_actual_motion(self):
-        self.x_axis_actual_pos_register = self.decimal_to_binary(self.register[0x44], 1, 15)
-        self.x_axis_actual_pos_register = self.binary_to_decimal(self.x_axis_actual_pos_register) / 10
-        if self.decimal_to_binary(self.register[0x44], 0) == 1: # Negative digit
-            self.x_axis_actual_pos_register = -self.x_axis_actual_pos_register
-        self.x_axis_actual_spd_register = self.register[0x45] / 10
-        self.x_axis_actual_acc_register = self.register[0x46] / 10
+    def write_x_axis_actual_motion(self, pos, spd, acc):
+        self.x_axis_actual_pos_register = abs(pos*10)
+        if pos < 0:
+            self.x_axis_actual_pos_register += 0b1000000000000000
+        self.x_axis_actual_spd_register = spd * 10
+        self.x_axis_actual_acc_register = acc * 10
         self.client.write_register(address=0x44, value=self.x_axis_actual_pos_register, slave=self.slave_address)
         self.client.write_register(address=0x45, value=self.x_axis_actual_spd_register, slave=self.slave_address)
         self.client.write_register(address=0x46, value=self.x_axis_actual_acc_register, slave=self.slave_address)
