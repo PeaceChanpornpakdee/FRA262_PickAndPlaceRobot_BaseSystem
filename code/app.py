@@ -67,7 +67,7 @@ class App(tk.Tk):
                 if self.new_connection: # If Connected
                     self.protocol_y.routine()
                 end_time = time.time()
-                print((end_time-start_time)*1000, "ms")
+                print((end_time-start_time)*1000, "ms\n")
 
             # If Connection is Changed 
             if self.connection != self.new_connection:
@@ -77,6 +77,8 @@ class App(tk.Tk):
                     self.handle_disconnected()
                 else: # If Reconnected
                     self.handle_connected()
+
+            self.handle_protocol_status()
 
         # if self.homing or self.running:
         #     self.navi.move_to(10, 10)
@@ -329,33 +331,29 @@ class App(tk.Tk):
         """
         This function turns on end-effector's laser with protocol, turn on laser toggle, show laser on UI's navigator
         """
-        print("Protocol - Laser On")
+        self.protocol_y.write_end_effector_status("Laser On")
         self.toggle_laser.turn_on()
-        self.navi.navigator_laser.show()
     
     def turn_off_laser(self):
         """
         This function turns off end-effector's laser with protocol, turn off laser toggle, hide laser on UI's navigator
         """
-        print("Protocol - Laser Off")
+        self.protocol_y.write_end_effector_status("Laser Off")
         self.toggle_laser.turn_off()
-        self.navi.navigator_laser.hide()
 
     def turn_on_gripper(self):
         """
         This function turns on end-effector's gripper with protocol, turn on gripper toggle, show laser messagebox
         """
-        print("Protocol - Gripper On")
+        self.protocol_y.write_end_effector_status("Gripper Power On")
         self.toggle_gripper.turn_on()
-        self.message_laser.show()
 
     def turn_off_gripper(self):
         """
         This function turns off end-effector's gripper with protocol, turn off gripper toggle, hide laser messagebox
         """
-        print("Protocol - Gripper Off")
+        self.protocol_y.write_end_effector_status("Gripper Power Off")
         self.toggle_gripper.turn_off()
-        self.message_laser.hide()
 
     def handle_toggle_laser(self):
         """
@@ -402,14 +400,14 @@ class App(tk.Tk):
         if self.press_arrow.pressed:
             if self.toggle_gripper.on: 
                 if self.direction_arrow == "pick":
-                    print("Protocol - Gripper Pick")
+                    self.protocol_y.write_end_effector_status("Gripper Pick")
                     self.press_arrow.photo_arrow_pick.hide()
                     self.press_arrow.photo_arrow_place.show()
                     self.direction_arrow = "place"
                     self.press_arrow.change_text("     Place")
                     self.message_laser.change_text("Gripper Pick")
                 elif self.direction_arrow == "place":
-                    print("Protocol - Gripper Place")
+                    self.protocol_y.write_end_effector_status("Gripper Place")
                     self.press_arrow.photo_arrow_place.hide()
                     self.press_arrow.photo_arrow_pick.show()
                     self.direction_arrow = "pick"
@@ -464,7 +462,7 @@ class App(tk.Tk):
             if not self.toggle_laser.on:
                 self.toggle_laser.pressed = True
                 self.handle_toggle_laser()
-            print("Protocol - Set Pick Tray")
+            self.protocol_y.write_base_system_status("Set Pick Tray")
             self.tray_pick.clear_tray()
             # Wait for Origin & Orientation
             self.tray_pick.create_tray()
@@ -480,7 +478,7 @@ class App(tk.Tk):
             if not self.toggle_laser.on:
                 self.toggle_laser.pressed = True
                 self.handle_toggle_laser()
-            print("Protocol - Set Place Tray")
+            self.protocol_y.write_base_system_status("Set Place Tray")
             self.tray_place.clear_tray()
             # Wait for Origin & Orientation
             self.tray_place.create_tray()
@@ -492,7 +490,7 @@ class App(tk.Tk):
         This function handles when user press "Home" button
         """
         if self.press_home.pressed:
-            print("Protocol - Home")
+            self.protocol_y.write_base_system_status("Home")
             self.homing = True
             # Close Laser
             if self.toggle_laser.on:
@@ -521,10 +519,10 @@ class App(tk.Tk):
         """
         if self.press_run.pressed:
             if self.operation_mode == "Tray":
-                print("Protocol - Run Tray")
+                self.protocol_y.write_base_system_status("Run Tray Mode")
             elif self.operation_mode == "Point":
-                print("Protocol - Set Goal Point")
-                print("Protocol - Run Point")
+                self.protocol_y.write_goal_point(self.point_target_x, self.point_target_y)
+                self.protocol_y.write_base_system_status("Run Point Mode")
             self.running = True
             # Close Laser & Open Gripper First
             if not self.toggle_gripper.on:
@@ -583,6 +581,21 @@ class App(tk.Tk):
             self.entry_y.enable()
             self.press_run.activate()
             self.press_home.activate()
+
+    def handle_protocol_status(self):
+        # Laser
+        if self.protocol_y.laser_on == "1":
+            self.navi.navigator_laser.show()
+        else:
+            self.navi.navigator_laser.hide()
+
+        # Gripper
+        if self.protocol_y.gripper_pick == "1" or self.protocol_y.gripper_place == "1":
+            self.message_laser.show()
+        else:
+            self.message_laser.hide()
+
+            
 
 
 if __name__ == "__main__":

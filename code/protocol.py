@@ -12,6 +12,10 @@ class Protocol_Y():
         self.slave_address = 0x15
         self.register = []
 
+        self.laser_on = "0"
+        self.gripper_pick = "0"
+        self.gripper_place = "0"
+
         self.client= ModbusClient(method = "rtu", port=self.port,stopbits = 1, bytesize = 8, parity = 'E', baudrate= 19200)
         self.client.connect()
         print('Connection Status :', self.client.connect())
@@ -61,9 +65,11 @@ class Protocol_Y():
 
         print(self.base_system_status)
         print("Laser:", self.laser_on)
+        print("Gripper Power:", self.gripper_power)
+        print("Gripper Pick :", self.gripper_pick)
+        print("Gripper Place:", self.gripper_place)
         print(self.y_axis_moving_status)
         print(self.x_axis_moving_status)
-        print()
 
 
     def read_hearbeat(self):
@@ -118,9 +124,9 @@ class Protocol_Y():
         elif command == "Gripper Power Off":
             self.end_effector_status_register = 0b0000
         elif command == "Gripper Pick":
-            self.end_effector_status_register = 0b0010
+            self.end_effector_status_register = 0b0110
         elif command == "Gripper Place":
-            self.end_effector_status_register = 0b0001
+            self.end_effector_status_register = 0b0101
         self.client.write_register(address=0x02, value=self.end_effector_status_register, slave=self.slave_address)
 
     def read_y_axis_moving_status(self):
@@ -180,10 +186,10 @@ class Protocol_Y():
         self.place_tray_orientation = self.register[0x25] / 100
 
     def write_goal_point(self, x, y):
-        self.goal_point_x_register = abs(x*10)
+        self.goal_point_x_register = int(abs(x*10))
         if x < 0:
             self.goal_point_x_register += 0b1000000000000000
-        self.goal_point_y_register = abs(y*10)
+        self.goal_point_y_register = int(abs(y*10))
         if y < 0:
             self.goal_point_y_register += 0b1000000000000000
         self.client.write_register(address=0x30, value=self.goal_point_x_register, slave=self.slave_address)
