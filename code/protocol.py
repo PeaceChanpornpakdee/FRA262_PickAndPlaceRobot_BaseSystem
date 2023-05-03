@@ -15,6 +15,7 @@ class Protocol_Y():
         self.laser_on = "0"
         self.gripper_pick = "0"
         self.gripper_place = "0"
+        self.y_axis_moving_status = "Idle"
 
         self.client= ModbusClient(method = "rtu", port=self.port,stopbits = 1, bytesize = 8, parity = 'E', baudrate= 19200)
         self.client.connect()

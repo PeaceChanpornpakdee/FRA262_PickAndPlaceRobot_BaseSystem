@@ -118,7 +118,7 @@ class App(tk.Tk):
         self.point_target_y = 0
         # Navigator
         self.navi = Navigator(canvas=self.canvas_field, grid=self.grid, grid_x=0, grid_y=0, grid_z=8, pick_tray=self.tray_pick, place_tray=self.tray_place)
-        self.message_navi  = MessageBox(canvas=self.canvas_field, x=434, y=246,    text="Going Home", color=Color.blue, direction="NW", align="Left", size=11)
+        self.message_navi  = MessageBox(canvas=self.canvas_field, x=434, y=246,    text="Homing", color=Color.blue, direction="NW", align="Left", size=11)
         self.message_laser = MessageBox(canvas=self.canvas_field, x=434, y=246+48, text="Gripper Pick", color=Color.blue, direction="SW", align="Left", size=11)
         self.message_navi.hide()
         self.message_laser.hide()
@@ -509,7 +509,7 @@ class App(tk.Tk):
             self.entry_y.disable()
             self.press_run.deactivate()
             self.press_home.deactivate()
-            self.message_navi.change_text("Going Home")
+            self.message_navi.change_text("Homing")
             self.message_navi.show()
             self.press_home.pressed = False
 
@@ -583,20 +583,28 @@ class App(tk.Tk):
             self.press_home.activate()
 
     def handle_protocol_status(self):
+        """
+        This function handles updating UI according to protocol status 
+        """
         # Laser
         if self.protocol_y.laser_on == "1":
             self.navi.navigator_laser.show()
         else:
             self.navi.navigator_laser.hide()
-
         # Gripper
         if self.protocol_y.gripper_pick == "1" or self.protocol_y.gripper_place == "1":
             self.message_laser.show()
         else:
             self.message_laser.hide()
-
-            
-
+        # Moving Status
+        if self.protocol_y.y_axis_moving_status == "Idle":
+            self.message_navi.hide()
+        else:
+            if self.protocol_y.y_axis_moving_status == "Jog":
+                self.message_navi.change_text("Jogging")
+            elif self.protocol_y.y_axis_moving_status == "Home":
+                self.message_navi.change_text("Homing")
+            self.message_navi.show()
 
 if __name__ == "__main__":
     app = App()
