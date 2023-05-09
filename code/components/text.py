@@ -102,6 +102,8 @@ class MessageBox():
             self.w = 95
         elif self.text == "Going to Place":
             self.w = 100
+        elif self.text == "Going to Point":
+            self.w = 100
         elif self.text == "Gripper Pick":
             self.w = 90
         elif self.text == "Gripper Place":

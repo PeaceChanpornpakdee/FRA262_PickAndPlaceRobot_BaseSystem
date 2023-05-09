@@ -15,6 +15,7 @@ class Protocol_Y():
         self.laser_on = "0"
         self.gripper_pick = "0"
         self.gripper_place = "0"
+        self.y_axis_moving_status_before = "Idle"
         self.y_axis_moving_status = "Idle"
 
         self.client= ModbusClient(method = "rtu", port=self.port,stopbits = 1, bytesize = 8, parity = 'E', baudrate= 19200)
@@ -63,6 +64,10 @@ class Protocol_Y():
         self.read_end_effector_status()
         self.read_y_axis_moving_status()
         self.read_x_axis_moving_status()
+        # self.client.write_register(address=0x01, value=1, slave=self.slave_address)
+        # self.client.write_register(address=0x02, value=1, slave=self.slave_address)
+        # self.client.write_register(address=0x03, value=1, slave=self.slave_address)
+        # self.client.write_register(address=0x04, value=1, slave=self.slave_address)
 
         print(self.base_system_status)
         print("Laser:", self.laser_on)
@@ -131,16 +136,19 @@ class Protocol_Y():
         self.client.write_register(address=0x02, value=self.end_effector_status_register, slave=self.slave_address)
 
     def read_y_axis_moving_status(self):
+        self.y_axis_moving_status_before = self.y_axis_moving_status
         y_axis_moving_status_binary = self.binary_crop(5, self.decimal_to_binary(self.register[0x10]))
         if y_axis_moving_status_binary[0] == "1":
-            self.y_axis_moving_status = "Jog"
+            self.y_axis_moving_status = "Jog Pick"
         elif y_axis_moving_status_binary[1] == "1":
-            self.y_axis_moving_status = "Home"
+            self.y_axis_moving_status = "Jog Place"
         elif y_axis_moving_status_binary[2] == "1":
-            self.y_axis_moving_status = "Go Pick"
+            self.y_axis_moving_status = "Home"
         elif y_axis_moving_status_binary[3] == "1":
-            self.y_axis_moving_status = "Go Place"
+            self.y_axis_moving_status = "Go Pick"
         elif y_axis_moving_status_binary[4] == "1":
+            self.y_axis_moving_status = "Go Place"
+        elif y_axis_moving_status_binary[5] == "1":
             self.y_axis_moving_status = "Go Point"
         else:
             self.y_axis_moving_status = "Idle"

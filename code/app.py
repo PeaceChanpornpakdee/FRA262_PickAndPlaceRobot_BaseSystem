@@ -80,9 +80,6 @@ class App(tk.Tk):
 
             self.handle_protocol_status()
 
-        # if self.homing or self.running:
-        #     self.navi.move_to(10, 10)
-
         # Loop every 10 ms
         self.after(10, self.task) 
         self.time_ms += 10
@@ -171,6 +168,7 @@ class App(tk.Tk):
             # Set Tray Press Button
         self.press_pick  = PressButton(canvas=self.canvas_command, x=330, y=82,  w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Pick Tray", text_size=12, active_default=True)
         self.press_place = PressButton(canvas=self.canvas_command, x=330, y=112, w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Place Tray", text_size=12, active_default=True)
+        self.jogging = False
             # Entry Point
         self.entry_x = Entry(master=self, canvas=self.canvas_command, x=364, y=82,  color=Color.blue)
         self.entry_y = Entry(master=self, canvas=self.canvas_command, x=364, y=112, color=Color.blue)
@@ -217,7 +215,7 @@ class App(tk.Tk):
         then move the target and change entry text
         """
         if self.operation_mode == "Point" and self.connection:
-            if not self.running and not self.homing:
+            if not self.running and not self.homing and not self.jogging:
                 # Convert Pixel to Grid
                 grid_x, grid_y = self.grid.map_2D_to_3D(event.x, event.y)
                 # Reduce to 1 decimal point
@@ -298,7 +296,7 @@ class App(tk.Tk):
                 self.press_run.deactivate()
             else:
                 self.message_error.hide()
-                if not self.running and not self.homing and self.connection:
+                if not self.running and not self.homing and not self.jogging and self.connection:
                     self.press_run.activate()
             # Return Validation Result
             return validate_result
@@ -306,7 +304,7 @@ class App(tk.Tk):
         else:
             self.message_error.hide()
             if self.show_tray_pick and self.show_tray_place:
-                if not self.running and not self.homing:
+                if not self.running and not self.homing and not self.jogging:
                     self.press_run.activate()
             else:
                 self.press_run.deactivate()
@@ -464,9 +462,7 @@ class App(tk.Tk):
                 self.handle_toggle_laser()
             self.protocol_y.write_base_system_status("Set Pick Tray")
             self.tray_pick.clear_tray()
-            # Wait for Origin & Orientation
-            self.tray_pick.create_tray()
-            self.show_tray_pick = True
+            self.jogging = True
             self.press_pick.pressed = False
 
     def handle_press_tray_place(self):
@@ -480,9 +476,7 @@ class App(tk.Tk):
                 self.handle_toggle_laser()
             self.protocol_y.write_base_system_status("Set Place Tray")
             self.tray_place.clear_tray()
-            # Wait for Origin & Orientation
-            self.tray_place.create_tray()
-            self.show_tray_place = True
+            self.jogging = True
             self.press_place.pressed = False
 
     def handle_press_home(self):
@@ -571,7 +565,7 @@ class App(tk.Tk):
         self.text_y_pos_num.activate(self.text_y_pos_num.text, Color.blue)
         self.text_y_spd_num.activate(self.text_y_spd_num.text, Color.blue)
         self.text_y_acc_num.activate(self.text_y_acc_num.text, Color.blue)
-        if not self.running and not self.homing:
+        if not self.running and not self.homing and not self.jogging:
             self.toggle_laser.activate()
             self.toggle_gripper.activate()
             self.press_arrow.activate()
@@ -591,20 +585,65 @@ class App(tk.Tk):
             self.navi.navigator_laser.show()
         else:
             self.navi.navigator_laser.hide()
+
         # Gripper
         if self.protocol_y.gripper_pick == "1" or self.protocol_y.gripper_place == "1":
+            self.message_navi.change_text("Gripper Pick")
+            self.message_laser.show()
+        elif self.protocol_y.gripper_place == "1":
+            self.message_navi.change_text("Gripper Place")
             self.message_laser.show()
         else:
             self.message_laser.hide()
+
         # Moving Status
         if self.protocol_y.y_axis_moving_status == "Idle":
+            # Hide navi message
             self.message_navi.hide()
+            # If stop
+            if self.protocol_y.y_axis_moving_status_before == "Jog Pick":
+                self.protocol_y.read_pick_tray_position()
+                self.tray_pick.origin_x = self.protocol_y.pick_tray_origin_x 
+                self.tray_pick.origin_y = self.protocol_y.pick_tray_origin_y
+                self.tray_pick.orientation = self.protocol_y.pick_tray_orientation
+                self.tray_pick.create_tray()
+                self.jogging = False
+                self.show_tray_pick = True
+            elif self.protocol_y.y_axis_moving_status_before == "Jog Place":
+                self.protocol_y.read_place_tray_position()
+                self.tray_place.origin_x = self.protocol_y.place_tray_origin_x 
+                self.tray_place.origin_y = self.protocol_y.place_tray_origin_y
+                self.tray_place.orientation = self.protocol_y.place_tray_orientation
+                self.tray_place.create_tray()
+                self.jogging = False
+                self.show_tray_place = True
         else:
-            if self.protocol_y.y_axis_moving_status == "Jog":
+            # Show navi message
+            if self.protocol_y.y_axis_moving_status == "Jog Pick":
+                self.message_navi.change_text("Jogging")
+            elif self.protocol_y.y_axis_moving_status == "Jog Place":
                 self.message_navi.change_text("Jogging")
             elif self.protocol_y.y_axis_moving_status == "Home":
                 self.message_navi.change_text("Homing")
+            elif self.protocol_y.y_axis_moving_status == "Go Pick":
+                self.message_navi.change_text("Going to Pick")
+            elif self.protocol_y.y_axis_moving_status == "Go Place":
+                self.message_navi.change_text("Going to Place")
+            elif self.protocol_y.y_axis_moving_status == "Go Point":
+                self.message_navi.change_text("Going to Point")
             self.message_navi.show()
+            # Update actual motion value
+            # self.protocol_x.read_x_axis_actual_motion()
+            self.protocol_y.read_y_axis_actual_motion()
+            # self.text_x_pos_num.change_text(self.protocol_x.x_axis_actual_pos)
+            self.text_y_pos_num.change_text(self.protocol_y.y_axis_actual_pos)
+            self.text_y_spd_num.change_text(self.protocol_y.y_axis_actual_spd)
+            self.text_y_acc_num.change_text(self.protocol_y.y_axis_actual_acc)
+            # Move navi
+            # self.navi.move_to(self.protocol_x.x_axis_actual_pos, self.protocol_y.y_axis_actual_pos)
+
+        
+
 
 if __name__ == "__main__":
     app = App()
