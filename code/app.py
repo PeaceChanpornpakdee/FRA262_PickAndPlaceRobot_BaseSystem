@@ -557,6 +557,9 @@ class App(tk.Tk):
             self.press_run.pressed = False
 
     def handle_finish_moving(self):
+        """
+        This function handles when finish moving to reactivate elements
+        """
         self.toggle_laser.activate()
         self.toggle_gripper.activate()
         self.press_arrow.activate()
