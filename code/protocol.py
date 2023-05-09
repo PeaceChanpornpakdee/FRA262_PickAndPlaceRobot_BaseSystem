@@ -1,27 +1,9 @@
 from pymodbus.client import ModbusSerialClient as ModbusClient
 
-class Protocol_Y():
+class Binary():
     """
-    Protocol Class
+    Binary Class
     """
-    def __init__(self, app):
-        self.app = app
-        self.port = "COM5"
-        self.port = "/dev/cu.usbmodem14203"
-
-        self.slave_address = 0x15
-        self.register = []
-
-        self.laser_on = "0"
-        self.gripper_pick = "0"
-        self.gripper_place = "0"
-        self.y_axis_moving_status_before = "Idle"
-        self.y_axis_moving_status = "Idle"
-
-        self.client= ModbusClient(method = "rtu", port=self.port,stopbits = 1, bytesize = 8, parity = 'E', baudrate= 19200)
-        self.client.connect()
-        print('Connection Status :', self.client.connect())
-
     def decimal_to_binary(self, decimal_num):
         """
         This function converts base 10 to base 2
@@ -49,6 +31,27 @@ class Protocol_Y():
         This function crops the last n digits of the binary number
         """
         return binary_num[len(binary_num)-digit:]
+
+class Protocol_Y(Binary):
+    """
+    Protocol Y Class
+    """
+    def __init__(self):
+        self.port = "COM5"
+        self.port = "/dev/cu.usbmodem14203"
+
+        self.slave_address = 0x15
+        self.register = []
+
+        self.laser_on = "0"
+        self.gripper_pick = "0"
+        self.gripper_place = "0"
+        self.y_axis_moving_status_before = "Idle"
+        self.y_axis_moving_status = "Idle"
+
+        self.client= ModbusClient(method = "rtu", port=self.port,stopbits = 1, bytesize = 8, parity = 'E', baudrate= 19200)
+        self.client.connect()
+        print('Connection Status :', self.client.connect())
         
     def heartbeat(self):
         if self.read_hearbeat() == 22881: # Read heartbeat as "Ya"
@@ -240,3 +243,54 @@ class Protocol_Y():
         self.client.write_register(address=0x44, value=self.x_axis_actual_pos_register, slave=self.slave_address)
         self.client.write_register(address=0x45, value=self.x_axis_actual_spd_register, slave=self.slave_address)
         self.client.write_register(address=0x46, value=self.x_axis_actual_acc_register, slave=self.slave_address)
+
+
+class Protocol_X(Binary):
+    """
+    Protocol X Class
+    """
+    def __init__(self):
+        self.port = "COM6"
+        self.port = "/dev/cu.usbmodem14103"
+
+        self.slave_address = 0x16
+        self.register = []
+
+        self.x_axis_moving_status_before = "Idle"
+        self.x_axis_moving_status = "Idle"
+
+    def write_x_axis_moving_status(self, command):
+        if command == "Home":
+            self.x_axis_moving_status_register = 0b10
+        elif command == "Run":
+            self.x_axis_moving_status_register = 0b01
+        self.client.write_register(address=0x00, value=self.x_axis_moving_status_register, slave=self.slave_address)
+
+    def read_x_axis_moving_status(self):
+        x_axis_moving_status_binary = self.binary_crop(2, self.decimal_to_binary(self.register[0x00]))
+        if x_axis_moving_status_binary[0] == "1":
+            self.x_axis_moving_status = "Home"
+        elif x_axis_moving_status_binary[1] == "1":
+            self.x_axis_moving_status = "Run"
+        else:
+            self.x_axis_moving_status = "Idle"
+
+    def read_x_axis_actual_motion(self):
+        x_axis_actual_pos_binary = self.decimal_to_binary(self.register[0x01])
+        self.x_axis_actual_pos = self.binary_crop(15, x_axis_actual_pos_binary)
+        self.x_axis_actual_pos = self.binary_to_decimal(self.x_axis_actual_pos) / 10
+        if x_axis_actual_pos_binary[0] == "1":  # Negative digit
+            self.x_axis_actual_pos = -self.x_axis_actual_pos
+        self.x_axis_actual_spd = self.register[0x02] / 10
+        self.x_axis_actual_acc = self.register[0x03] / 10
+
+    def write_x_axis_target_motion(self, pos, spd, acc):
+        self.x_axis_target_pos_register = abs(pos*10)
+        if pos < 0:
+            self.x_axis_target_pos_register += 0b1000000000000000
+        self.x_axis_target_spd_register = spd * 10
+        self.x_axis_target_acc_register = acc * 10
+        self.client.write_register(address=0x04, value=self.x_axis_target_pos_register, slave=self.slave_address)
+        self.client.write_register(address=0x05, value=self.x_axis_target_spd_register, slave=self.slave_address)
+        self.client.write_register(address=0x06, value=self.x_axis_target_acc_register, slave=self.slave_address)  
+        

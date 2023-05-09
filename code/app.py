@@ -13,7 +13,7 @@ from components.photo import Photo
 from components.entry import Entry
 
 from keyboard import Keyboard
-from protocol import Protocol_Y
+from protocol import Protocol_Y, Protocol_X
 
 class App(tk.Tk):
     def __init__(self):
@@ -40,8 +40,9 @@ class App(tk.Tk):
         # Counting Time
         self.time_ms = 0
         # Prepare Protocol
+        self.protocol_y = Protocol_Y()
+        self.protocol_x = Protocol_X()
         self.usb_connect = True
-        self.protocol_y = Protocol_Y(self)
         self.connection = True
         self.new_connection = True
 
@@ -633,16 +634,14 @@ class App(tk.Tk):
                 self.message_navi.change_text("Going to Point")
             self.message_navi.show()
             # Update actual motion value
-            # self.protocol_x.read_x_axis_actual_motion()
+            self.protocol_x.read_x_axis_actual_motion()
             self.protocol_y.read_y_axis_actual_motion()
-            # self.text_x_pos_num.change_text(self.protocol_x.x_axis_actual_pos)
+            self.text_x_pos_num.change_text(self.protocol_x.x_axis_actual_pos)
             self.text_y_pos_num.change_text(self.protocol_y.y_axis_actual_pos)
             self.text_y_spd_num.change_text(self.protocol_y.y_axis_actual_spd)
             self.text_y_acc_num.change_text(self.protocol_y.y_axis_actual_acc)
             # Move navi
-            # self.navi.move_to(self.protocol_x.x_axis_actual_pos, self.protocol_y.y_axis_actual_pos)
-
-        
+            self.navi.move_to(self.protocol_x.x_axis_actual_pos, self.protocol_y.y_axis_actual_pos)
 
 
 if __name__ == "__main__":
