@@ -464,6 +464,15 @@ class App(tk.Tk):
             self.protocol_y.write_base_system_status("Set Pick Tray")
             self.tray_pick.clear_tray()
             self.jogging = True
+            self.toggle_laser.deactivate()
+            self.toggle_gripper.deactivate()
+            self.press_arrow.deactivate()
+            self.radio_tray.deactivate()
+            self.radio_point.deactivate()
+            self.press_pick.deactivate()
+            self.press_place.deactivate()
+            self.press_run.deactivate()
+            self.press_home.deactivate()
             self.press_pick.pressed = False
 
     def handle_press_tray_place(self):
@@ -478,6 +487,15 @@ class App(tk.Tk):
             self.protocol_y.write_base_system_status("Set Place Tray")
             self.tray_place.clear_tray()
             self.jogging = True
+            self.toggle_laser.deactivate()
+            self.toggle_gripper.deactivate()
+            self.press_arrow.deactivate()
+            self.radio_tray.deactivate()
+            self.radio_point.deactivate()
+            self.press_pick.deactivate()
+            self.press_place.deactivate()
+            self.press_run.deactivate()
+            self.press_home.deactivate()
             self.press_place.pressed = False
 
     def handle_press_home(self):
@@ -504,8 +522,8 @@ class App(tk.Tk):
             self.entry_y.disable()
             self.press_run.deactivate()
             self.press_home.deactivate()
-            self.message_navi.change_text("Homing")
-            self.message_navi.show()
+            # self.message_navi.change_text("Homing")
+            # self.message_navi.show()
             self.press_home.pressed = False
 
     def handle_press_run(self):
@@ -534,9 +552,22 @@ class App(tk.Tk):
             self.entry_y.disable()
             self.press_run.deactivate()
             self.press_home.deactivate()
-            self.message_navi.change_text("Going to Pick")
-            self.message_navi.show()
+            # self.message_navi.change_text("Going to Pick")
+            # self.message_navi.show()
             self.press_run.pressed = False
+
+    def handle_finish_moving(self):
+        self.toggle_laser.activate()
+        self.toggle_gripper.activate()
+        self.press_arrow.activate()
+        self.radio_tray.activate()
+        self.radio_point.activate()
+        self.press_pick.activate()
+        self.press_place.activate()
+        self.entry_x.enable()
+        self.entry_y.enable()
+        self.press_run.activate()
+        self.press_home.activate()
 
     def handle_disconnected(self):
         """
@@ -601,23 +632,25 @@ class App(tk.Tk):
         if self.protocol_y.y_axis_moving_status == "Idle":
             # Hide navi message
             self.message_navi.hide()
-            # If stop
-            if self.protocol_y.y_axis_moving_status_before == "Jog Pick":
-                self.protocol_y.read_pick_tray_position()
-                self.tray_pick.origin_x = self.protocol_y.pick_tray_origin_x 
-                self.tray_pick.origin_y = self.protocol_y.pick_tray_origin_y
-                self.tray_pick.orientation = self.protocol_y.pick_tray_orientation
-                self.tray_pick.create_tray()
-                self.jogging = False
-                self.show_tray_pick = True
-            elif self.protocol_y.y_axis_moving_status_before == "Jog Place":
-                self.protocol_y.read_place_tray_position()
-                self.tray_place.origin_x = self.protocol_y.place_tray_origin_x 
-                self.tray_place.origin_y = self.protocol_y.place_tray_origin_y
-                self.tray_place.orientation = self.protocol_y.place_tray_orientation
-                self.tray_place.create_tray()
-                self.jogging = False
-                self.show_tray_place = True
+            # When finish moving
+            if self.protocol_y.y_axis_moving_status_before != "Idle":
+                self.handle_finish_moving()
+                if self.protocol_y.y_axis_moving_status_before == "Jog Pick":
+                    self.protocol_y.read_pick_tray_position()
+                    self.tray_pick.origin_x = self.protocol_y.pick_tray_origin_x 
+                    self.tray_pick.origin_y = self.protocol_y.pick_tray_origin_y
+                    self.tray_pick.orientation = self.protocol_y.pick_tray_orientation
+                    self.tray_pick.create_tray()
+                    self.jogging = False
+                    self.show_tray_pick = True
+                elif self.protocol_y.y_axis_moving_status_before == "Jog Place":
+                    self.protocol_y.read_place_tray_position()
+                    self.tray_place.origin_x = self.protocol_y.place_tray_origin_x 
+                    self.tray_place.origin_y = self.protocol_y.place_tray_origin_y
+                    self.tray_place.orientation = self.protocol_y.place_tray_orientation
+                    self.tray_place.create_tray()
+                    self.jogging = False
+                    self.show_tray_place = True
         else:
             # Show navi message
             if self.protocol_y.y_axis_moving_status == "Jog Pick":
