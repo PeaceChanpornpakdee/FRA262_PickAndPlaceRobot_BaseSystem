@@ -49,7 +49,7 @@ class Protocol_Y(Binary):
         self.y_axis_moving_status_before = "Idle"
         self.y_axis_moving_status = "Idle"
 
-        self.client= ModbusClient(method = "rtu", port=self.port,stopbits = 1, bytesize = 8, parity = 'E', baudrate= 19200)
+        self.client= ModbusClient(method="rtu", port=self.port, stopbits=1, bytesize=8, parity="E", baudrate=19200)
         self.client.connect()
         print('Connection Status :', self.client.connect())
         
@@ -258,6 +258,12 @@ class Protocol_X(Binary):
 
         self.x_axis_moving_status_before = "Idle"
         self.x_axis_moving_status = "Idle"
+
+        # self.client= ModbusClient(method="rtu", port=self.port, stopbits=1, bytesize=8, parity="E", baudrate=19200)
+        # self.client.connect()
+
+    # def read_holding_registers(self):
+    #     self.register = self.client.read_holding_registers(address=0x00, count=0x06, slave=self.slave_address).registers
 
     def write_x_axis_moving_status(self, command):
         if command == "Home":
