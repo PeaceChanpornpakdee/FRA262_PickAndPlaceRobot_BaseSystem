@@ -254,7 +254,7 @@ class Protocol_X(Binary):
         self.port = "/dev/cu.usbmodem14103"
 
         self.slave_address = 0x16
-        self.register = []
+        self.register = [0,0,0,0,0,0] # Temporary (should be [])
 
         self.x_axis_moving_status_before = "Idle"
         self.x_axis_moving_status = "Idle"
