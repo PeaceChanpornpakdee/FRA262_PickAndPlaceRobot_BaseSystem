@@ -82,7 +82,7 @@ class App(tk.Tk):
             self.handle_protocol_status()
 
         # Loop every 10 ms
-        self.after(10, self.task) 
+        self.after(10, self.task)
         self.time_ms += 10
 
     def create_components(self):
@@ -641,16 +641,16 @@ class App(tk.Tk):
                 self.handle_finish_moving()
                 if self.protocol_y.y_axis_moving_status_before == "Jog Pick":
                     self.protocol_y.read_pick_tray_position()
-                    self.tray_pick.origin_x = self.protocol_y.pick_tray_origin_x 
-                    self.tray_pick.origin_y = self.protocol_y.pick_tray_origin_y
+                    self.tray_pick.origin_x = self.protocol_y.pick_tray_origin_x / 10
+                    self.tray_pick.origin_y = self.protocol_y.pick_tray_origin_y / 10
                     self.tray_pick.orientation = self.protocol_y.pick_tray_orientation
                     self.tray_pick.create_tray()
                     self.jogging = False
                     self.show_tray_pick = True
                 elif self.protocol_y.y_axis_moving_status_before == "Jog Place":
                     self.protocol_y.read_place_tray_position()
-                    self.tray_place.origin_x = self.protocol_y.place_tray_origin_x 
-                    self.tray_place.origin_y = self.protocol_y.place_tray_origin_y
+                    self.tray_place.origin_x = self.protocol_y.place_tray_origin_x / 10
+                    self.tray_place.origin_y = self.protocol_y.place_tray_origin_y / 10
                     self.tray_place.orientation = self.protocol_y.place_tray_orientation
                     self.tray_place.create_tray()
                     self.jogging = False
@@ -671,14 +671,14 @@ class App(tk.Tk):
                 self.message_navi.change_text("Going to Point")
             self.message_navi.show()
             # Update actual motion value
-            self.protocol_x.read_x_axis_actual_motion()
+            # self.protocol_x.read_x_axis_actual_motion()
             self.protocol_y.read_y_axis_actual_motion()
             self.text_x_pos_num.change_text(self.protocol_x.x_axis_actual_pos)
             self.text_y_pos_num.change_text(self.protocol_y.y_axis_actual_pos)
             self.text_y_spd_num.change_text(self.protocol_y.y_axis_actual_spd)
             self.text_y_acc_num.change_text(self.protocol_y.y_axis_actual_acc)
             # Move navi
-            self.navi.move_to(self.protocol_x.x_axis_actual_pos, self.protocol_y.y_axis_actual_pos)
+            self.navi.move_to(self.protocol_x.x_axis_actual_pos/10, self.protocol_y.y_axis_actual_pos/10)
 
 
 if __name__ == "__main__":

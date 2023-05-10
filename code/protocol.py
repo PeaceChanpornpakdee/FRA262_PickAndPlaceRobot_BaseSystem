@@ -49,7 +49,7 @@ class Protocol_Y(Binary):
         self.y_axis_moving_status_before = "Idle"
         self.y_axis_moving_status = "Idle"
 
-        self.client= ModbusClient(method="rtu", port=self.port, stopbits=1, bytesize=8, parity="E", baudrate=19200)
+        self.client = ModbusClient(method="rtu", port=self.port, stopbits=1, bytesize=8, parity="E", baudrate=19200)
         self.client.connect()
         print('Connection Status :', self.client.connect())
 
@@ -262,6 +262,8 @@ class Protocol_X(Binary):
 
         self.x_axis_moving_status_before = "Idle"
         self.x_axis_moving_status = "Idle"
+
+        self.x_axis_actual_pos = 0
 
         # self.client= ModbusClient(method="rtu", port=self.port, stopbits=1, bytesize=8, parity="E", baudrate=19200)
         # self.client.connect()
