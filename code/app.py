@@ -404,14 +404,12 @@ class App(tk.Tk):
                     self.press_arrow.photo_arrow_place.show()
                     self.direction_arrow = "place"
                     self.press_arrow.change_text("     Place")
-                    self.message_laser.change_text("Gripper Pick")
                 elif self.direction_arrow == "place":
                     self.protocol_y.write_end_effector_status("Gripper Place")
                     self.press_arrow.photo_arrow_place.hide()
                     self.press_arrow.photo_arrow_pick.show()
                     self.direction_arrow = "pick"
                     self.press_arrow.change_text("     Pick")
-                    self.message_laser.change_text("Gripper Place")
                 self.message_laser.show()
             self.press_arrow.pressed = False
 
@@ -623,12 +621,15 @@ class App(tk.Tk):
 
         # Gripper
         if self.protocol_y.gripper_pick == "1" or self.protocol_y.gripper_place == "1":
-            self.message_navi.change_text("Gripper Pick")
+            self.press_arrow.deactivate()
+            self.message_laser.change_text("Gripper Pick")
             self.message_laser.show()
         elif self.protocol_y.gripper_place == "1":
-            self.message_navi.change_text("Gripper Place")
+            self.press_arrow.deactivate()
+            self.message_laser.change_text("Gripper Place")
             self.message_laser.show()
         else:
+            self.press_arrow.activate()
             self.message_laser.hide()
 
         # Moving Status

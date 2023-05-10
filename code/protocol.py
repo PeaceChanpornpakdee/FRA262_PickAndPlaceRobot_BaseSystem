@@ -52,14 +52,15 @@ class Protocol_Y(Binary):
         self.client= ModbusClient(method="rtu", port=self.port, stopbits=1, bytesize=8, parity="E", baudrate=19200)
         self.client.connect()
         print('Connection Status :', self.client.connect())
+
+        self.write_heartbeat() # Write heartbeat as "Hi"
         
     def heartbeat(self):
         if self.read_hearbeat() == 22881: # Read heartbeat as "Ya"
             self.write_heartbeat() # Write heartbeat as "Hi"
             return True
         else:
-            # return False
-            return True
+            return False
 
     def routine(self):
         self.register = self.client.read_holding_registers(address=0x00, count=0x46, slave=self.slave_address).registers
@@ -82,7 +83,10 @@ class Protocol_Y(Binary):
 
 
     def read_hearbeat(self):
-        hearbeat_value = self.client.read_holding_registers(address=0x00, count=1, slave=self.slave_address).registers
+        try:
+            hearbeat_value = self.client.read_holding_registers(address=0x00, count=1, slave=self.slave_address).registers
+        except:
+            return "Error"
         return hearbeat_value[0]
     
     def write_heartbeat(self):
@@ -140,7 +144,7 @@ class Protocol_Y(Binary):
 
     def read_y_axis_moving_status(self):
         self.y_axis_moving_status_before = self.y_axis_moving_status
-        y_axis_moving_status_binary = self.binary_crop(5, self.decimal_to_binary(self.register[0x10]))
+        y_axis_moving_status_binary = self.binary_crop(6, self.decimal_to_binary(self.register[0x10]))
         if y_axis_moving_status_binary[0] == "1":
             self.y_axis_moving_status = "Jog Pick"
         elif y_axis_moving_status_binary[1] == "1":
