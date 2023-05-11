@@ -40,6 +40,9 @@ class Protocol_Y(Binary):
         self.port = "COM5"
         self.port = "/dev/cu.usbmodem14203"
 
+        self.usb_connect = False
+        self.usb_connect_before = False
+
         self.slave_address = 0x15
         self.register = []
 
@@ -90,7 +93,11 @@ class Protocol_Y(Binary):
         return hearbeat_value[0]
     
     def write_heartbeat(self):
-        self.client.write_register(address=0x00, value=18537, slave=self.slave_address)
+        try:
+            self.client.write_register(address=0x00, value=18537, slave=self.slave_address)
+            self.usb_connect = True
+        except:
+            self.usb_connect = False
 
     def read_base_system_status(self):
         base_system_status_binary = self.binary_crop(5, self.decimal_to_binary(self.register[0x01]))

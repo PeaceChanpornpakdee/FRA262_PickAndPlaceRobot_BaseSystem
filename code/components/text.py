@@ -108,6 +108,8 @@ class MessageBox():
             self.w = 90
         elif self.text == "Gripper Place":
             self.w = 95
+        elif self.text == "Please Connect the USB":
+            self.w = 160
         elif self.text == Error.code_1:
             self.w = 237
         elif self.text == Error.code_2:

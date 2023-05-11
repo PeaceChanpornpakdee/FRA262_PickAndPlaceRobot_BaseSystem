@@ -42,7 +42,7 @@ class App(tk.Tk):
         # Prepare Protocol
         self.protocol_y = Protocol_Y()
         self.protocol_x = Protocol_X()
-        self.usb_connect = True
+        self.usb_connect = self.protocol_y.usb_connect
         self.connection = True
         self.new_connection = True
 
@@ -59,7 +59,11 @@ class App(tk.Tk):
         # Validate Entry Value
         self.validate_entry()
         # Perform Protocol Every 1 s
-        if self.usb_connect:
+        if self.protocol_y.usb_connect:
+            # Reconnect USB
+            if self.protocol_y.usb_connect_before == False:
+                self.handle_connected()
+                self.protocol_y.usb_connect_before = True
             if self.time_ms >= 200:
                 import time
                 start_time = time.time()
@@ -78,6 +82,12 @@ class App(tk.Tk):
                     self.handle_disconnected()
                 else: # If Reconnected
                     self.handle_connected()
+
+        else:
+            self.message_connection.change_text("Please Connect the USB")
+            self.handle_disconnected()
+            self.protocol_y.write_heartbeat()
+            self.protocol_y.usb_connect_before = False
 
             self.handle_protocol_status()
 
@@ -144,7 +154,7 @@ class App(tk.Tk):
         self.message_error = MessageBox(canvas=self.canvas_field, x=810, y=490, text="Input x for Point Mode must be between -15.0 and 15.0", color=Color.red, direction="SE", align="Right", size=12)
         self.message_error.hide()
         # Connection Message Box
-        self.message_connection = MessageBox(canvas=self.canvas_field, x=334, y=45, text="Connection Disconnected", color=Color.red, direction="C", align="Right", size=12)
+        self.message_connection = MessageBox(canvas=self.canvas_field, x=330, y=45, text="Connection Disconnected", color=Color.red, direction="C", align="Left", size=12)
         self.message_connection.hide()
 
         # Command Canvas (Lower)
