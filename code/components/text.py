@@ -96,8 +96,10 @@ class MessageBox():
         self.y = y
 
     def find_width(self):
-        if self.text == "Going Home":
-            self.w = 87
+        if self.text == "Jogging":
+            self.w = 65
+        elif self.text == "Homing":
+            self.w = 60
         elif self.text == "Going to Pick":
             self.w = 95
         elif self.text == "Going to Place":

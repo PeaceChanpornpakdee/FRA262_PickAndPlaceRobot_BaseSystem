@@ -51,6 +51,9 @@ class Protocol_Y(Binary):
         self.gripper_place = "0"
         self.y_axis_moving_status_before = "Idle"
         self.y_axis_moving_status = "Idle"
+        self.y_axis_actual_pos = 0
+        self.y_axis_actual_spd = 0
+        self.y_axis_actual_acc = 0
 
         self.client = ModbusClient(method="rtu", port=self.port, stopbits=1, bytesize=8, parity="E", baudrate=19200)
         self.client.connect()
@@ -71,6 +74,7 @@ class Protocol_Y(Binary):
         self.read_end_effector_status()
         self.read_y_axis_moving_status()
         self.read_x_axis_moving_status()
+        self.read_y_axis_actual_motion()
         # self.client.write_register(address=0x01, value=1, slave=self.slave_address)
         # self.client.write_register(address=0x02, value=1, slave=self.slave_address)
         # self.client.write_register(address=0x03, value=1, slave=self.slave_address)
@@ -78,17 +82,17 @@ class Protocol_Y(Binary):
 
         print(self.base_system_status)
         print("Laser:", self.laser_on)
-        print("Gripper Power:", self.gripper_power)
-        print("Gripper Pick :", self.gripper_pick)
-        print("Gripper Place:", self.gripper_place)
-        print(self.y_axis_moving_status)
-        print(self.x_axis_moving_status)
+        print("Gripper Power:", self.gripper_power, "\tPick:", self.gripper_pick, "\tPlace:", self.gripper_place)
+        print("Pos:", self.y_axis_actual_pos, "\tSpd:", self.y_axis_actual_spd, "\tAcc:", self.y_axis_actual_acc)
+        print("Y-Axis Moving:", self.y_axis_moving_status)
+        print("X-Axis Moving:", self.x_axis_moving_status)
 
 
     def read_hearbeat(self):
         try:
             hearbeat_value = self.client.read_holding_registers(address=0x00, count=1, slave=self.slave_address).registers
-        except:
+        except Exception as e:
+            print(e)
             return "Error"
         return hearbeat_value[0]
     
@@ -100,7 +104,7 @@ class Protocol_Y(Binary):
             self.usb_connect = False
 
     def read_base_system_status(self):
-        base_system_status_binary = self.binary_crop(5, self.decimal_to_binary(self.register[0x01]))
+        base_system_status_binary = self.binary_crop(5, self.decimal_to_binary(self.register[0x01]))[::-1]
         if base_system_status_binary[0] == "1":
             self.base_system_status = "Set Pick Tray"
         elif base_system_status_binary[1] == "1":
@@ -116,19 +120,19 @@ class Protocol_Y(Binary):
 
     def write_base_system_status(self, command):
         if command == "Set Pick Tray":
-            self.base_system_status_register = 0b10000
+            self.base_system_status_register = 0b00001
         elif command == "Set Place Tray":
-            self.base_system_status_register = 0b01000
+            self.base_system_status_register = 0b00010
         elif command == "Home":
             self.base_system_status_register = 0b00100
         elif command == "Run Tray Mode":
-            self.base_system_status_register = 0b00010
+            self.base_system_status_register = 0b01000
         elif command == "Run Point Mode":
-            self.base_system_status_register = 0b00001
+            self.base_system_status_register = 0b10000
         self.client.write_register(address=0x01, value=self.base_system_status_register, slave=self.slave_address)
 
     def read_end_effector_status(self):
-        end_effector_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x02]))
+        end_effector_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x02]))[::-1]
         self.laser_on      = end_effector_status_binary[0]
         self.gripper_power = end_effector_status_binary[1]
         self.gripper_pick  = end_effector_status_binary[2]
@@ -136,22 +140,22 @@ class Protocol_Y(Binary):
 
     def write_end_effector_status(self, command):
         if command == "Laser On":
-            self.end_effector_status_register = 0b1000
+            self.end_effector_status_register = 0b0001
         elif command == "Laser Off":
             self.end_effector_status_register = 0b0000
         elif command == "Gripper Power On":
-            self.end_effector_status_register = 0b0100
+            self.end_effector_status_register = 0b0010
         elif command == "Gripper Power Off":
             self.end_effector_status_register = 0b0000
         elif command == "Gripper Pick":
             self.end_effector_status_register = 0b0110
         elif command == "Gripper Place":
-            self.end_effector_status_register = 0b0101
+            self.end_effector_status_register = 0b1010
         self.client.write_register(address=0x02, value=self.end_effector_status_register, slave=self.slave_address)
 
     def read_y_axis_moving_status(self):
         self.y_axis_moving_status_before = self.y_axis_moving_status
-        y_axis_moving_status_binary = self.binary_crop(6, self.decimal_to_binary(self.register[0x10]))
+        y_axis_moving_status_binary = self.binary_crop(6, self.decimal_to_binary(self.register[0x10]))[::-1]
         if y_axis_moving_status_binary[0] == "1":
             self.y_axis_moving_status = "Jog Pick"
         elif y_axis_moving_status_binary[1] == "1":
@@ -219,7 +223,7 @@ class Protocol_Y(Binary):
         self.client.write_register(address=0x31, value=self.goal_point_y_register, slave=self.slave_address)
 
     def read_x_axis_moving_status(self):
-        x_axis_moving_status_binary = self.binary_crop(2, self.decimal_to_binary(self.register[0x40]))
+        x_axis_moving_status_binary = self.binary_crop(2, self.decimal_to_binary(self.register[0x40]))[::-1]
         if x_axis_moving_status_binary[0] == "1":
             self.x_axis_moving_status = "Home"
         elif x_axis_moving_status_binary[1] == "1":
@@ -229,9 +233,9 @@ class Protocol_Y(Binary):
 
     def write_x_axis_moving_status(self, command):
         if command == "Home":
-            self.x_axis_moving_status_register = 0b10
-        elif command == "Run":
             self.x_axis_moving_status_register = 0b01
+        elif command == "Run":
+            self.x_axis_moving_status_register = 0b10
         elif command == "Idle":
             self.x_axis_moving_status_register = 0b00
         self.client.write_register(address=0x46, value=self.x_axis_moving_status_register, slave=self.slave_address)

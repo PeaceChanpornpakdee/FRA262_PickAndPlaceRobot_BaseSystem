@@ -59,11 +59,14 @@ class App(tk.Tk):
         # Validate Entry Value
         self.validate_entry()
         # Perform Protocol Every 1 s
+
+        # Check USB connection
         if self.protocol_y.usb_connect:
-            # Reconnect USB
+            # When reconnect USB
             if self.protocol_y.usb_connect_before == False:
                 self.handle_connected()
                 self.protocol_y.usb_connect_before = True
+            # Do protocol as normal every 200 ms
             if self.time_ms >= 200:
                 import time
                 start_time = time.time()
@@ -82,14 +85,14 @@ class App(tk.Tk):
                     self.handle_disconnected()
                 else: # If Reconnected
                     self.handle_connected()
+            
+            self.handle_protocol_status()
 
         else:
             self.message_connection.change_text("Please Connect the USB")
             self.handle_disconnected()
             self.protocol_y.write_heartbeat()
             self.protocol_y.usb_connect_before = False
-
-            self.handle_protocol_status()
 
         # Loop every 10 ms
         self.after(10, self.task)
@@ -363,6 +366,30 @@ class App(tk.Tk):
         """
         self.protocol_y.write_end_effector_status("Gripper Power Off")
         self.toggle_gripper.turn_off()
+
+    def movement(self, grid_x, grid_y):
+        self.navi.move_to(grid_x, grid_y)
+        pixel_x, pixel_y = self.grid.map_3D_to_2D(grid_x, grid_y, self.navi.grid_z)
+        if grid_x <= 0:
+            # Message box = Navi's right
+            self.message_navi.align = "Left"
+            self.message_laser.align = "Left"
+            self.message_navi.move_to (pixel_x+14, pixel_y-10)
+            self.message_laser.move_to(pixel_x+14, pixel_y+38)
+            self.message_navi.generate_tail_points()
+            self.message_laser.generate_tail_points()
+            self.message_navi.tail.recreate (self.message_navi.tail_points["NW"])
+            self.message_laser.tail.recreate(self.message_laser.tail_points["SW"])
+        else:
+            # Message box = Navi's left
+            self.message_navi.align = "Right"
+            self.message_laser.align = "Right"
+            self.message_navi.move_to (pixel_x-14, pixel_y-10)
+            self.message_laser.move_to(pixel_x-14, pixel_y+38)
+            self.message_navi.generate_tail_points()
+            self.message_laser.generate_tail_points()
+            self.message_navi.tail.recreate (self.message_navi.tail_points["NE"])
+            self.message_laser.tail.recreate(self.message_laser.tail_points["SE"])
 
     def handle_toggle_laser(self):
         """
@@ -642,6 +669,16 @@ class App(tk.Tk):
             self.press_arrow.activate()
             self.message_laser.hide()
 
+        # Actual motion value
+        # self.protocol_x.read_x_axis_actual_motion()
+        # self.protocol_y.read_y_axis_actual_motion()
+        self.text_x_pos_num.change_text(self.protocol_x.x_axis_actual_pos)
+        self.text_y_pos_num.change_text(self.protocol_y.y_axis_actual_pos)
+        self.text_y_spd_num.change_text(self.protocol_y.y_axis_actual_spd)
+        self.text_y_acc_num.change_text(self.protocol_y.y_axis_actual_acc)
+        # Move navi
+        self.movement(self.protocol_x.x_axis_actual_pos/10, self.protocol_y.y_axis_actual_pos/10)
+
         # Moving Status
         if self.protocol_y.y_axis_moving_status == "Idle":
             # Hide navi message
@@ -680,16 +717,6 @@ class App(tk.Tk):
             elif self.protocol_y.y_axis_moving_status == "Go Point":
                 self.message_navi.change_text("Going to Point")
             self.message_navi.show()
-            # Update actual motion value
-            # self.protocol_x.read_x_axis_actual_motion()
-            self.protocol_y.read_y_axis_actual_motion()
-            self.text_x_pos_num.change_text(self.protocol_x.x_axis_actual_pos)
-            self.text_y_pos_num.change_text(self.protocol_y.y_axis_actual_pos)
-            self.text_y_spd_num.change_text(self.protocol_y.y_axis_actual_spd)
-            self.text_y_acc_num.change_text(self.protocol_y.y_axis_actual_acc)
-            # Move navi
-            self.navi.move_to(self.protocol_x.x_axis_actual_pos/10, self.protocol_y.y_axis_actual_pos/10)
-
 
 if __name__ == "__main__":
     app = App()
