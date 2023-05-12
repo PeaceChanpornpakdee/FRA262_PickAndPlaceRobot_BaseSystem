@@ -82,7 +82,7 @@ class Protocol_Y(Binary):
 
         print(self.base_system_status)
         print("Laser:", self.laser_on)
-        print("Gripper Power:", self.gripper_power, "\tPick:", self.gripper_pick, "\tPlace:", self.gripper_place)
+        print("Gripper:", self.gripper_power, "\tPick:", self.gripper_pick, "\tPlace:", self.gripper_place)
         print("Pos:", self.y_axis_actual_pos, "\tSpd:", self.y_axis_actual_spd, "\tAcc:", self.y_axis_actual_acc)
         print("Y-Axis Moving:", self.y_axis_moving_status)
         print("X-Axis Moving:", self.x_axis_moving_status)

@@ -56,8 +56,6 @@ class App(tk.Tk):
         self.handle_press_tray_place()
         self.handle_press_home()
         self.handle_press_run()
-        # Validate Entry Value
-        self.validate_entry()
         # Perform Protocol Every 1 s
 
         # Check USB connection
@@ -93,6 +91,9 @@ class App(tk.Tk):
             self.handle_disconnected()
             self.protocol_y.write_heartbeat()
             self.protocol_y.usb_connect_before = False
+
+        # Validate Entry Value
+        self.validate_entry()
 
         # Loop every 10 ms
         self.after(10, self.task)
@@ -702,6 +703,12 @@ class App(tk.Tk):
                     self.tray_place.create_tray()
                     self.jogging = False
                     self.show_tray_place = True
+                elif self.protocol_y.y_axis_moving_status_before == "Home":
+                    self.homing = False
+                elif self.protocol_y.y_axis_moving_status_before == "Run Tray Mode":
+                    self.running = False
+                elif self.protocol_y.y_axis_moving_status_before == "Run Point Mode":
+                    self.running = False
         else:
             # Show navi message
             if self.protocol_y.y_axis_moving_status == "Jog Pick":
