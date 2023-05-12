@@ -1,3 +1,4 @@
+import platform
 from pymodbus.client import ModbusSerialClient as ModbusClient
 
 class Binary():
@@ -53,8 +54,11 @@ class Protocol_Y(Binary):
     Protocol Y Class
     """
     def __init__(self):
-        self.port = "COM5"
-        self.port = "/dev/cu.usbmodem14203"
+        self.os = platform.platform()[0].upper()
+        if self.os == 'M': #Mac
+            self.port = "/dev/cu.usbmodem14203"
+        elif self.os == 'W': #Windows        
+            self.port = "COM5"
 
         self.usb_connect = False
         self.usb_connect_before = False
@@ -261,8 +265,11 @@ class Protocol_X(Binary):
     Protocol X Class
     """
     def __init__(self):
-        self.port = "COM6"
-        self.port = "/dev/cu.usbmodem14103"
+        self.os = platform.platform()[0].upper()
+        if self.os == 'M': #Mac
+            self.port = "/dev/cu.usbmodem14103"
+        elif self.os == 'W': #Windows        
+            self.port = "COM6"
 
         self.slave_address = 0x16
         self.register = [0,0,0,0,0,0] # Temporary (should be [])
