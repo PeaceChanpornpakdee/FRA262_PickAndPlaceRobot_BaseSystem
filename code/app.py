@@ -578,13 +578,13 @@ class App(tk.Tk):
             if self.operation_mode == "Tray":
                 self.protocol_y.write_base_system_status("Run Tray Mode")
             elif self.operation_mode == "Point":
-                self.protocol_y.write_goal_point(self.point_target_x, self.point_target_y)
+                self.protocol_y.write_goal_point(self.point_target_x*10, self.point_target_y*10)
                 self.protocol_y.write_base_system_status("Run Point Mode")
             self.running = True
-            # Close Laser & Open Gripper First
-            if not self.toggle_gripper.on:
-                self.toggle_gripper.pressed = True
-                self.handle_toggle_gripper()
+            # # Close Laser & Open Gripper First
+            # if not self.toggle_gripper.on:
+            #     self.toggle_gripper.pressed = True
+            #     self.handle_toggle_gripper()
             self.toggle_laser.deactivate()
             self.toggle_gripper.deactivate()
             self.press_arrow.deactivate()
