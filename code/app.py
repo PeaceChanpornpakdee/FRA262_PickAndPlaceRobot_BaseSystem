@@ -639,7 +639,7 @@ class App(tk.Tk):
         if not self.running and not self.homing and not self.jogging:
             self.toggle_laser.activate()
             self.toggle_gripper.activate()
-            self.press_arrow.activate()
+            # self.press_arrow.activate()
             self.press_pick.activate()
             self.press_place.activate()
             self.entry_x.enable()
@@ -667,12 +667,11 @@ class App(tk.Tk):
             self.message_laser.change_text("Gripper Place")
             self.message_laser.show()
         else:
-            self.press_arrow.activate()
+            # self.press_arrow.activate()
             self.message_laser.hide()
 
         # Actual motion value
         # self.protocol_x.read_x_axis_actual_motion()
-        # self.protocol_y.read_y_axis_actual_motion()
         self.text_x_pos_num.change_text(self.protocol_x.x_axis_actual_pos)
         self.text_y_pos_num.change_text(self.protocol_y.y_axis_actual_pos)
         self.text_y_spd_num.change_text(self.protocol_y.y_axis_actual_spd)
@@ -709,6 +708,7 @@ class App(tk.Tk):
                     self.running = False
                 elif self.protocol_y.y_axis_moving_status_before == "Run Point Mode":
                     self.running = False
+                self.protocol_y.y_axis_moving_status_before = "Idle"
         else:
             # Show navi message
             if self.protocol_y.y_axis_moving_status == "Jog Pick":
