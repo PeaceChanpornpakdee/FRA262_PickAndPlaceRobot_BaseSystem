@@ -566,8 +566,6 @@ class App(tk.Tk):
             self.entry_y.disable()
             self.press_run.deactivate()
             self.press_home.deactivate()
-            # self.message_navi.change_text("Homing")
-            # self.message_navi.show()
             self.press_home.pressed = False
 
     def handle_press_run(self):
@@ -596,8 +594,6 @@ class App(tk.Tk):
             self.entry_y.disable()
             self.press_run.deactivate()
             self.press_home.deactivate()
-            # self.message_navi.change_text("Going to Pick")
-            # self.message_navi.show()
             self.press_run.pressed = False
 
     def handle_finish_moving(self):

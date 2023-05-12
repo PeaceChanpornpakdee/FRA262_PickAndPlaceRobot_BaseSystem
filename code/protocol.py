@@ -33,11 +33,17 @@ class Binary():
         return binary_num[len(binary_num)-digit:]
 
     def binary_twos_complement(self, number):
+        """
+        This functions converts the (negative) number to its 16-bit two's complement representation
+        """
         if number < 0:
             number = (1 << 16) + number  # Adding 2^16 to the negative number
         return number
     
     def binary_reverse_twos_complement(self, number):
+        """
+        This functions converts the 16-bit two's complement number back to its original signed representation 
+        """
         if number & (1 << 15):  # Check if the most significant bit is 1
             number = number - (1 << 16)  # Subtract 2^16 from the number
         return number
@@ -198,47 +204,23 @@ class Protocol_Y(Binary):
 
     def read_pick_tray_position(self):
         # Origin x
-        # pick_tray_origin_x_binary = self.decimal_to_binary(self.register[0x20])
-        # self.pick_tray_origin_x = self.binary_crop(15, pick_tray_origin_x_binary)
-        # self.pick_tray_origin_x = self.binary_to_decimal(self.pick_tray_origin_x) / 10
-        # if pick_tray_origin_x_binary[0] == "1": # Negative digit
-        #     self.pick_tray_origin_x = -self.pick_tray_origin_x
         self.pick_tray_origin_x = self.binary_reverse_twos_complement(self.register[0x20]) / 10
         # Origin y
-        # pick_tray_origin_y_binary = self.decimal_to_binary(self.register[0x21])
-        # self.pick_tray_origin_y = self.binary_crop(15, pick_tray_origin_y_binary)
-        # self.pick_tray_origin_y = self.binary_to_decimal(self.pick_tray_origin_y) / 10
-        # if pick_tray_origin_y_binary[0] == "1": # Negative digit
-        #     self.pick_tray_origin_y = -self.pick_tray_origin_y
         self.pick_tray_origin_y = self.binary_reverse_twos_complement(self.register[0x21]) / 10
         # Orientation
         self.pick_tray_orientation = self.register[0x22] / 100
-        print("((( ", self.pick_tray_origin_x , self.pick_tray_origin_y, "))))")
 
     def read_place_tray_position(self):
-        # # Origin x
-        # place_tray_origin_x_binary = self.decimal_to_binary(self.register[0x23])
-        # self.place_tray_origin_x = self.binary_crop(15, place_tray_origin_x_binary)
-        # self.place_tray_origin_x = self.binary_to_decimal(self.place_tray_origin_x) / 10
-        # if place_tray_origin_x_binary[0] == "1": # Negative digit
-        #     self.place_tray_origin_x = -self.place_tray_origin_x
-        # # Origin y
-        # place_tray_origin_y_binary = self.decimal_to_binary(self.register[0x24])
-        # self.place_tray_origin_y = self.binary_crop(15, place_tray_origin_y_binary)
-        # self.place_tray_origin_y = self.binary_to_decimal(self.place_tray_origin_y) / 10
-        # if place_tray_origin_y_binary[0] == "1": # Negative digit
-        #     self.place_tray_origin_y = -self.place_tray_origin_y
+        # Origin x
+        self.pick_tray_origin_x = self.binary_reverse_twos_complement(self.register[0x23]) / 10
+        # Origin y
+        self.pick_tray_origin_y = self.binary_reverse_twos_complement(self.register[0x24]) / 10
         # Orientation
-        self.place_tray_orientation = self.register[0x25] / 100
+        self.pick_tray_orientation = self.register[0x25] / 100
 
     def write_goal_point(self, x, y):
         self.goal_point_x_register = self.binary_twos_complement(int(x*10))
         self.goal_point_y_register = self.binary_twos_complement(int(y*10))
-        # if x < 0:
-        #     self.goal_point_x_register += 0b1000000000000000
-        # self.goal_point_y_register = int(abs(y*10))
-        # if y < 0:
-        #     self.goal_point_y_register += 0b1000000000000000
         self.client.write_register(address=0x30, value=self.goal_point_x_register, slave=self.slave_address)
         self.client.write_register(address=0x31, value=self.goal_point_y_register, slave=self.slave_address)
 
@@ -261,19 +243,11 @@ class Protocol_Y(Binary):
         self.client.write_register(address=0x46, value=self.x_axis_moving_status_register, slave=self.slave_address)
 
     def read_x_axis_target_motion(self):
-        # x_axis_target_pos_binary = self.decimal_to_binary(self.register[0x41])
-        # self.x_axis_target_pos = self.binary_crop(15, x_axis_target_pos_binary)
-        # self.x_axis_target_pos = self.binary_to_decimal(self.x_axis_target_pos) / 10
-        # if x_axis_target_pos_binary[0] == "1": # Negative digit
-        #     self.x_axis_target_pos = -self.x_axis_target_pos
         self.x_axis_target_pos = self.binary_reverse_twos_complement(self.register[0x41]) / 10
         self.x_axis_target_spd = self.register[0x42] / 10
         self.x_axis_target_acc = self.register[0x43] / 10
 
     def write_x_axis_actual_motion(self, pos, spd, acc):
-        # self.x_axis_actual_pos_register = abs(pos*10)
-        # if pos < 0:
-        #     self.x_axis_actual_pos_register += 0b1000000000000000
         self.x_axis_actual_pos_register = self.binary_twos_complement(pos * 10)
         self.x_axis_actual_spd_register = spd * 10
         self.x_axis_actual_acc_register = acc * 10
@@ -306,13 +280,13 @@ class Protocol_X(Binary):
 
     def write_x_axis_moving_status(self, command):
         if command == "Home":
-            self.x_axis_moving_status_register = 0b10
-        elif command == "Run":
             self.x_axis_moving_status_register = 0b01
+        elif command == "Run":
+            self.x_axis_moving_status_register = 0b10
         self.client.write_register(address=0x00, value=self.x_axis_moving_status_register, slave=self.slave_address)
 
     def read_x_axis_moving_status(self):
-        x_axis_moving_status_binary = self.binary_crop(2, self.decimal_to_binary(self.register[0x00]))
+        x_axis_moving_status_binary = self.binary_crop(2, self.decimal_to_binary(self.register[0x00]))[::-1]
         if x_axis_moving_status_binary[0] == "1":
             self.x_axis_moving_status = "Home"
         elif x_axis_moving_status_binary[1] == "1":
@@ -321,18 +295,12 @@ class Protocol_X(Binary):
             self.x_axis_moving_status = "Idle"
 
     def read_x_axis_actual_motion(self):
-        x_axis_actual_pos_binary = self.decimal_to_binary(self.register[0x01])
-        self.x_axis_actual_pos = self.binary_crop(15, x_axis_actual_pos_binary)
-        self.x_axis_actual_pos = self.binary_to_decimal(self.x_axis_actual_pos) / 10
-        if x_axis_actual_pos_binary[0] == "1":  # Negative digit
-            self.x_axis_actual_pos = -self.x_axis_actual_pos
+        self.x_axis_actual_pos = self.binary_reverse_twos_complement(self.register[0x01]) / 10
         self.x_axis_actual_spd = self.register[0x02] / 10
         self.x_axis_actual_acc = self.register[0x03] / 10
 
     def write_x_axis_target_motion(self, pos, spd, acc):
-        self.x_axis_target_pos_register = abs(pos*10)
-        if pos < 0:
-            self.x_axis_target_pos_register += 0b1000000000000000
+        self.x_axis_target_pos_register = self.binary_twos_complement(pos * 10)
         self.x_axis_target_spd_register = spd * 10
         self.x_axis_target_acc_register = acc * 10
         self.client.write_register(address=0x04, value=self.x_axis_target_pos_register, slave=self.slave_address)
