@@ -47,6 +47,7 @@ class Protocol_Y(Binary):
         self.register = []
 
         self.laser_on = "0"
+        self.gripper_power = "0"
         self.gripper_pick = "0"
         self.gripper_place = "0"
         self.y_axis_moving_status_before = "Idle"

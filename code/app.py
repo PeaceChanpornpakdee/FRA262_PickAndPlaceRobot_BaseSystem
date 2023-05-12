@@ -666,7 +666,7 @@ class App(tk.Tk):
             self.navi.navigator_laser.hide()
 
         # Gripper
-        if self.protocol_y.gripper_pick == "1" or self.protocol_y.gripper_place == "1":
+        if self.protocol_y.gripper_pick == "1":
             self.press_arrow.deactivate()
             self.message_laser.change_text("Gripper Pick")
             self.message_laser.show()
@@ -675,8 +675,12 @@ class App(tk.Tk):
             self.message_laser.change_text("Gripper Place")
             self.message_laser.show()
         else:
-            # self.press_arrow.activate()
+            self.gripping = False
             self.message_laser.hide()
+            self.toggle_laser.activate()
+            self.toggle_gripper.activate()
+            if self.protocol_y.gripper_power == "1":
+                self.press_arrow.activate()
 
         # Actual motion value
         # self.protocol_x.read_x_axis_actual_motion()
