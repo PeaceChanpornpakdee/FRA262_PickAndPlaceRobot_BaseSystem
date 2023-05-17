@@ -1,5 +1,6 @@
 import platform
 from pymodbus.client import ModbusSerialClient as ModbusClient
+from pymodbus.client import ModbusTcpClient
 
 class Binary():
     """
@@ -280,6 +281,8 @@ class Protocol_X(Binary):
         elif self.os == 'W': #Windows        
             self.port = "COM6"
 
+        self.host = "127.0.0.1"
+
         self.slave_address = 0x16
         self.register = [0,0,0,0,0,0] # Temporary (should be [])
 
@@ -288,7 +291,7 @@ class Protocol_X(Binary):
 
         self.x_axis_actual_pos = 0
 
-        # self.client= ModbusClient(method="rtu", port=self.port, stopbits=1, bytesize=8, parity="E", baudrate=19200)
+        # self.client= ModbusTcpClient(port=self.port, ip=self.host)
         # self.client.connect()
 
     # def read_holding_registers(self):
