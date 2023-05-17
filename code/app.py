@@ -312,7 +312,7 @@ class App(tk.Tk):
                 self.press_run.deactivate()
             else:
                 self.message_error.hide()
-                if not self.running and not self.homing and not self.jogging and not self.gripping and self.connection:
+                if not self.running and not self.homing and not self.jogging and not self.gripping and self.connection and self.usb_connect:
                     self.press_run.activate()
             # Return Validation Result
             return validate_result
