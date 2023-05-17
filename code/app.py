@@ -679,10 +679,11 @@ class App(tk.Tk):
         else:
             self.gripping = False
             self.message_laser.hide()
-            self.toggle_laser.activate()
-            self.toggle_gripper.activate()
-            if self.protocol_y.gripper_power == "1":
-                self.press_arrow.activate()
+            if not self.jogging and not self.homing and not self.running:
+                self.toggle_laser.activate()
+                self.toggle_gripper.activate()
+                if self.protocol_y.gripper_power == "1":
+                    self.press_arrow.activate()
 
         # Actual motion value
         # self.protocol_x.read_x_axis_actual_motion()
