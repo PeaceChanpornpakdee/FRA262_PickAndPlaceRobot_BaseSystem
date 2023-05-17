@@ -92,7 +92,7 @@ class App(tk.Tk):
         self.show_tray_pick  = False
         self.show_tray_place = False
         # Target
-        self.target =  Target(canvas=self.canvas_field, grid=self.grid, grid_x=0, grid_y=0)
+        self.target = Target(canvas=self.canvas_field, grid=self.grid, grid_x=0, grid_y=0)
         self.target.hide()
         self.point_target_x = 0
         self.point_target_y = 0

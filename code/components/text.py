@@ -1,3 +1,4 @@
+import platform
 from components.shape import RoundRectangle, Polygon
 from components.color import Color
 
@@ -9,7 +10,11 @@ class TextBox():
         self.text = text
         self.size = size
         self.color = color
-        self.textbox = self.canvas.create_text((self.x,self.y), text=self.text, fill=self.color, font=("Inter-SemiBold", self.size))
+        self.os = platform.platform()[0].upper()
+        if self.os == 'M': #Mac
+            self.textbox = self.canvas.create_text((self.x,self.y), text=self.text, fill=self.color, font=("Inter-SemiBold", self.size))
+        elif self.os == 'W': #Windows  
+            self.textbox = self.canvas.create_text((self.x,self.y), text=self.text, fill=self.color, font=("Inter SemiBold", self.size))
         if anchor != None:
             self.canvas.itemconfigure(self.textbox, anchor=anchor)
 
