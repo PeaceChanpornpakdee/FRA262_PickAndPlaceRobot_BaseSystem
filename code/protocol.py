@@ -56,7 +56,7 @@ class Protocol_Y(Binary):
     def __init__(self):
         self.os = platform.platform()[0].upper()
         if self.os == 'M': #Mac
-            self.port = "/dev/cu.usbmodem14203"
+            self.port = "/dev/cu.usbmodem14103"
         elif self.os == 'W': #Windows        
             self.port = "COM5"
 
@@ -104,7 +104,6 @@ class Protocol_Y(Binary):
         # self.client.write_register(address=0x03, value=1, slave=self.slave_address)
         # self.client.write_register(address=0x04, value=1, slave=self.slave_address)
 
-            print(self.base_system_status)
             print("Laser:", self.laser_on)
             print("Gripper:", self.gripper_power, "\tPick:", self.gripper_pick, "\tPlace:", self.gripper_place)
             print("Pos:", self.y_axis_actual_pos, "\tSpd:", self.y_axis_actual_spd, "\tAcc:", self.y_axis_actual_acc)
@@ -222,14 +221,15 @@ class Protocol_Y(Binary):
         self.pick_tray_origin_y = self.binary_reverse_twos_complement(self.register[0x21]) / 10
         # Orientation
         self.pick_tray_orientation = self.register[0x22] / 100
+        print("TRAY:", self.pick_tray_origin_x, self.pick_tray_origin_y, self.pick_tray_orientation)
 
     def read_place_tray_position(self):
         # Origin x
-        self.pick_tray_origin_x = self.binary_reverse_twos_complement(self.register[0x23]) / 10
+        self.place_tray_origin_x = self.binary_reverse_twos_complement(self.register[0x23]) / 10
         # Origin y
-        self.pick_tray_origin_y = self.binary_reverse_twos_complement(self.register[0x24]) / 10
+        self.place_tray_origin_y = self.binary_reverse_twos_complement(self.register[0x24]) / 10
         # Orientation
-        self.pick_tray_orientation = self.register[0x25] / 100
+        self.place_tray_orientation = self.register[0x25] / 100
 
     def write_goal_point(self, x, y):
         self.goal_point_x_register = self.binary_twos_complement(int(x*10))
@@ -276,7 +276,7 @@ class Protocol_X(Binary):
     def __init__(self):
         self.os = platform.platform()[0].upper()
         if self.os == 'M': #Mac
-            self.port = "/dev/cu.usbmodem14103"
+            self.port = "/dev/cu.usbmodem14203"
         elif self.os == 'W': #Windows        
             self.port = "COM6"
 
