@@ -78,6 +78,8 @@ class Protocol_Y(Binary):
         self.y_axis_actual_pos = 0
         self.y_axis_actual_spd = 0
         self.y_axis_actual_acc = 0
+        self.x_axis_moving_status_before = "Idle"
+        self.x_axis_moving_status = "Idle"
 
         self.client = ModbusClient(method="rtu", port=self.port, stopbits=1, bytesize=8, parity="E", baudrate=19200)
         self.client.connect()
@@ -204,13 +206,6 @@ class Protocol_Y(Binary):
             self.y_axis_moving_status = "Idle"
 
     def read_y_axis_actual_motion(self):
-        # y_axis_actual_pos_binary = self.decimal_to_binary(self.register[0x11])
-        # self.y_axis_actual_pos = self.binary_crop(15, y_axis_actual_pos_binary)
-        # self.y_axis_actual_pos = self.binary_to_decimal(self.y_axis_actual_pos) / 10
-        # if y_axis_actual_pos_binary[0] == "1":  # Negative digit
-        #     self.y_axis_actual_pos = -self.y_axis_actual_pos
-
-
         self.y_axis_actual_pos = self.binary_reverse_twos_complement(self.register[0x11]) / 10
         self.y_axis_actual_spd = self.register[0x12] / 10
         self.y_axis_actual_acc = self.register[0x13] / 10
@@ -239,6 +234,7 @@ class Protocol_Y(Binary):
         self.client.write_register(address=0x31, value=self.goal_point_y_register, slave=self.slave_address)
 
     def read_x_axis_moving_status(self):
+        self.x_axis_moving_status_before = self.x_axis_moving_status
         x_axis_moving_status_binary = self.binary_crop(2, self.decimal_to_binary(self.register[0x40]))[::-1]
         if x_axis_moving_status_binary[0] == "1":
             self.x_axis_moving_status = "Home"
@@ -290,21 +286,26 @@ class Protocol_X(Binary):
         self.x_axis_moving_status = "Idle"
 
         self.x_axis_actual_pos = 0
+        self.x_axis_actual_spd = 0
+        self.x_axis_actual_acc = 0
 
         # self.client= ModbusTcpClient(port=self.port, ip=self.host)
         # self.client.connect()
 
-    # def read_holding_registers(self):
-    #     self.register = self.client.read_holding_registers(address=0x00, count=0x06, slave=self.slave_address).registers
+    def read_holding_registers(self):
+        print("x-axis read_holding_registers")
+    #     self.register = self.client.read_holding_registers(address=0x00, count=0x04, slave=self.slave_address).registers
 
     def write_x_axis_moving_status(self, command):
+        print("x-axis write_x_axis_moving_status")
         if command == "Home":
             self.x_axis_moving_status_register = 0b01
         elif command == "Run":
             self.x_axis_moving_status_register = 0b10
-        self.client.write_register(address=0x00, value=self.x_axis_moving_status_register, slave=self.slave_address)
+        # self.client.write_register(address=0x00, value=self.x_axis_moving_status_register, slave=self.slave_address)
 
     def read_x_axis_moving_status(self):
+        print("x-axis read_x_axis_moving_status")
         x_axis_moving_status_binary = self.binary_crop(2, self.decimal_to_binary(self.register[0x00]))[::-1]
         if x_axis_moving_status_binary[0] == "1":
             self.x_axis_moving_status = "Home"
@@ -314,6 +315,7 @@ class Protocol_X(Binary):
             self.x_axis_moving_status = "Idle"
 
     def read_x_axis_actual_motion(self):
+        print("x-axis read_x_axis_actual_motion")
         self.x_axis_actual_pos = self.binary_reverse_twos_complement(self.register[0x01]) / 10
         self.x_axis_actual_spd = self.register[0x02] / 10
         self.x_axis_actual_acc = self.register[0x03] / 10

@@ -54,47 +54,11 @@ class App(tk.Tk):
         self.handle_press_tray_place()
         self.handle_press_home()
         self.handle_press_run()
-        # Perform Protocol Every 1 s
 
-        # Check USB connection
-        if self.protocol_y.usb_connect:
-            # When reconnect USB
-            if self.protocol_y.usb_connect_before == False:
-                self.handle_connected()
-                self.protocol_y.usb_connect_before = True
-            # Check if there is protocol error from user (y-axis)
-            if self.protocol_y.routine_normal == False:
-                self.message_connection.change_text("Protocol Error from Y-Axis")
-                self.handle_disconnected()
-            else:
-                # Do protocol as normal every 200 ms
-                if self.time_ms >= 200:
-                    import time
-                    start_time = time.time()
-                    self.time_ms = 0
-                    self.new_connection = self.protocol_y.heartbeat()
-                    if self.new_connection: # If Connected
-                        self.protocol_y.routine()
+        # Handle y-axis protocol
+        self.handle_protocol_y()
 
-                    end_time = time.time()
-                    print((end_time-start_time)*1000, "ms\n")
-
-                # If Connection is Changed 
-                if self.connection != self.new_connection:
-                    # Update Connection Value
-                    self.connection = self.new_connection
-                    if not self.connection: # If Disconnected
-                        self.handle_disconnected()
-                    else: # If Reconnected
-                        self.handle_connected()
-                # Update UI accoring to protocol status
-                self.handle_protocol_status()
-
-        else:
-            self.message_connection.change_text("Please Connect the USB")
-            self.handle_disconnected()
-            self.protocol_y.write_heartbeat()
-            self.protocol_y.usb_connect_before = False
+        # Handle x-axis protocol
 
         # Validate Entry Value
         self.validate_entry()
@@ -210,9 +174,11 @@ class App(tk.Tk):
             # Home Press Button
         self.press_home = PressButton(canvas=self.canvas_command, x=655, y=50, w=128, h=30, r=15, active_color=Color.gray, inactive_color=Color.lightgray, text="Home", text_size=15, active_default=True)
         self.homing = False
+        self.homing_x = False
             # Run Press Button
         self.press_run  = PressButton(canvas=self.canvas_command, x=655, y=90, w=128, h=44, r=22, active_color=Color.blue, inactive_color=Color.lightgray, text="Run", text_size=22, active_default=False)
         self.running = False
+        self.running_x = False
         # Section Seperator
         self.line_separate_1 = Line(canvas=self.canvas_command, point_1=(260, 20), point_2=(260, 140), width=2, color=Color.lightgray)
         self.line_separate_2 = Line(canvas=self.canvas_command, point_1=(595, 20), point_2=(595, 140), width=2, color=Color.lightgray)
@@ -650,7 +616,7 @@ class App(tk.Tk):
             self.press_run.activate()
             self.press_home.activate()
 
-    def handle_protocol_status(self):
+    def handle_protocol_ui(self):
         """
         This function handles updating UI according to protocol status 
         """
@@ -679,7 +645,6 @@ class App(tk.Tk):
                     self.press_arrow.activate()
 
         # Actual motion value
-        # self.protocol_x.read_x_axis_actual_motion()
         self.text_x_pos_num.change_text(self.protocol_x.x_axis_actual_pos)
         self.text_y_pos_num.change_text(self.protocol_y.y_axis_actual_pos)
         self.text_y_spd_num.change_text(self.protocol_y.y_axis_actual_spd)
@@ -732,6 +697,74 @@ class App(tk.Tk):
             elif self.protocol_y.y_axis_moving_status == "Go Point":
                 self.message_navi.change_text("Going to Point")
             self.message_navi.show()
+
+    def handle_protocol_y(self):
+        # Check USB connection
+        if self.protocol_y.usb_connect:
+            # When reconnect USB
+            if self.protocol_y.usb_connect_before == False:
+                self.handle_connected()
+                self.protocol_y.usb_connect_before = True
+            # Check if there is protocol error from user (y-axis)
+            if self.protocol_y.routine_normal == False:
+                self.message_connection.change_text("Protocol Error from Y-Axis")
+                self.handle_disconnected()
+            else:
+                # Do protocol as normal every 200 ms
+                if self.time_ms >= 200:
+                    import time
+                    start_time = time.time()
+                    self.time_ms = 0
+                    self.new_connection = self.protocol_y.heartbeat()
+                    if self.new_connection: # If Connected
+                        self.protocol_y.routine() # Do routine
+                    end_time = time.time()
+                    print((end_time-start_time)*1000, "ms\n")
+
+                # If Connection is Changed 
+                if self.connection != self.new_connection:
+                    # Update Connection Value
+                    self.connection = self.new_connection
+                    if not self.connection: # If Disconnected
+                        self.handle_disconnected()
+                    else: # If Reconnected
+                        self.handle_connected()
+                # Update UI accoring to protocol status
+                self.handle_protocol_ui()
+
+        else:
+            self.message_connection.change_text("Please Connect the USB")
+            self.handle_disconnected()
+            self.protocol_y.write_heartbeat()
+            self.protocol_y.usb_connect_before = False
+
+    def handle_protocol_x(self):
+        # When start homing
+        if self.protocol_y.x_axis_moving_status == "Home":
+            if self.protocol_y.x_axis_moving_status_before == "Idle":
+                self.protocol_x.write_x_axis_moving_status("Home")
+                self.homing_x = True
+        # When start running
+        elif self.protocol_y.x_axis_moving_status == "Run":
+            if self.protocol_y.x_axis_moving_status_before == "Idle":
+                self.protocol_x.write_x_axis_moving_status("Run")
+                # Then read target
+                # Then write target
+                self.running_x = True
+        elif self.protocol_y.x_axis_moving_status == "Idle":
+            # When stop homing
+            if self.protocol_y.x_axis_moving_status_before == "Home":
+                self.homing_x = False
+            # When stop running
+            if self.protocol_y.x_axis_moving_status_before == "Run":
+                self.running_x = False
+        # While homing or running
+        if self.homing_x or self.running_x:
+            self.protocol_x.read_holding_registers()
+            self.protocol_x.read_x_axis_moving_status()
+            self.protocol_x.read_x_axis_actual_motion()
+            self.protocol_y.write_x_axis_moving_status(self.protocol_x.x_axis_moving_status)
+            self.protocol_y.write_x_axis_actual_motion(self.protocol_x.x_axis_actual_pos, self.protocol_x.x_axis_actual_spd, self.protocol_x.x_axis_actual_acc)
 
 if __name__ == "__main__":
     app = App()
