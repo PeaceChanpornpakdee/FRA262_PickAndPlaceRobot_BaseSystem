@@ -64,33 +64,33 @@ class App(tk.Tk):
             if self.protocol_y.usb_connect_before == False:
                 self.handle_connected()
                 self.protocol_y.usb_connect_before = True
-            # Do protocol as normal every 200 ms
-            if self.time_ms >= 200:
-                import time
-                start_time = time.time()
-                self.time_ms = 0
-                self.new_connection = self.protocol_y.heartbeat()
-                if self.new_connection: # If Connected
-                    self.protocol_y.routine()
-
-                end_time = time.time()
-                print((end_time-start_time)*1000, "ms\n")
-
-            # If Connection is Changed 
-            if self.connection != self.new_connection:
-                # Update Connection Value
-                self.connection = self.new_connection
-                if not self.connection: # If Disconnected
-                    self.handle_disconnected()
-                else: # If Reconnected
-                    self.handle_connected()
-            # Update UI accoring to protocol status
-            self.handle_protocol_status()
-
             # Check if there is protocol error from user (y-axis)
             if self.protocol_y.routine_normal == False:
                 self.message_connection.change_text("Protocol Error from Y-Axis")
                 self.handle_disconnected()
+            else:
+                # Do protocol as normal every 200 ms
+                if self.time_ms >= 200:
+                    import time
+                    start_time = time.time()
+                    self.time_ms = 0
+                    self.new_connection = self.protocol_y.heartbeat()
+                    if self.new_connection: # If Connected
+                        self.protocol_y.routine()
+
+                    end_time = time.time()
+                    print((end_time-start_time)*1000, "ms\n")
+
+                # If Connection is Changed 
+                if self.connection != self.new_connection:
+                    # Update Connection Value
+                    self.connection = self.new_connection
+                    if not self.connection: # If Disconnected
+                        self.handle_disconnected()
+                    else: # If Reconnected
+                        self.handle_connected()
+                # Update UI accoring to protocol status
+                self.handle_protocol_status()
 
         else:
             self.message_connection.change_text("Please Connect the USB")
