@@ -112,6 +112,8 @@ class MessageBox():
             self.w = 95
         elif self.text == "Please Connect the USB":
             self.w = 160
+        elif self.text == "Protocol Error from Y-Axis":
+            self.w = 170
         elif self.text == Error.code_1:
             self.w = 237
         elif self.text == Error.code_2:

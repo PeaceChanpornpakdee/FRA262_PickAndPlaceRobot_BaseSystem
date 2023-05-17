@@ -65,6 +65,8 @@ class Protocol_Y(Binary):
 
         self.slave_address = 0x15
         self.register = []
+        
+        self.routine_normal = True
 
         self.laser_on = "0"
         self.gripper_power = "0"
@@ -90,23 +92,30 @@ class Protocol_Y(Binary):
             return False
 
     def routine(self):
-        self.register = self.client.read_holding_registers(address=0x00, count=0x46, slave=self.slave_address).registers
-        self.read_base_system_status()
-        self.read_end_effector_status()
-        self.read_y_axis_moving_status()
-        self.read_x_axis_moving_status()
-        self.read_y_axis_actual_motion()
+        try:
+            self.register = self.client.read_holding_registers(address=0x00, count=0x46, slave=self.slave_address).registers
+            self.read_base_system_status()
+            self.read_end_effector_status()
+            self.read_y_axis_moving_status()
+            self.read_x_axis_moving_status()
+            self.read_y_axis_actual_motion()
         # self.client.write_register(address=0x01, value=1, slave=self.slave_address)
         # self.client.write_register(address=0x02, value=1, slave=self.slave_address)
         # self.client.write_register(address=0x03, value=1, slave=self.slave_address)
         # self.client.write_register(address=0x04, value=1, slave=self.slave_address)
 
-        print(self.base_system_status)
-        print("Laser:", self.laser_on)
-        print("Gripper:", self.gripper_power, "\tPick:", self.gripper_pick, "\tPlace:", self.gripper_place)
-        print("Pos:", self.y_axis_actual_pos, "\tSpd:", self.y_axis_actual_spd, "\tAcc:", self.y_axis_actual_acc)
-        print("Y-Axis Moving:", self.y_axis_moving_status)
-        print("X-Axis Moving:", self.x_axis_moving_status)
+            print(self.base_system_status)
+            print("Laser:", self.laser_on)
+            print("Gripper:", self.gripper_power, "\tPick:", self.gripper_pick, "\tPlace:", self.gripper_place)
+            print("Pos:", self.y_axis_actual_pos, "\tSpd:", self.y_axis_actual_spd, "\tAcc:", self.y_axis_actual_acc)
+            print("Y-Axis Moving:", self.y_axis_moving_status)
+            print("X-Axis Moving:", self.x_axis_moving_status)
+
+            self.routine_normal = True
+
+        except Exception as e:
+            print(e)
+            self.routine_normal = False
 
 
     def read_hearbeat(self):
