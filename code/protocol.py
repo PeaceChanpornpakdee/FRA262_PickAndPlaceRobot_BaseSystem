@@ -325,7 +325,7 @@ class Protocol_X(Binary):
         self.x_axis_target_pos_register = self.binary_twos_complement(pos * 10)
         self.x_axis_target_spd_register = spd * 10
         self.x_axis_target_acc_register = acc * 10
-        self.client.write_register(address=0x04, value=self.x_axis_target_pos_register, slave=self.slave_address)
-        self.client.write_register(address=0x05, value=self.x_axis_target_spd_register, slave=self.slave_address)
-        self.client.write_register(address=0x06, value=self.x_axis_target_acc_register, slave=self.slave_address)  
+        # self.client.write_register(address=0x04, value=self.x_axis_target_pos_register, slave=self.slave_address)
+        # self.client.write_register(address=0x05, value=self.x_axis_target_spd_register, slave=self.slave_address)
+        # self.client.write_register(address=0x06, value=self.x_axis_target_acc_register, slave=self.slave_address)  
         
