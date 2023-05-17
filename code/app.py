@@ -751,13 +751,7 @@ class App(tk.Tk):
                 # Then read target
                 # Then write target
                 self.running_x = True
-        elif self.protocol_y.x_axis_moving_status == "Idle":
-            # When stop homing
-            if self.protocol_y.x_axis_moving_status_before == "Home":
-                self.homing_x = False
-            # When stop running
-            if self.protocol_y.x_axis_moving_status_before == "Run":
-                self.running_x = False
+                
         # While homing or running
         if self.homing_x or self.running_x:
             self.protocol_x.read_holding_registers()
@@ -765,6 +759,14 @@ class App(tk.Tk):
             self.protocol_x.read_x_axis_actual_motion()
             self.protocol_y.write_x_axis_moving_status(self.protocol_x.x_axis_moving_status)
             self.protocol_y.write_x_axis_actual_motion(self.protocol_x.x_axis_actual_pos, self.protocol_x.x_axis_actual_spd, self.protocol_x.x_axis_actual_acc)
+
+        if self.protocol_x.x_axis_moving_status == "Idle":
+            # When stop homing
+            if self.protocol_x.x_axis_moving_status_before == "Home":
+                self.homing_x = False
+            # When stop running
+            if self.protocol_x.x_axis_moving_status_before == "Run":
+                self.running_x = False
 
 if __name__ == "__main__":
     app = App()

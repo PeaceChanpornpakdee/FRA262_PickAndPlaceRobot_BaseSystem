@@ -306,6 +306,7 @@ class Protocol_X(Binary):
 
     def read_x_axis_moving_status(self):
         print("x-axis read_x_axis_moving_status")
+        self.x_axis_moving_status_before = self.x_axis_moving_status
         x_axis_moving_status_binary = self.binary_crop(2, self.decimal_to_binary(self.register[0x00]))[::-1]
         if x_axis_moving_status_binary[0] == "1":
             self.x_axis_moving_status = "Home"
