@@ -11,8 +11,6 @@ from components.shape import RoundRectangle, Line
 from components.text import TextBox, MessageBox, Error
 from components.photo import Photo
 from components.entry import Entry
-
-from keyboard import Keyboard
 from protocol import Protocol_Y, Protocol_X
 
 class App(tk.Tk):
@@ -225,11 +223,6 @@ class App(tk.Tk):
         # Get Out of Entry when Press Enter of Click Outside the Entry 
         self.bind("<Return>", self.out_entry)
         self.canvas_command.bind("<Button-1>", self.out_entry)
-
-        # Keyboard Control Navigator for Developer
-        if self.mode == "Developer":
-            keyboard = Keyboard(self)
-            keyboard.key_bind(self)
         
     def mouse_position(self, event):
         """
