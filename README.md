@@ -23,6 +23,11 @@ pip install pymodbus==3.1.3
 
 $~$
 
+## Running
+The most basic way to run base system is to run `app.py` on Visual Studio Code.
+
+$~$
+
 ## Protocol
 ### Register Address
 
@@ -53,6 +58,7 @@ $~$
 $~$
 
 ### Bit Position
+![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/bit_position.png?raw=true)
 
 $~$
 
