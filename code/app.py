@@ -39,7 +39,6 @@ class App(tk.Tk):
         # Prepare Protocol
         self.protocol_y = Protocol_Y()
         self.protocol_x = Protocol_X()
-        self.usb_connect = self.protocol_y.usb_connect
         self.connection = True
         self.new_connection = True
 
@@ -221,7 +220,7 @@ class App(tk.Tk):
         This function is called when user click on the grid during point mode,
         then move the target and change entry text
         """
-        if self.operation_mode == "Point" and self.connection and self.usb_connect:
+        if self.operation_mode == "Point" and self.connection and self.protocol_y.usb_connect:
             if not self.running and not self.homing and not self.jogging and not self.gripping:
                 # Convert pixel to grid
                 grid_x, grid_y = self.grid.map_2D_to_3D(event.x, event.y)
@@ -303,7 +302,7 @@ class App(tk.Tk):
                 self.press_run.deactivate()
             else:
                 self.message_error.hide()
-                if not self.running and not self.homing and not self.jogging and not self.gripping and self.connection and self.usb_connect and self.protocol_y.routine_normal:
+                if not self.running and not self.homing and not self.jogging and not self.gripping and self.connection and self.protocol_y.usb_connect and self.protocol_y.routine_normal:
                     self.press_run.activate()
             # Return Validation Result
             return validate_result
