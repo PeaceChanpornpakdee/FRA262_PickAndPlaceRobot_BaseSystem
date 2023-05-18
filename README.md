@@ -134,3 +134,41 @@ $~$
 ![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/heartbeat.png?raw=true)
 
 **2. Routine**
+![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/routine.png?raw=true)
+
+**3. Laser On/Off**
+![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/laser.png?raw=true)
+
+**4. Gripper Power**
+![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/gripper_power.png?raw=true)
+
+**5. Gripper Pick**
+![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/gripper_pick.png?raw=true)
+
+**6. Gripper Place**
+![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/gripper_place.png?raw=true)
+
+**7. Set Pick Tray**
+![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/set_pick_tray.png?raw=true)
+
+**8. Set Place Tray**
+![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/set_place_tray.png?raw=true)
+
+**9. Set Goal Point**
+![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/set_goal_point.png?raw=true)
+
+**10. Home**
+![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/home.png?raw=true)
+
+**11. Run Tray Mode**
+![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/run_tray.png?raw=true)
+
+**12. Run Point Mode**
+![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/run_point.png?raw=true)
+
+**13. Home x-axis**
+![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/home_x.png?raw=true)
+
+**14. Run x-axis**
+![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/run_x.png?raw=true)
+
