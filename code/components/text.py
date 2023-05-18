@@ -126,9 +126,9 @@ class MessageBox():
         elif self.text == Error.code_3:
             self.w = 271
         elif self.text == Error.code_4x:
-            self.w = 336
+            self.w = 352
         elif self.text == Error.code_4y:
-            self.w = 340
+            self.w = 357
         else:
             self.w = int(len(self.text) * 7.5)
 
@@ -137,5 +137,5 @@ class Error:
     code_1  = "Input for Point Mode cannot be empty"
     code_2  = "Input for Point Mode cannot have 2 or more ."
     code_3  = "Input for Point Mode cannot have character"
-    code_4x = "Input x for Point Mode must be between -15.0 and 15.0"
-    code_4y = "Input y for Point Mode must be between -35.0 and 35.0"
+    code_4x = "Input x for Point Mode must be between -150.0 and 150.0"
+    code_4y = "Input y for Point Mode must be between -350.0 and 350.0"

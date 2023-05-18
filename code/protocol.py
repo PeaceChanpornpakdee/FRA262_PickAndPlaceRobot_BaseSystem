@@ -101,10 +101,6 @@ class Protocol_Y(Binary):
             self.read_y_axis_moving_status()
             self.read_x_axis_moving_status()
             self.read_y_axis_actual_motion()
-        # self.client.write_register(address=0x01, value=1, slave=self.slave_address)
-        # self.client.write_register(address=0x02, value=1, slave=self.slave_address)
-        # self.client.write_register(address=0x03, value=1, slave=self.slave_address)
-        # self.client.write_register(address=0x04, value=1, slave=self.slave_address)
 
             print("Laser:", self.laser_on)
             print("Gripper:", self.gripper_power, "\tPick:", self.gripper_pick, "\tPlace:", self.gripper_place)
