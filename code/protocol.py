@@ -75,9 +75,9 @@ class Protocol_Y(Binary):
         self.gripper_place = "0"
         self.y_axis_moving_status_before = "Idle"
         self.y_axis_moving_status = "Idle"
-        self.y_axis_actual_pos = 0
-        self.y_axis_actual_spd = 0
-        self.y_axis_actual_acc = 0
+        self.y_axis_actual_pos = 0.0
+        self.y_axis_actual_spd = 0.0
+        self.y_axis_actual_acc = 0.0
         self.x_axis_moving_status_before = "Idle"
         self.x_axis_moving_status = "Idle"
 
@@ -269,9 +269,9 @@ class Protocol_X(Binary):
         self.x_axis_moving_status_before = "Idle"
         self.x_axis_moving_status = "Idle"
 
-        self.x_axis_actual_pos = 0
-        self.x_axis_actual_spd = 0
-        self.x_axis_actual_acc = 0
+        self.x_axis_actual_pos = 0.0
+        self.x_axis_actual_spd = 0.0
+        self.x_axis_actual_acc = 0.0
 
         # self.client= ModbusTcpClient(port=self.port, ip=self.host)
         # self.client.connect()
