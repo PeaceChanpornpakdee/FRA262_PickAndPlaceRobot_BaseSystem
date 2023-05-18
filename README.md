@@ -132,3 +132,5 @@ $~$
 ### Protocol Flow
 **1. Heartbeat**
 ![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/heartbeat.png?raw=true)
+
+**2. Routine**
