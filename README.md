@@ -58,6 +58,7 @@ $~$
 $~$
 
 ### Bit Position
+![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/bit_position.png?raw=true)
 
 $~$
 
