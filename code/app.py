@@ -1,5 +1,5 @@
-import pyglet
 import tkinter as tk
+import platform
 
 from components.color import Color
 from components.grid import Grid
@@ -30,9 +30,8 @@ class App(tk.Tk):
         self.geometry(f'{window_width}x{window_height}+{window_center_x}+{window_center_y}')
         self.resizable(False, False)
         self.configure(bg=Color.darkgray)
-        # Add Font
-        pyglet.font.add_file('font/Inter-Bold.ttf')
-        pyglet.font.add_file('font/Inter-SemiBold.ttf')
+        # Define os
+        self.os = platform.platform()[0].upper()
         # Create Components
         self.create_components()
         # Counting Time
@@ -71,21 +70,40 @@ class App(tk.Tk):
         """
         This function creates each UI components
         """
+        # Define font size
+        if self.os == "M": # Mac
+            font_size_title = 26 
+            font_size_subtitle = 19 
+            font_size_grid = 15
+            font_size_status = 12
+            font_size_status_mm = 11
+            font_size_message_error = 12
+            font_size_section_title = 16
+            font_size_section_menu = 13
+        elif self.os == "W": # Windows
+            font_size_title = 20 
+            font_size_subtitle = 15
+            font_size_grid = 12
+            font_size_status = 9
+            font_size_status_mm = 8
+            font_size_message_error = 9
+            font_size_section_title = 12
+            font_size_section_menu = 10
         # Field Canvas (Upper)
         self.canvas_field = tk.Canvas(master=self, width=840, height=540, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge')
         self.canvas_field.pack(pady=30)
         self.background_field = RoundRectangle(canvas=self.canvas_field, x=0, y=0, w=840, h=540, r=20, color=Color.whitegray)
         # Title and Logo
         self.background_title = RoundRectangle(canvas=self.canvas_field, x=600, y=26, w=240+20, h=80, r=20, color=Color.darkgray)
-        self.text_title = TextBox(canvas=self.canvas_field, x=690, y=52, text="Module III",  size=26, color=Color.lightblue)
-        self.text_subtitle = TextBox(canvas=self.canvas_field, x=690, y=82, text="Base System", size=19, color=Color.whitegray)
+        self.text_title = TextBox(canvas=self.canvas_field, x=690, y=52, text="Module III",  size=font_size_title, color=Color.lightblue)
+        self.text_subtitle = TextBox(canvas=self.canvas_field, x=690, y=82, text="Base System", size=font_size_subtitle, color=Color.whitegray)
         self.photo_logo = Photo(canvas=self.canvas_field, file_name="logo", x=800, y=66)
         # Grid
         self.grid = Grid(canvas=self.canvas_field, offset_x=20, offset_y=120, row=70, column=30, color=Color.lightgray)
-        self.text_negative_x = TextBox(canvas=self.canvas_field, x=288, y=389, text="-x", size=15, color=Color.lightgray)
-        self.text_positive_x = TextBox(canvas=self.canvas_field, x=553, y=251, text="+x", size=15, color=Color.lightgray)
-        self.text_negative_y = TextBox(canvas=self.canvas_field, x=713, y=467, text="-y", size=15, color=Color.lightgray)
-        self.text_positive_y = TextBox(canvas=self.canvas_field, x=127, y=170, text="+y", size=15, color=Color.lightgray)
+        self.text_negative_x = TextBox(canvas=self.canvas_field, x=288, y=389, text="-x", size=font_size_grid, color=Color.lightgray)
+        self.text_positive_x = TextBox(canvas=self.canvas_field, x=553, y=251, text="+x", size=font_size_grid, color=Color.lightgray)
+        self.text_negative_y = TextBox(canvas=self.canvas_field, x=713, y=467, text="-y", size=font_size_grid, color=Color.lightgray)
+        self.text_positive_y = TextBox(canvas=self.canvas_field, x=127, y=170, text="+y", size=font_size_grid, color=Color.lightgray)
         # Tray
         self.tray_pick = Tray(canvas=self.canvas_field, grid=self.grid, origin_x=-15, origin_y=30, orientation=0) 
         self.tray_place = Tray(canvas=self.canvas_field, grid=self.grid, origin_x=9, origin_y=-35, orientation=0) 
@@ -109,24 +127,24 @@ class App(tk.Tk):
         self.tray_place.message_navi = self.message_navi
         self.tray_place.message_laser = self.message_laser
         # Status Text
-        self.text_x_pos = TextBox(canvas=self.canvas_field, x=82, y=418+5,  text="x-Axis Position", size=12, color=Color.darkgray)
-        self.text_y_pos = TextBox(canvas=self.canvas_field, x=82, y=444+5,  text="y-Axis Position", size=12, color=Color.darkgray)
-        self.text_y_spd = TextBox(canvas=self.canvas_field, x=77, y=470+5,  text="y-Axis Speed", size=12, color=Color.darkgray)
-        self.text_y_acc = TextBox(canvas=self.canvas_field, x=95, y=496+5,  text="y-Axis Acceleration", size=12, color=Color.darkgray)
-        self.text_x_pos_num = TextBox(canvas=self.canvas_field, x=185, y=418+5,  text="- 12.2", size=12, color=Color.blue)
-        self.text_y_pos_num = TextBox(canvas=self.canvas_field, x=185, y=444+5,  text="26.4", size=12, color=Color.blue)
-        self.text_y_spd_num = TextBox(canvas=self.canvas_field, x=185, y=470+5,  text="400.0", size=12, color=Color.blue)
-        self.text_y_acc_num = TextBox(canvas=self.canvas_field, x=185, y=496+5,  text="300.0", size=12, color=Color.blue)
-        self.text_x_pos_mm = TextBox(canvas=self.canvas_field, x=228, y=418+5,  text="mm", size=11, color=Color.darkgray)
-        self.text_y_pos_mm = TextBox(canvas=self.canvas_field, x=228, y=444+5,  text="mm", size=11, color=Color.darkgray)
-        self.text_y_spd_mm = TextBox(canvas=self.canvas_field, x=233, y=470+5,  text="mm/s", size=11, color=Color.darkgray)
-        self.text_y_acc_mm = TextBox(canvas=self.canvas_field, x=233, y=496+5,  text="mm/s", size=11, color=Color.darkgray)
-        self.text_y_acc_2  = TextBox(canvas=self.canvas_field, x=250, y=494+5,  text="2", size=8, color=Color.darkgray)
+        self.text_x_pos = TextBox(canvas=self.canvas_field, x=82, y=418+5,  text="x-Axis Position", size=font_size_status, color=Color.darkgray)
+        self.text_y_pos = TextBox(canvas=self.canvas_field, x=82, y=444+5,  text="y-Axis Position", size=font_size_status, color=Color.darkgray)
+        self.text_y_spd = TextBox(canvas=self.canvas_field, x=77, y=470+5,  text="y-Axis Speed", size=font_size_status, color=Color.darkgray)
+        self.text_y_acc = TextBox(canvas=self.canvas_field, x=95, y=496+5,  text="y-Axis Acceleration", size=font_size_status, color=Color.darkgray)
+        self.text_x_pos_num = TextBox(canvas=self.canvas_field, x=185, y=418+5,  text="- 12.2", size=font_size_status, color=Color.blue)
+        self.text_y_pos_num = TextBox(canvas=self.canvas_field, x=185, y=444+5,  text="26.4", size=font_size_status, color=Color.blue)
+        self.text_y_spd_num = TextBox(canvas=self.canvas_field, x=185, y=470+5,  text="400.0", size=font_size_status, color=Color.blue)
+        self.text_y_acc_num = TextBox(canvas=self.canvas_field, x=185, y=496+5,  text="300.0", size=font_size_status, color=Color.blue)
+        self.text_x_pos_mm = TextBox(canvas=self.canvas_field, x=228, y=418+5,  text="mm", size=font_size_status_mm, color=Color.darkgray)
+        self.text_y_pos_mm = TextBox(canvas=self.canvas_field, x=228, y=444+5,  text="mm", size=font_size_status_mm, color=Color.darkgray)
+        self.text_y_spd_mm = TextBox(canvas=self.canvas_field, x=233, y=470+5,  text="mm/s", size=font_size_status_mm, color=Color.darkgray)
+        self.text_y_acc_mm = TextBox(canvas=self.canvas_field, x=233, y=496+5,  text="mm/s", size=font_size_status_mm, color=Color.darkgray)
+        self.text_y_acc_2  = TextBox(canvas=self.canvas_field, x=250, y=494+5,  text="2", size=font_size_status_mm-3, color=Color.darkgray)
         # Error Message Box
-        self.message_error = MessageBox(canvas=self.canvas_field, x=810, y=490, text="Input x for Point Mode must be between -15.0 and 15.0", color=Color.red, direction="SE", align="Right", size=12)
+        self.message_error = MessageBox(canvas=self.canvas_field, x=810, y=490, text="Input x for Point Mode must be between -15.0 and 15.0", color=Color.red, direction="SE", align="Right", size=font_size_message_error)
         self.message_error.hide()
         # Connection Message Box
-        self.message_connection = MessageBox(canvas=self.canvas_field, x=330, y=45, text="Connection Disconnected", color=Color.red, direction="C", align="Left", size=12)
+        self.message_connection = MessageBox(canvas=self.canvas_field, x=330, y=45, text="Connection Disconnected", color=Color.red, direction="C", align="Left", size=font_size_message_error)
         self.message_connection.hide()
 
         # Command Canvas (Lower)
@@ -134,9 +152,9 @@ class App(tk.Tk):
         self.canvas_command.pack(pady=0)
         self.background_command = RoundRectangle(canvas=self.canvas_command, x=0, y=0, w=840, h=150, r=20, color=Color.whitegray)
         # End Effector Section
-        self.text_end_eff   = TextBox(canvas=self.canvas_command, x=130, y=25,  text="End Effector", size=16, color=Color.darkgray)
-        self.text_laser     = TextBox(canvas=self.canvas_command, x=90, y=62,  text="Laser", size=13, color=Color.darkgray)
-        self.text_gripper   = TextBox(canvas=self.canvas_command, x=85, y=96, text="Gripper", size=13, color=Color.darkgray)
+        self.text_end_eff   = TextBox(canvas=self.canvas_command, x=130, y=25, text="End Effector", size=font_size_section_title, color=Color.darkgray)
+        self.text_laser     = TextBox(canvas=self.canvas_command, x=90,  y=62, text="Laser", size=font_size_section_menu, color=Color.darkgray)
+        self.text_gripper   = TextBox(canvas=self.canvas_command, x=85,  y=96, text="Gripper", size=font_size_section_menu, color=Color.darkgray)
             # Toggle and Press Button
         self.toggle_laser   = ToggleButton(canvas=self.canvas_command, x=115, y=52, w=36, h=20, on_color=Color.blue, on_text="On", off_color=Color.gray, off_text="Off", text_size=12, on_default=False)
         self.toggle_gripper = ToggleButton(canvas=self.canvas_command, x=115, y=86, w=36, h=20, on_color=Color.blue, on_text="On", off_color=Color.gray, off_text="Off", text_size=12, on_default=False)
