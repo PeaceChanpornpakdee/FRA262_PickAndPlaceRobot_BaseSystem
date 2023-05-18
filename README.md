@@ -1,5 +1,5 @@
 # Base System
-The Base System with user interface for FRA262 (Robotics Studio III) Pick & Place robot project. 
+The base system with user interface for FRA262 (Robotics Studio III) pick & place robot project. 
 
 $~$
 
@@ -29,7 +29,7 @@ $~$
 | Address  | Meaning | Operation |
 | -------- | ------- | --------- |
 | 0x00 | Heartbeat Protocol | Read/Write
-| 0x01 | Base System Status | Read
+| 0x01 | Base System Status | Write
 | 0x02 | End Effector Status | Read/Write
 | 0x10 | y-axis Moving Status | Read
 | 0x11 | y-axis Actual Position | Read
