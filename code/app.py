@@ -78,8 +78,12 @@ class App(tk.Tk):
             font_size_status = 12
             font_size_status_mm = 11
             font_size_message_error = 12
+            font_size_message_navi = 11
             font_size_section_title = 16
             font_size_section_menu = 13
+            font_size_button_small = 12
+            font_size_button_home = 15
+            font_size_button_run = 22
         elif self.os == "W": # Windows
             font_size_title = 20 
             font_size_subtitle = 15
@@ -87,8 +91,12 @@ class App(tk.Tk):
             font_size_status = 9
             font_size_status_mm = 8
             font_size_message_error = 9
+            font_size_message_navi = 8
             font_size_section_title = 12
             font_size_section_menu = 10
+            font_size_button_small = 9
+            font_size_button_home = 12
+            font_size_button_run = 17
         # Field Canvas (Upper)
         self.canvas_field = tk.Canvas(master=self, width=840, height=540, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge')
         self.canvas_field.pack(pady=30)
@@ -116,8 +124,8 @@ class App(tk.Tk):
         self.point_target_y = 0
         # Navigator
         self.navi = Navigator(canvas=self.canvas_field, grid=self.grid, grid_x=0, grid_y=0, grid_z=8, pick_tray=self.tray_pick, place_tray=self.tray_place)
-        self.message_navi  = MessageBox(canvas=self.canvas_field, x=434, y=246,    text="Homing", color=Color.blue, direction="NW", align="Left", size=11)
-        self.message_laser = MessageBox(canvas=self.canvas_field, x=434, y=246+48, text="Gripper Pick", color=Color.blue, direction="SW", align="Left", size=11)
+        self.message_navi  = MessageBox(canvas=self.canvas_field, x=434, y=246,    text="Homing", color=Color.blue, direction="NW", align="Left", size=font_size_message_navi)
+        self.message_laser = MessageBox(canvas=self.canvas_field, x=434, y=246+48, text="Gripper Pick", color=Color.blue, direction="SW", align="Left", size=font_size_message_navi)
         self.message_navi.hide()
         self.message_laser.hide()
         self.tray_pick.navi = self.navi
@@ -156,20 +164,20 @@ class App(tk.Tk):
         self.text_laser     = TextBox(canvas=self.canvas_command, x=90,  y=62, text="Laser", size=font_size_section_menu, color=Color.darkgray)
         self.text_gripper   = TextBox(canvas=self.canvas_command, x=85,  y=96, text="Gripper", size=font_size_section_menu, color=Color.darkgray)
             # Toggle and Press Button
-        self.toggle_laser   = ToggleButton(canvas=self.canvas_command, x=115, y=52, w=36, h=20, on_color=Color.blue, on_text="On", off_color=Color.gray, off_text="Off", text_size=12, on_default=False)
-        self.toggle_gripper = ToggleButton(canvas=self.canvas_command, x=115, y=86, w=36, h=20, on_color=Color.blue, on_text="On", off_color=Color.gray, off_text="Off", text_size=12, on_default=False)
+        self.toggle_laser   = ToggleButton(canvas=self.canvas_command, x=115, y=52, w=36, h=20, on_color=Color.blue, on_text="On", off_color=Color.gray, off_text="Off", text_size=font_size_button_small, on_default=False)
+        self.toggle_gripper = ToggleButton(canvas=self.canvas_command, x=115, y=86, w=36, h=20, on_color=Color.blue, on_text="On", off_color=Color.gray, off_text="Off", text_size=font_size_button_small, on_default=False)
         self.direction_arrow = "pick"
-        self.press_arrow    = PressButton(canvas=self.canvas_command, x=115, y=113, w=70, h=22, r=11, active_color=Color.gray, inactive_color=Color.lightgray, text="     Pick", text_size=12, active_default=False, image="arrow")
+        self.press_arrow    = PressButton(canvas=self.canvas_command, x=115, y=113, w=70, h=22, r=11, active_color=Color.gray, inactive_color=Color.lightgray, text="     Pick", text_size=font_size_button_small, active_default=False, image="arrow")
         self.gripping = False
         # Operation Section
-        self.text_opera  = TextBox(canvas=self.canvas_command, x=425, y=25, text="Operation", size=16, color=Color.darkgray)
+        self.text_opera  = TextBox(canvas=self.canvas_command, x=425, y=25, text="Operation", size=font_size_section_title, color=Color.darkgray)
         self.operation_mode = "Tray"
             # Mode Radio Button
-        self.radio_tray  = RadioButton(canvas=self.canvas_command, x=330, y=50, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Tray Mode  ",  text_size=12, on_default=True)
-        self.radio_point = RadioButton(canvas=self.canvas_command, x=440, y=50, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Point Mode",   text_size=12, on_default=False)
+        self.radio_tray  = RadioButton(canvas=self.canvas_command, x=330, y=50, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Tray Mode  ",  text_size=font_size_button_small, on_default=True)
+        self.radio_point = RadioButton(canvas=self.canvas_command, x=440, y=50, r=14, active_color=Color.blue, inactive_color=Color.lightgray, text="Point Mode",   text_size=font_size_button_small, on_default=False)
             # Set Tray Press Button
-        self.press_pick  = PressButton(canvas=self.canvas_command, x=330, y=82,  w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Pick Tray", text_size=12, active_default=True)
-        self.press_place = PressButton(canvas=self.canvas_command, x=330, y=112, w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Place Tray", text_size=12, active_default=True)
+        self.press_pick  = PressButton(canvas=self.canvas_command, x=330, y=82,  w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Pick Tray",  text_size=font_size_button_small, active_default=True)
+        self.press_place = PressButton(canvas=self.canvas_command, x=330, y=112, w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Place Tray", text_size=font_size_button_small, active_default=True)
         self.jogging = False
             # Entry Point
         self.entry_x = Entry(master=self, canvas=self.canvas_command, x=364, y=82,  color=Color.blue)
@@ -177,10 +185,10 @@ class App(tk.Tk):
         self.entry_normal = True
         self.entry_x_value = "0.0"
         self.entry_y_value = "0.0"
-        self.text_x_entry = TextBox(canvas=self.canvas_command, x=345, y=90,  text="x", size=13, color=Color.darkgray)
-        self.text_y_entry = TextBox(canvas=self.canvas_command, x=345, y=122,  text="y", size=13, color=Color.darkgray)
-        self.text_mm_x_entry = TextBox(canvas=self.canvas_command, x=510, y=90,  text="mm", size=13, color=Color.darkgray)
-        self.text_mm_y_entry = TextBox(canvas=self.canvas_command, x=510, y=122,  text="mm", size=13, color=Color.darkgray)
+        self.text_x_entry = TextBox(canvas=self.canvas_command, x=345, y=90,  text="x", size=font_size_section_menu, color=Color.darkgray)
+        self.text_y_entry = TextBox(canvas=self.canvas_command, x=345, y=122,  text="y", size=font_size_section_menu, color=Color.darkgray)
+        self.text_mm_x_entry = TextBox(canvas=self.canvas_command, x=510, y=90,  text="mm", size=font_size_section_menu, color=Color.darkgray)
+        self.text_mm_y_entry = TextBox(canvas=self.canvas_command, x=510, y=122,  text="mm", size=font_size_section_menu, color=Color.darkgray)
         self.entry_x.hide()
         self.entry_y.hide()
         self.text_x_entry.hide()
@@ -188,13 +196,13 @@ class App(tk.Tk):
         self.text_mm_x_entry.hide()
         self.text_mm_y_entry.hide()
         # Movement Section
-        self.text_movement = TextBox(self.canvas_command, 725, 25, "Movement", 16, Color.darkgray)
+        self.text_movement = TextBox(self.canvas_command, 725, 25, "Movement", font_size_section_title, Color.darkgray)
             # Home Press Button
-        self.press_home = PressButton(canvas=self.canvas_command, x=655, y=50, w=128, h=30, r=15, active_color=Color.gray, inactive_color=Color.lightgray, text="Home", text_size=15, active_default=True)
+        self.press_home = PressButton(canvas=self.canvas_command, x=655, y=50, w=128, h=30, r=15, active_color=Color.gray, inactive_color=Color.lightgray, text="Home", text_size=font_size_button_home, active_default=True)
         self.homing = False
         self.homing_x = False
             # Run Press Button
-        self.press_run  = PressButton(canvas=self.canvas_command, x=655, y=90, w=128, h=44, r=22, active_color=Color.blue, inactive_color=Color.lightgray, text="Run", text_size=22, active_default=False)
+        self.press_run  = PressButton(canvas=self.canvas_command, x=655, y=90, w=128, h=44, r=22, active_color=Color.blue, inactive_color=Color.lightgray, text="Run", text_size=font_size_button_run, active_default=False)
         self.running = False
         self.running_x = False
         # Section Seperator
