@@ -139,10 +139,10 @@ class App(tk.Tk):
         self.text_y_pos = TextBox(canvas=self.canvas_field, x=82, y=444+5,  text="y-Axis Position", size=font_size_status, color=Color.darkgray)
         self.text_y_spd = TextBox(canvas=self.canvas_field, x=77, y=470+5,  text="y-Axis Speed", size=font_size_status, color=Color.darkgray)
         self.text_y_acc = TextBox(canvas=self.canvas_field, x=95, y=496+5,  text="y-Axis Acceleration", size=font_size_status, color=Color.darkgray)
-        self.text_x_pos_num = TextBox(canvas=self.canvas_field, x=185, y=418+5,  text="- 12.2", size=font_size_status, color=Color.blue)
-        self.text_y_pos_num = TextBox(canvas=self.canvas_field, x=185, y=444+5,  text="26.4", size=font_size_status, color=Color.blue)
-        self.text_y_spd_num = TextBox(canvas=self.canvas_field, x=185, y=470+5,  text="400.0", size=font_size_status, color=Color.blue)
-        self.text_y_acc_num = TextBox(canvas=self.canvas_field, x=185, y=496+5,  text="300.0", size=font_size_status, color=Color.blue)
+        self.text_x_pos_num = TextBox(canvas=self.canvas_field, x=185, y=418+5,  text="0.0", size=font_size_status, color=Color.blue)
+        self.text_y_pos_num = TextBox(canvas=self.canvas_field, x=185, y=444+5,  text="0.0", size=font_size_status, color=Color.blue)
+        self.text_y_spd_num = TextBox(canvas=self.canvas_field, x=185, y=470+5,  text="0.0", size=font_size_status, color=Color.blue)
+        self.text_y_acc_num = TextBox(canvas=self.canvas_field, x=185, y=496+5,  text="0.0", size=font_size_status, color=Color.blue)
         self.text_x_pos_mm = TextBox(canvas=self.canvas_field, x=228, y=418+5,  text="mm", size=font_size_status_mm, color=Color.darkgray)
         self.text_y_pos_mm = TextBox(canvas=self.canvas_field, x=228, y=444+5,  text="mm", size=font_size_status_mm, color=Color.darkgray)
         self.text_y_spd_mm = TextBox(canvas=self.canvas_field, x=233, y=470+5,  text="mm/s", size=font_size_status_mm, color=Color.darkgray)
@@ -221,16 +221,16 @@ class App(tk.Tk):
         This function is called when user click on the grid during point mode,
         then move the target and change entry text
         """
-        if self.operation_mode == "Point" and self.connection:
-            if not self.running and not self.homing and not self.jogging:
-                # Convert Pixel to Grid
+        if self.operation_mode == "Point" and self.connection and self.usb_connect:
+            if not self.running and not self.homing and not self.jogging and not self.gripping:
+                # Convert pixel to grid
                 grid_x, grid_y = self.grid.map_2D_to_3D(event.x, event.y)
                 # Reduce to 1 decimal point
-                self.point_target_x = self.round_value(grid_x)
-                self.point_target_y = self.round_value(grid_y)
-                # Move Target to Desired Grid Position
-                self.target.move_to(self.point_target_x, self.point_target_y)
-                # Set Text in Entry
+                self.point_target_x = self.round_value(grid_x * 10)
+                self.point_target_y = self.round_value(grid_y * 10)
+                # Move target to desired grid position
+                self.target.move_to(self.point_target_x / 10, self.point_target_y / 10)
+                # Set text in entry
                 self.entry_x.set_text(self.point_target_x)
                 self.entry_y.set_text(self.point_target_y)
 
@@ -271,7 +271,7 @@ class App(tk.Tk):
                 self.entry_x.set_text(str(self.point_target_x))
                 self.entry_y.set_text(str(self.point_target_y))
                 # Move Target
-                self.target.move_to(self.point_target_x, self.point_target_y)
+                self.target.move_to(self.point_target_x / 10, self.point_target_y / 10)
 
     def validate_entry(self):
         """
@@ -282,8 +282,8 @@ class App(tk.Tk):
             self.entry_x_value = self.entry_x.get_value()
             self.entry_y_value = self.entry_y.get_value()
             # Validate Entry's Value
-            validate_x_result = self.entry_x.validate(self.entry_x_value, 15)
-            validate_y_result = self.entry_y.validate(self.entry_y_value, 35)
+            validate_x_result = self.entry_x.validate(self.entry_x_value, 150)
+            validate_y_result = self.entry_y.validate(self.entry_y_value, 350)
             # Interpret Validation Result
             validate_result = "Normal"
             if validate_y_result != 0:
@@ -569,7 +569,7 @@ class App(tk.Tk):
             if self.operation_mode == "Tray":
                 self.protocol_y.write_base_system_status("Run Tray Mode")
             elif self.operation_mode == "Point":
-                self.protocol_y.write_goal_point(self.point_target_x*10, self.point_target_y*10)
+                self.protocol_y.write_goal_point(self.point_target_x, self.point_target_y)
                 self.protocol_y.write_base_system_status("Run Point Mode")
             ### For test x axis
             # self.protocol_y.write_x_axis_moving_status("Run")

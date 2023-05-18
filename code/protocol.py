@@ -75,9 +75,9 @@ class Protocol_Y(Binary):
         self.gripper_place = "0"
         self.y_axis_moving_status_before = "Idle"
         self.y_axis_moving_status = "Idle"
-        self.y_axis_actual_pos = 0
-        self.y_axis_actual_spd = 0
-        self.y_axis_actual_acc = 0
+        self.y_axis_actual_pos = 0.0
+        self.y_axis_actual_spd = 0.0
+        self.y_axis_actual_acc = 0.0
         self.x_axis_moving_status_before = "Idle"
         self.x_axis_moving_status = "Idle"
 
@@ -101,10 +101,6 @@ class Protocol_Y(Binary):
             self.read_y_axis_moving_status()
             self.read_x_axis_moving_status()
             self.read_y_axis_actual_motion()
-        # self.client.write_register(address=0x01, value=1, slave=self.slave_address)
-        # self.client.write_register(address=0x02, value=1, slave=self.slave_address)
-        # self.client.write_register(address=0x03, value=1, slave=self.slave_address)
-        # self.client.write_register(address=0x04, value=1, slave=self.slave_address)
 
             print("Laser:", self.laser_on)
             print("Gripper:", self.gripper_power, "\tPick:", self.gripper_pick, "\tPlace:", self.gripper_place)
@@ -269,9 +265,9 @@ class Protocol_X(Binary):
         self.x_axis_moving_status_before = "Idle"
         self.x_axis_moving_status = "Idle"
 
-        self.x_axis_actual_pos = 0
-        self.x_axis_actual_spd = 0
-        self.x_axis_actual_acc = 0
+        self.x_axis_actual_pos = 0.0
+        self.x_axis_actual_spd = 0.0
+        self.x_axis_actual_acc = 0.0
 
         # self.client= ModbusTcpClient(port=self.port, ip=self.host)
         # self.client.connect()
