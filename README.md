@@ -1,8 +1,21 @@
 # FRA262_PickAndPlaceRobot_BaseSystem
 
 ## Installation
+**Font**
+
+Please install `Inter-SemiBold.ttf` from `font` folder.
+
+**Pillow**
 ```
-pip install
+pip install Pillow
+```
+**Pyserial**
+```
+pip install pyserial
+```
+**Pymodbus**
+```
+pip install pymodbus==3.1.3
 ```
 ## Protocol
 
