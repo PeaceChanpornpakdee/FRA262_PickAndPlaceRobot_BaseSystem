@@ -67,7 +67,7 @@ $~$
 | Bit  | Meaning |
 | ---- | ------- |
 | 0 | Set Pick Tray | 
-| 1 | Set Pick Tray | 
+| 1 | Set Place Tray | 
 | 2 | Home |
 | 3 | Run Tray Mode |
 | 4 | Run Point Mode |
