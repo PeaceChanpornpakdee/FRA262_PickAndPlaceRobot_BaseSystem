@@ -23,7 +23,7 @@ pip install pymodbus==3.1.3
 
 $~$
 
-## Execute
+## Running
 The most basic way to run base system is to run `app.py` on Visual Studio Code.
 
 $~$
