@@ -97,7 +97,6 @@ class Protocol_Y(Binary):
     def routine(self):
         try:
             self.register = self.client.read_holding_registers(address=0x00, count=0x46, slave=self.slave_address).registers
-            self.read_base_system_status()
             self.read_end_effector_status()
             self.read_y_axis_moving_status()
             self.read_x_axis_moving_status()
@@ -134,21 +133,6 @@ class Protocol_Y(Binary):
             self.usb_connect = True
         except:
             self.usb_connect = False
-
-    def read_base_system_status(self):
-        base_system_status_binary = self.binary_crop(5, self.decimal_to_binary(self.register[0x01]))[::-1]
-        if base_system_status_binary[0] == "1":
-            self.base_system_status = "Set Pick Tray"
-        elif base_system_status_binary[1] == "1":
-            self.base_system_status = "Set Place Tray"
-        elif base_system_status_binary[2] == "1":
-            self.base_system_status = "Home"
-        elif base_system_status_binary[3] == "1":
-            self.base_system_status = "Run Tray Mode"
-        elif base_system_status_binary[4] == "1":
-            self.base_system_status = "Run Point Mode"
-        else:
-            self.base_system_status = "Idle"
 
     def write_base_system_status(self, command):
         if command == "Set Pick Tray":
