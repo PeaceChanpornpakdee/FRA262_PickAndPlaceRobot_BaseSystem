@@ -541,7 +541,7 @@ class App(tk.Tk):
             self.protocol_y.write_base_system_status("Home")
             # ### For test x axis
             # self.protocol_y.write_x_axis_moving_status("Home")
-            # self.homing = True
+            self.homing = True
             # Close Laser
             if self.toggle_laser.on:
                 self.turn_off_laser()
@@ -573,7 +573,7 @@ class App(tk.Tk):
                 self.protocol_y.write_base_system_status("Run Point Mode")
             ### For test x axis
             # self.protocol_y.write_x_axis_moving_status("Run")
-            # self.running = True
+            self.running = True
             # Close Laser & Open Gripper First
             if not self.toggle_gripper.on:
                 self.toggle_gripper.pressed = True
