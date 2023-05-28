@@ -183,6 +183,7 @@ class App(tk.Tk):
         self.press_pick  = PressButton(canvas=self.canvas_command, x=330, y=82,  w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Pick Tray",  text_size=font_size_button_small, active_default=True)
         self.press_place = PressButton(canvas=self.canvas_command, x=330, y=112, w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Place Tray", text_size=font_size_button_small, active_default=True)
         self.jogging = False
+        self.jogging_x = False
             # Entry Point
         self.entry_x = Entry(master=self, canvas=self.canvas_command, x=364, y=82,  color=Color.blue)
         self.entry_y = Entry(master=self, canvas=self.canvas_command, x=364, y=112, color=Color.blue)
