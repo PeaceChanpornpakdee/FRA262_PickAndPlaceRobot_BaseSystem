@@ -546,10 +546,6 @@ class App(tk.Tk):
         """
         if self.press_home.pressed:
             self.protocol_y.write_base_system_status("Home")
-
-            ### For test x axis
-            self.protocol_y.write_x_axis_moving_status("Home")
-
             self.homing = True
             # Close Laser
             if self.toggle_laser.on:
@@ -581,10 +577,6 @@ class App(tk.Tk):
                 self.protocol_y.write_goal_point(self.point_target_x, self.point_target_y)
                 self.protocol_y.write_base_system_status("Run Point Mode")
                 self.message_navi.change_text("Going to Point")
-
-            ### For test x axis
-            self.protocol_y.write_x_axis_moving_status("Run")
-
             self.running = True
             # Close Laser & Open Gripper First
             if not self.toggle_gripper.on:
@@ -792,12 +784,6 @@ class App(tk.Tk):
             elif self.protocol_y.x_axis_moving_status == "Run":
                 if self.protocol_y.x_axis_moving_status_before == "Idle":
                     self.protocol_y.read_x_axis_target_motion()
-
-                    ### For test x axis
-                    self.protocol_y.x_axis_target_pos = self.point_target_x
-                    self.protocol_y.x_axis_target_spd = 300
-                    self.protocol_y.x_axis_target_acc_time = 1
-
                     self.protocol_x.write_x_axis_target_motion(self.protocol_y.x_axis_target_pos, self.protocol_y.x_axis_target_spd, self.protocol_y.x_axis_target_acc_time)
                     self.protocol_x.write_x_axis_moving_status("Run")
                     self.running_x = True
