@@ -1,5 +1,6 @@
 import tkinter as tk
 import platform
+import time
 
 from components.color import Color
 from components.grid import Grid
@@ -32,15 +33,16 @@ class App(tk.Tk):
         self.configure(bg=Color.darkgray)
         # Define os
         self.os = platform.platform()[0].upper()
-        # Create Components
-        self.create_components()
         # Counting Time
-        self.time_ms = 0
+        self.time_ms_y = 0
+        self.time_ms_x = 0
         # Prepare Protocol
         self.protocol_y = Protocol_Y()
         self.protocol_x = Protocol_X()
         self.connection = True
         self.new_connection = True
+        # Create Components
+        self.create_components()
 
     def task(self):
         # Handle Buttons
@@ -54,16 +56,19 @@ class App(tk.Tk):
         self.handle_press_run()
 
         # Handle y-axis protocol
+        self.start_time = time.time()
         self.handle_protocol_y()
 
         # Handle x-axis protocol
+        self.handle_protocol_x()
 
         # Validate Entry Value
         self.validate_entry()
 
         # Loop every 10 ms
         self.after(10, self.task)
-        self.time_ms += 10
+        self.time_ms_y += 10
+        self.time_ms_x += 10
 
     def create_components(self):
         """
@@ -198,8 +203,8 @@ class App(tk.Tk):
         self.text_movement = TextBox(self.canvas_command, 725, 25, "Movement", font_size_section_title, Color.darkgray)
             # Home Press Button
         self.press_home = PressButton(canvas=self.canvas_command, x=655, y=50, w=128, h=30, r=15, active_color=Color.gray, inactive_color=Color.lightgray, text="Home", text_size=font_size_button_home, active_default=True)
-        self.homing = False
-        self.homing_x = False
+        self.homing = self.protocol_x.connection
+        self.homing_x = self.protocol_x.connection
             # Run Press Button
         self.press_run  = PressButton(canvas=self.canvas_command, x=655, y=90, w=128, h=44, r=22, active_color=Color.blue, inactive_color=Color.lightgray, text="Run", text_size=font_size_button_run, active_default=False)
         self.running = False
@@ -360,6 +365,9 @@ class App(tk.Tk):
         self.toggle_gripper.turn_off()
 
     def movement(self, grid_x, grid_y):
+        """
+        This function moves navigator and message box
+        """
         self.navi.move_to(grid_x, grid_y)
         pixel_x, pixel_y = self.grid.map_3D_to_2D(grid_x, grid_y, self.navi.grid_z)
         if grid_x <= 0:
@@ -538,8 +546,10 @@ class App(tk.Tk):
         """
         if self.press_home.pressed:
             self.protocol_y.write_base_system_status("Home")
-            # ### For test x axis
-            # self.protocol_y.write_x_axis_moving_status("Home")
+
+            ### For test x axis
+            self.protocol_y.write_x_axis_moving_status("Home")
+
             self.homing = True
             # Close Laser
             if self.toggle_laser.on:
@@ -570,8 +580,11 @@ class App(tk.Tk):
             elif self.operation_mode == "Point":
                 self.protocol_y.write_goal_point(self.point_target_x, self.point_target_y)
                 self.protocol_y.write_base_system_status("Run Point Mode")
+                self.message_navi.change_text("Going to Point")
+
             ### For test x axis
-            # self.protocol_y.write_x_axis_moving_status("Run")
+            self.protocol_y.write_x_axis_moving_status("Run")
+
             self.running = True
             # Close Laser & Open Gripper First
             if not self.toggle_gripper.on:
@@ -682,11 +695,11 @@ class App(tk.Tk):
         self.movement(self.protocol_x.x_axis_actual_pos/10, self.protocol_y.y_axis_actual_pos/10)
 
         # Moving Status
-        if self.protocol_y.y_axis_moving_status == "Idle":
+        if self.protocol_y.y_axis_moving_status == "Idle" and self.protocol_y.x_axis_moving_status == "Idle":
             # Hide navi message
             self.message_navi.hide()
             # When finish moving
-            if self.protocol_y.y_axis_moving_status_before != "Idle":
+            if self.protocol_y.y_axis_moving_status_before != "Idle" or self.protocol_y.x_axis_moving_status_before != "Idle":
                 self.handle_finish_moving()
                 if self.protocol_y.y_axis_moving_status_before == "Jog Pick":
                     self.protocol_y.read_pick_tray_position()
@@ -704,11 +717,11 @@ class App(tk.Tk):
                     self.tray_place.create_tray()
                     self.jogging = False
                     self.show_tray_place = True
-                elif self.protocol_y.y_axis_moving_status_before == "Home":
+                elif self.protocol_y.y_axis_moving_status_before == "Home" or self.protocol_y.x_axis_moving_status_before == "Home":
                     self.homing = False
-                elif self.protocol_y.y_axis_moving_status_before == "Go Place":
+                elif self.protocol_y.y_axis_moving_status_before == "Go Place" or self.protocol_y.x_axis_moving_status_before == "Run":
                     self.running = False
-                elif self.protocol_y.y_axis_moving_status_before == "Go Point":
+                elif self.protocol_y.y_axis_moving_status_before == "Go Point" or self.protocol_y.x_axis_moving_status_before == "Run":
                     self.running = False
                 self.protocol_y.y_axis_moving_status_before = "Idle"
         else:
@@ -740,15 +753,14 @@ class App(tk.Tk):
                 self.handle_disconnected()
             else:
                 # Do protocol as normal every 200 ms
-                if self.time_ms >= 200:
-                    import time
-                    start_time = time.time()
-                    self.time_ms = 0
+                if self.time_ms_y >= 200:
+                    self.time_ms_y = 0
                     self.new_connection = self.protocol_y.heartbeat()
                     if self.new_connection: # If Connected
                         self.protocol_y.routine() # Do routine
-                    end_time = time.time()
-                    print((end_time-start_time)*1000, "ms\n")
+                    self.end_time = time.time()
+                    print((self.end_time-self.start_time)*1000, "ms\n")
+                    self.start_time = time.time()
 
                 # If Connection is Changed 
                 if self.connection != self.new_connection:
@@ -768,36 +780,61 @@ class App(tk.Tk):
             self.protocol_y.usb_connect_before = False
 
     def handle_protocol_x(self):
-        # When start homing
-        if self.protocol_y.x_axis_moving_status == "Home":
-            if self.protocol_y.x_axis_moving_status_before == "Idle":
-                self.protocol_x.write_x_axis_moving_status("Home")
-                self.homing_x = True
-        # When start running
-        elif self.protocol_y.x_axis_moving_status == "Run":
-            if self.protocol_y.x_axis_moving_status_before == "Idle":
-                # self.protocol_y.read_x_axis_target_motion()
-                # self.protocol_y.x_axis_target_spd = 10
-                # self.protocol_y.x_axis_target_acc = 10
-                # self.protocol_x.write_x_axis_target_motion(self.protocol_y.x_axis_target_pos, self.protocol_y.x_axis_target_spd, self.protocol_y.x_axis_target_acc)
-                self.protocol_x.write_x_axis_moving_status("Run")
-                self.running_x = True
-                
-        # While homing or running
-        if self.homing_x or self.running_x:
+        if self.time_ms_x >= 100:
+            self.time_ms_x = 0
+
+            # When start homing
+            if self.protocol_y.x_axis_moving_status == "Home":
+                if self.protocol_y.x_axis_moving_status_before == "Idle":
+                    self.protocol_x.write_x_axis_moving_status("Home")
+                    self.homing_x = True
+            # When start running
+            elif self.protocol_y.x_axis_moving_status == "Run":
+                if self.protocol_y.x_axis_moving_status_before == "Idle":
+                    self.protocol_y.read_x_axis_target_motion()
+
+                    ### For test x axis
+                    self.protocol_y.x_axis_target_pos = self.point_target_x
+                    self.protocol_y.x_axis_target_spd = 300
+                    self.protocol_y.x_axis_target_acc_time = 1
+
+                    self.protocol_x.write_x_axis_target_motion(self.protocol_y.x_axis_target_pos, self.protocol_y.x_axis_target_spd, self.protocol_y.x_axis_target_acc_time)
+                    self.protocol_x.write_x_axis_moving_status("Run")
+                    self.running_x = True
+            # When jogging
+            elif self.protocol_y.x_axis_moving_status == "Jog Left":
+                if self.protocol_y.x_axis_moving_status_before != "Jog Left":
+                    self.protocol_x.write_x_axis_moving_status("Jog Left")
+                    self.jogging_x = True
+            elif self.protocol_y.x_axis_moving_status == "Jog Right":
+                if self.protocol_y.x_axis_moving_status_before != "Jog Right":
+                    self.protocol_x.write_x_axis_moving_status("Jog Right")
+                    self.jogging_x = True
+            
+            # When stop jogging
+            if self.protocol_y.x_axis_moving_status == "Idle":
+                if str(self.protocol_y.x_axis_moving_status_before)[0:3] == "Jog":
+                    self.protocol_x.write_x_axis_moving_status("Idle")
+                    self.jogging_x = False
+
+            # Read moving status and actual motion all the time
             self.protocol_x.read_holding_registers()
             self.protocol_x.read_x_axis_moving_status()
             self.protocol_x.read_x_axis_actual_motion()
-            self.protocol_y.write_x_axis_moving_status(self.protocol_x.x_axis_moving_status)
-            self.protocol_y.write_x_axis_actual_motion(self.protocol_x.x_axis_actual_pos, self.protocol_x.x_axis_actual_spd, self.protocol_x.x_axis_actual_acc)
+            
+            # While homing, running
+            if self.homing_x or self.running_x:
+                self.protocol_y.write_x_axis_moving_status(self.protocol_x.x_axis_moving_status)
+            if self.homing_x or self.running_x or self.jogging_x:
+                self.protocol_y.write_x_axis_actual_motion(self.protocol_x.x_axis_actual_pos, self.protocol_x.x_axis_actual_spd)
 
-        if self.protocol_x.x_axis_moving_status == "Idle":
-            # When stop homing
-            if self.protocol_x.x_axis_moving_status_before == "Home":
-                self.homing_x = False
-            # When stop running
-            if self.protocol_x.x_axis_moving_status_before == "Run":
-                self.running_x = False
+            if self.protocol_x.x_axis_moving_status == "Idle":
+                # When stop homing
+                if self.protocol_x.x_axis_moving_status_before == "Home":
+                    self.homing_x = False
+                # When stop running
+                if self.protocol_x.x_axis_moving_status_before == "Run":
+                    self.running_x = False
 
 if __name__ == "__main__":
     app = App()
