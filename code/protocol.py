@@ -1,4 +1,5 @@
 import platform
+import struct
 from pymodbus.client import ModbusSerialClient as ModbusClient
 from pymodbus.client import ModbusTcpClient
 
@@ -59,7 +60,7 @@ class Protocol_Y(Binary):
         if self.os == 'M': #Mac
             self.port = "/dev/cu.usbmodem14103"
         elif self.os == 'W': #Windows        
-            self.port = "COM5"
+            self.port = "COM16"
 
         self.usb_connect = False
         self.usb_connect_before = False
@@ -81,9 +82,10 @@ class Protocol_Y(Binary):
         self.x_axis_moving_status_before = "Idle"
         self.x_axis_moving_status = "Idle"
 
+        self.goal_point_x_register = 0
+
         self.client = ModbusClient(method="rtu", port=self.port, stopbits=1, bytesize=8, parity="E", baudrate=19200)
-        self.client.connect()
-        print('Connection Status :', self.client.connect())
+        print('y-Axis Connection Status :', self.client.connect())
 
         self.write_heartbeat() # Write heartbeat as "Hi"
         
@@ -215,11 +217,15 @@ class Protocol_Y(Binary):
 
     def read_x_axis_moving_status(self):
         self.x_axis_moving_status_before = self.x_axis_moving_status
-        x_axis_moving_status_binary = self.binary_crop(2, self.decimal_to_binary(self.register[0x40]))[::-1]
+        x_axis_moving_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x40]))[::-1]
         if x_axis_moving_status_binary[0] == "1":
             self.x_axis_moving_status = "Home"
         elif x_axis_moving_status_binary[1] == "1":
             self.x_axis_moving_status = "Run"
+        elif x_axis_moving_status_binary[2] == "1":
+            self.x_axis_moving_status = "Jog Left"
+        elif x_axis_moving_status_binary[3] == "1":
+            self.x_axis_moving_status = "Jog Right"
         else:
             self.x_axis_moving_status = "Idle"
 
@@ -230,20 +236,20 @@ class Protocol_Y(Binary):
             self.x_axis_moving_status_register = 0b10
         elif command == "Idle":
             self.x_axis_moving_status_register = 0b00
-        self.client.write_register(address=0x46, value=self.x_axis_moving_status_register, slave=self.slave_address)
+        if self.usb_connect:
+            self.client.write_register(address=0x40, value=self.x_axis_moving_status_register, slave=self.slave_address)
 
     def read_x_axis_target_motion(self):
         self.x_axis_target_pos = self.binary_reverse_twos_complement(self.register[0x41]) / 10
         self.x_axis_target_spd = self.register[0x42] / 10
-        self.x_axis_target_acc = self.register[0x43] / 10
+        self.x_axis_target_acc_time = self.register[0x43]
 
-    def write_x_axis_actual_motion(self, pos, spd, acc):
-        self.x_axis_actual_pos_register = self.binary_twos_complement(pos * 10)
-        self.x_axis_actual_spd_register = spd * 10
-        self.x_axis_actual_acc_register = acc * 10
-        self.client.write_register(address=0x44, value=self.x_axis_actual_pos_register, slave=self.slave_address)
-        self.client.write_register(address=0x45, value=self.x_axis_actual_spd_register, slave=self.slave_address)
-        self.client.write_register(address=0x46, value=self.x_axis_actual_acc_register, slave=self.slave_address)
+    def write_x_axis_actual_motion(self, pos, spd):
+        self.x_axis_actual_pos_register = self.binary_twos_complement(int(pos * 10))
+        self.x_axis_actual_spd_register = int(spd * 10)
+        if self.usb_connect:
+            self.client.write_register(address=0x44, value=self.x_axis_actual_pos_register, slave=self.slave_address)
+            self.client.write_register(address=0x45, value=self.x_axis_actual_spd_register, slave=self.slave_address)
 
 
 class Protocol_X(Binary):
@@ -251,15 +257,8 @@ class Protocol_X(Binary):
     Protocol X Class
     """
     def __init__(self):
-        self.os = platform.platform()[0].upper()
-        if self.os == 'M': #Mac
-            self.port = "/dev/cu.usbmodem14203"
-        elif self.os == 'W': #Windows        
-            self.port = "COM6"
+        self.host = "192.168.3.250"
 
-        self.host = "127.0.0.1"
-
-        self.slave_address = 0x16
         self.register = [0,0,0,0,0,0] # Temporary (should be [])
 
         self.x_axis_moving_status_before = "Idle"
@@ -269,43 +268,58 @@ class Protocol_X(Binary):
         self.x_axis_actual_spd = 0.0
         self.x_axis_actual_acc = 0.0
 
-        # self.client= ModbusTcpClient(port=self.port, ip=self.host)
-        # self.client.connect()
+        self.client= ModbusTcpClient(self.host)
+
+        self.connection = self.client.connect()
+        print('x-Axis Connection Status :', self.connection)
+
+        if self.connection:
+            self.write_x_axis_moving_status("Home")
 
     def read_holding_registers(self):
-        print("x-axis read_holding_registers")
-    #     self.register = self.client.read_holding_registers(address=0x00, count=0x04, slave=self.slave_address).registers
+        if self.connection:
+            self.register = self.client.read_holding_registers(address=0x00, count=5).registers
 
     def write_x_axis_moving_status(self, command):
-        print("x-axis write_x_axis_moving_status")
-        if command == "Home":
-            self.x_axis_moving_status_register = 0b01
+        if command == "Idle":
+            self.x_axis_moving_status_register = 0b0000
+        elif command == "Home":
+            self.x_axis_moving_status_register = 0b0001
         elif command == "Run":
-            self.x_axis_moving_status_register = 0b10
-        # self.client.write_register(address=0x00, value=self.x_axis_moving_status_register, slave=self.slave_address)
+            self.x_axis_moving_status_register = 0b0010
+        elif command == "Jog Left":
+            self.x_axis_moving_status_register = 0b0100
+        elif command == "Jog Right":
+            self.x_axis_moving_status_register = 0b1000
+        if self.connection:
+            self.client.write_register(address=0x00, value=self.x_axis_moving_status_register)
 
     def read_x_axis_moving_status(self):
-        print("x-axis read_x_axis_moving_status")
         self.x_axis_moving_status_before = self.x_axis_moving_status
-        x_axis_moving_status_binary = self.binary_crop(2, self.decimal_to_binary(self.register[0x00]))[::-1]
+        x_axis_moving_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x00]))[::-1]
         if x_axis_moving_status_binary[0] == "1":
             self.x_axis_moving_status = "Home"
         elif x_axis_moving_status_binary[1] == "1":
             self.x_axis_moving_status = "Run"
+        elif x_axis_moving_status_binary[2] == "1":
+            self.x_axis_moving_status = "Jog Left"
+        elif x_axis_moving_status_binary[3] == "1":
+            self.x_axis_moving_status = "Jog Right"
         else:
             self.x_axis_moving_status = "Idle"
 
     def read_x_axis_actual_motion(self):
-        print("x-axis read_x_axis_actual_motion")
-        self.x_axis_actual_pos = self.binary_reverse_twos_complement(self.register[0x01]) / 10
-        self.x_axis_actual_spd = self.register[0x02] / 10
-        self.x_axis_actual_acc = self.register[0x03] / 10
+        actual_pos_struct = struct.pack("HH", self.register[0x01], self.register[0x02])
+        self.x_axis_actual_pos = int((struct.unpack("i", actual_pos_struct)[0]) / 1000) / 10.0 # mm
+        actual_spd_struct = struct.pack("HH", self.register[0x03], self.register[0x04])
+        self.x_axis_actual_spd = int((struct.unpack("I", actual_spd_struct)[0]) / 1000) / 10.0 # mm/s
 
-    def write_x_axis_target_motion(self, pos, spd, acc):
-        self.x_axis_target_pos_register = self.binary_twos_complement(pos * 10)
-        self.x_axis_target_spd_register = spd * 10
-        self.x_axis_target_acc_register = acc * 10
-        # self.client.write_register(address=0x04, value=self.x_axis_target_pos_register, slave=self.slave_address)
-        # self.client.write_register(address=0x05, value=self.x_axis_target_spd_register, slave=self.slave_address)
-        # self.client.write_register(address=0x06, value=self.x_axis_target_acc_register, slave=self.slave_address)  
-        
+    def write_x_axis_target_motion(self, pos, spd, acc_time):
+        target_pos_struct   = struct.pack("i", int(pos*10000))
+        target_pos_register = struct.unpack("HH", target_pos_struct)
+        spd = min(spd, 300) # Limit maximum speed to 300 mm/s
+        target_spd_struct   = struct.pack("I", int(spd*60*100))
+        target_spd_register = struct.unpack("HH", target_spd_struct)
+        target_acc_time_register = acc_time
+        if self.connection:
+            self.client.write_registers(address=0x05, values=[target_pos_register[0], target_pos_register[1], target_spd_register[0], target_spd_register[1], target_acc_time_register])

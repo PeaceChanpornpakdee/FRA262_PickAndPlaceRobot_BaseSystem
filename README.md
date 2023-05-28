@@ -23,6 +23,12 @@ pip install pymodbus==3.1.3
 
 $~$
 
+## Configuration
+You might need to change COM port in `protocol.py`.
+> The original COM port is `self.port = "COM5"`
+
+$~$
+
 ## Running
 The most basic way to run base system is to run `app.py` on Visual Studio Code.
 
@@ -101,6 +107,7 @@ $~$
 ```Value * 10```
 
 *Ex. 123.4 mm --> 1234*
+> **_Maximum speed for x-axis is 300 mm/s_**
 
 $~$
 
@@ -119,6 +126,8 @@ $~$
 | ---- | ------- |
 | 0 | Home | 
 | 1 | Run | 
+| 2 | Jog Left (-) | 
+| 3 | Jog Right (+) | 
 
 $~$
 
@@ -172,3 +181,5 @@ $~$
 **14. Run x-axis**
 ![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/run_x.png?raw=true)
 
+**15. Jog x-axis**
+![alt text](https://github.com/PeaceChanpornpakdee/FRA262_PickAndPlaceRobot_BaseSystem/blob/dev/image/readme_image/jog_x.png?raw=true)
