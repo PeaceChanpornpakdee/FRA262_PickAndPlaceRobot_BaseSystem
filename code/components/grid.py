@@ -37,10 +37,10 @@ class Grid():
     def map_2D_to_3D(self, pixel_x, pixel_y):
         grid_x =  (pixel_x - 2*pixel_y - self.offset_x + 2*self.offset_y) / 16
         grid_y = -(pixel_x + 2*pixel_y - self.offset_x - 2*self.offset_y - 800) / 16
-        if grid_x > 15:
-            grid_x = 15
-        elif grid_x < -15:
-            grid_x = -15
+        if grid_x > 14:
+            grid_x = 14
+        elif grid_x < -14:
+            grid_x = -14
         if grid_y > 35:
             grid_y = 35
         elif grid_y < -35:

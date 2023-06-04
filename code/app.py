@@ -287,7 +287,7 @@ class App(tk.Tk):
             self.entry_x_value = self.entry_x.get_value()
             self.entry_y_value = self.entry_y.get_value()
             # Validate Entry's Value
-            validate_x_result = self.entry_x.validate(self.entry_x_value, 150)
+            validate_x_result = self.entry_x.validate(self.entry_x_value, 140)
             validate_y_result = self.entry_y.validate(self.entry_y_value, 350)
             # Interpret Validation Result
             validate_result = "Normal"
