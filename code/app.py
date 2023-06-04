@@ -802,6 +802,7 @@ class App(tk.Tk):
             if self.protocol_y.x_axis_moving_status == "Idle":
                 if str(self.protocol_y.x_axis_moving_status_before)[0:3] == "Jog":
                     self.protocol_x.write_x_axis_moving_status("Idle")
+                    self.protocol_y.write_x_axis_actual_motion(self.protocol_x.x_axis_actual_pos, self.protocol_x.x_axis_actual_spd)
                     self.jogging_x = False
 
             # Read moving status and actual motion all the time
