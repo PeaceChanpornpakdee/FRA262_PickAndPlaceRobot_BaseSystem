@@ -137,5 +137,5 @@ class Error:
     code_1  = "Input for Point Mode cannot be empty"
     code_2  = "Input for Point Mode cannot have 2 or more ."
     code_3  = "Input for Point Mode cannot have character"
-    code_4x = "Input x for Point Mode must be between -150.0 and 150.0"
+    code_4x = "Input x for Point Mode must be between -140.0 and 140.0"
     code_4y = "Input y for Point Mode must be between -350.0 and 350.0"

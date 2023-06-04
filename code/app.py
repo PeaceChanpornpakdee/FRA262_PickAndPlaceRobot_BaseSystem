@@ -287,7 +287,7 @@ class App(tk.Tk):
             self.entry_x_value = self.entry_x.get_value()
             self.entry_y_value = self.entry_y.get_value()
             # Validate Entry's Value
-            validate_x_result = self.entry_x.validate(self.entry_x_value, 150)
+            validate_x_result = self.entry_x.validate(self.entry_x_value, 140)
             validate_y_result = self.entry_y.validate(self.entry_y_value, 350)
             # Interpret Validation Result
             validate_result = "Normal"
@@ -778,12 +778,12 @@ class App(tk.Tk):
 
             # When start homing
             if self.protocol_y.x_axis_moving_status == "Home":
-                if self.protocol_y.x_axis_moving_status_before == "Idle":
+                if self.protocol_x.x_axis_moving_status_before == "Idle":
                     self.protocol_x.write_x_axis_moving_status("Home")
                     self.homing_x = True
             # When start running
             elif self.protocol_y.x_axis_moving_status == "Run":
-                if self.protocol_y.x_axis_moving_status_before == "Idle":
+                if self.protocol_x.x_axis_moving_status_before == "Idle":
                     self.protocol_y.read_x_axis_target_motion()
                     self.protocol_x.write_x_axis_target_motion(self.protocol_y.x_axis_target_pos, self.protocol_y.x_axis_target_spd, self.protocol_y.x_axis_target_acc_time)
                     self.protocol_x.write_x_axis_moving_status("Run")
