@@ -103,25 +103,21 @@ class Protocol_Y(Binary):
             self.read_y_axis_moving_status()
             self.read_x_axis_moving_status()
             self.read_y_axis_actual_motion()
-
             print("Laser:", self.laser_on)
             print("Gripper:", self.gripper_power, "\tPick:", self.gripper_pick, "\tPlace:", self.gripper_place)
             print("Pos:", self.y_axis_actual_pos, "\tSpd:", self.y_axis_actual_spd, "\tAcc:", self.y_axis_actual_acc)
             print("Y-Axis Moving:", self.y_axis_moving_status)
             print("X-Axis Moving:", self.x_axis_moving_status)
-
             self.routine_normal = True
-
         except Exception as e:
-            print(e)
+            print("Routine Error", e)
             self.routine_normal = False
-
 
     def read_hearbeat(self):
         try:
             hearbeat_value = self.client.read_holding_registers(address=0x00, count=1, slave=self.slave_address).registers
         except Exception as e:
-            print(e)
+            print("Heartbeat Error", e)
             return "Error"
         return hearbeat_value[0]
     
@@ -143,9 +139,8 @@ class Protocol_Y(Binary):
             self.base_system_status_register = 0b01000
         elif command == "Run Point Mode":
             self.base_system_status_register = 0b10000
-            print("Run Point Mode !!!!!!!!")
         self.client.write_register(address=0x01, value=self.base_system_status_register, slave=self.slave_address)
-        print("Write to Client")
+        print("Write Base System Status to Client")
 
     def read_end_effector_status(self):
         end_effector_status_binary = self.binary_crop(4, self.decimal_to_binary(self.register[0x02]))[::-1]
@@ -199,7 +194,6 @@ class Protocol_Y(Binary):
         self.pick_tray_origin_y = self.binary_reverse_twos_complement(self.register[0x21]) / 10
         # Orientation
         self.pick_tray_orientation = self.register[0x22] / 100
-        print("TRAY:", self.pick_tray_origin_x, self.pick_tray_origin_y, self.pick_tray_orientation)
 
     def read_place_tray_position(self):
         # Origin x
@@ -315,6 +309,11 @@ class Protocol_X(Binary):
         self.x_axis_actual_spd = int((struct.unpack("I", actual_spd_struct)[0]) / 1000) / 10.0 # mm/s
 
     def write_x_axis_target_motion(self, pos, spd, acc_time):
+        # Limit position range between -140 to 140 mm 
+        if pos < -140:
+            pos = -140
+        elif pos > 140:
+            pos = 140
         target_pos_struct   = struct.pack("i", int(pos*10000))
         target_pos_register = struct.unpack("HH", target_pos_struct)
         spd = min(spd, 300) # Limit maximum speed to 300 mm/s
