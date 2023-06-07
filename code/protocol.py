@@ -271,8 +271,7 @@ class Protocol_X(Binary):
             self.write_x_axis_moving_status("Home")
 
     def read_holding_registers(self):
-        if self.connection:
-            self.register = self.client.read_holding_registers(address=0x00, count=5).registers
+        self.register = self.client.read_holding_registers(address=0x00, count=5).registers
 
     def write_x_axis_moving_status(self, command):
         if command == "Idle":
@@ -285,8 +284,7 @@ class Protocol_X(Binary):
             self.x_axis_moving_status_register = 0b0100
         elif command == "Jog Right":
             self.x_axis_moving_status_register = 0b1000
-        if self.connection:
-            self.client.write_register(address=0x00, value=self.x_axis_moving_status_register)
+        self.client.write_register(address=0x00, value=self.x_axis_moving_status_register)
 
     def read_x_axis_moving_status(self):
         self.x_axis_moving_status_before = self.x_axis_moving_status
@@ -320,5 +318,4 @@ class Protocol_X(Binary):
         target_spd_struct   = struct.pack("I", int(spd*60*100))
         target_spd_register = struct.unpack("HH", target_spd_struct)
         target_acc_time_register = acc_time
-        if self.connection:
-            self.client.write_registers(address=0x05, values=[target_pos_register[0], target_pos_register[1], target_spd_register[0], target_spd_register[1], target_acc_time_register])
+        self.client.write_registers(address=0x05, values=[target_pos_register[0], target_pos_register[1], target_spd_register[0], target_spd_register[1], target_acc_time_register])
