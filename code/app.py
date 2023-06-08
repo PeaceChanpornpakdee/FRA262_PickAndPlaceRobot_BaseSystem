@@ -203,7 +203,7 @@ class App(tk.Tk):
         self.text_movement = TextBox(self.canvas_command, 725, 25, "Movement", font_size_section_title, Color.darkgray)
             # Home Press Button
         self.press_home = PressButton(canvas=self.canvas_command, x=655, y=50, w=128, h=30, r=15, active_color=Color.gray, inactive_color=Color.lightgray, text="Home", text_size=font_size_button_home, active_default=True)
-        self.homing = False
+        self.homing = self.protocol_x.connection
             # Run Press Button
         self.press_run  = PressButton(canvas=self.canvas_command, x=655, y=90, w=128, h=44, r=22, active_color=Color.blue, inactive_color=Color.lightgray, text="Run", text_size=font_size_button_run, active_default=False)
         self.running = False
