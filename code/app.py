@@ -803,26 +803,22 @@ class App(tk.Tk):
                 if self.protocol_y.x_axis_moving_status == "Idle":
                     if str(self.protocol_y.x_axis_moving_status_before)[0:3] == "Jog":
                         self.protocol_x.write_x_axis_moving_status("Idle")
-                        self.protocol_y.write_x_axis_actual_motion(self.protocol_x.x_axis_actual_pos, self.protocol_x.x_axis_actual_spd)
                         self.jogging_x = False
 
                 # Read moving status and actual motion all the time
                 self.protocol_x.read_holding_registers()
                 self.protocol_x.read_x_axis_moving_status()
                 self.protocol_x.read_x_axis_actual_motion()
-                
-                # While homing, running
-                if self.homing_x or self.running_x:
-                    self.protocol_y.write_x_axis_moving_status(self.protocol_x.x_axis_moving_status)
-                if self.homing_x or self.running_x or self.jogging_x:
-                    self.protocol_y.write_x_axis_actual_motion(self.protocol_x.x_axis_actual_pos, self.protocol_x.x_axis_actual_spd)
+                self.protocol_y.write_x_axis_actual_motion(self.protocol_x.x_axis_actual_pos, self.protocol_x.x_axis_actual_spd)
 
                 if self.protocol_x.x_axis_moving_status == "Idle":
                     # When stop homing
                     if self.protocol_x.x_axis_moving_status_before == "Home":
+                        self.protocol_y.write_x_axis_moving_status("Idle")
                         self.homing_x = False
                     # When stop running
                     if self.protocol_x.x_axis_moving_status_before == "Run":
+                        self.protocol_y.write_x_axis_moving_status("Idle")
                         self.running_x = False
 
 if __name__ == "__main__":
