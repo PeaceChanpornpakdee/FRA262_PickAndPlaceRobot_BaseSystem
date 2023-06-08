@@ -183,7 +183,7 @@ class App(tk.Tk):
         self.press_pick  = PressButton(canvas=self.canvas_command, x=330, y=82,  w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Pick Tray",  text_size=font_size_button_small, active_default=True)
         self.press_place = PressButton(canvas=self.canvas_command, x=330, y=112, w=200, h=24, r=12, active_color=Color.gray, inactive_color=Color.lightgray, text="Set Place Tray", text_size=font_size_button_small, active_default=True)
         self.jogging = False
-        self.jogging_x = False
+        # self.jogging_x = False
             # Entry Point
         self.entry_x = Entry(master=self, canvas=self.canvas_command, x=364, y=82,  color=Color.blue)
         self.entry_y = Entry(master=self, canvas=self.canvas_command, x=364, y=112, color=Color.blue)
@@ -204,7 +204,7 @@ class App(tk.Tk):
         self.text_movement = TextBox(self.canvas_command, 725, 25, "Movement", font_size_section_title, Color.darkgray)
             # Home Press Button
         self.press_home = PressButton(canvas=self.canvas_command, x=655, y=50, w=128, h=30, r=15, active_color=Color.gray, inactive_color=Color.lightgray, text="Home", text_size=font_size_button_home, active_default=True)
-        self.homing = self.protocol_x.connection
+        self.homing = False
         self.homing_x = self.protocol_x.connection
             # Run Press Button
         self.press_run  = PressButton(canvas=self.canvas_command, x=655, y=90, w=128, h=44, r=22, active_color=Color.blue, inactive_color=Color.lightgray, text="Run", text_size=font_size_button_run, active_default=False)
@@ -227,7 +227,7 @@ class App(tk.Tk):
         then move the target and change entry text
         """
         if self.operation_mode == "Point" and self.connection and self.protocol_y.usb_connect:
-            if not self.running and not self.homing and not self.jogging and not self.gripping:
+            if not self.running and not self.homing and not self.jogging and not self.gripping and not self.homing_x and not self.running_x:
                 # Convert pixel to grid
                 grid_x, grid_y = self.grid.map_2D_to_3D(event.x, event.y)
                 # Reduce to 1 decimal point
@@ -316,7 +316,7 @@ class App(tk.Tk):
         else:
             self.message_error.hide()
             if self.show_tray_pick and self.show_tray_place:
-                if not self.running and not self.homing and not self.jogging and not self.gripping:
+                if not self.running and not self.homing and not self.jogging and not self.gripping and not self.homing_x and not self.running_x:
                     self.press_run.activate()
             else:
                 self.press_run.deactivate()
@@ -640,7 +640,7 @@ class App(tk.Tk):
         self.text_y_pos_num.activate(self.text_y_pos_num.text, Color.blue)
         self.text_y_spd_num.activate(self.text_y_spd_num.text, Color.blue)
         self.text_y_acc_num.activate(self.text_y_acc_num.text, Color.blue)
-        if not self.running and not self.homing and not self.jogging:
+        if not self.running and not self.homing and not self.jogging and not self.homing_x and not self.running_x:
             self.toggle_laser.activate()
             self.toggle_gripper.activate()
             # self.press_arrow.activate()
@@ -673,7 +673,7 @@ class App(tk.Tk):
         else:
             self.gripping = False
             self.message_laser.hide()
-            if not self.jogging and not self.homing and not self.running:
+            if not self.jogging and not self.homing and not self.running and not self.homing_x and not self.running_x:
                 self.toggle_laser.activate()
                 self.toggle_gripper.activate()
                 if self.protocol_y.gripper_power == "1":
@@ -793,17 +793,17 @@ class App(tk.Tk):
                 elif self.protocol_y.x_axis_moving_status == "Jog Left":
                     if self.protocol_y.x_axis_moving_status_before != "Jog Left":
                         self.protocol_x.write_x_axis_moving_status("Jog Left")
-                        self.jogging_x = True
+                        # self.jogging_x = True
                 elif self.protocol_y.x_axis_moving_status == "Jog Right":
                     if self.protocol_y.x_axis_moving_status_before != "Jog Right":
                         self.protocol_x.write_x_axis_moving_status("Jog Right")
-                        self.jogging_x = True
+                        # self.jogging_x = True
                 
                 # When stop jogging
                 if self.protocol_y.x_axis_moving_status == "Idle":
                     if str(self.protocol_y.x_axis_moving_status_before)[0:3] == "Jog":
                         self.protocol_x.write_x_axis_moving_status("Idle")
-                        self.jogging_x = False
+                        # self.jogging_x = False
 
                 # Read moving status and actual motion all the time
                 self.protocol_x.read_holding_registers()
