@@ -193,6 +193,9 @@ class App(tk.Tk):
         self.text_y_entry = TextBox(canvas=self.canvas_command, x=345, y=122,  text="y", size=font_size_section_menu, color=Color.darkgray)
         self.text_mm_x_entry = TextBox(canvas=self.canvas_command, x=510, y=90,  text="mm", size=font_size_section_menu, color=Color.darkgray)
         self.text_mm_y_entry = TextBox(canvas=self.canvas_command, x=510, y=122,  text="mm", size=font_size_section_menu, color=Color.darkgray)
+        if self.protocol_x.connection:
+            self.entry_x.disable()
+            self.entry_y.disable()
         self.entry_x.hide()
         self.entry_y.hide()
         self.text_x_entry.hide()
