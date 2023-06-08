@@ -821,8 +821,8 @@ class App(tk.Tk):
         """
         This function prints current activity for debugging in terminal
         """
-        if self.running:   print("Running y-axis ")
-        if self.homing:    print("Homing y-axis ")
+        if self.running:   print("Running")
+        if self.homing:    print("Homing")
         if self.jogging:   print("Jogging")
         if self.gripping:  print("Gripping")
 
