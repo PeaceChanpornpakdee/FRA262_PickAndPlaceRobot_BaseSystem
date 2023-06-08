@@ -773,56 +773,53 @@ class App(tk.Tk):
             self.protocol_y.usb_connect_before = False
 
     def handle_protocol_x(self):
-        if self.time_ms_x >= 100:
-            self.time_ms_x = 0
+        if self.protocol_x.connection:
+            if self.time_ms_x >= 100:
+                self.time_ms_x = 0
 
-            # When start homing
-            if self.protocol_y.x_axis_moving_status == "Home":
-                if self.protocol_x.x_axis_moving_status_before == "Idle":
-                    self.protocol_x.write_x_axis_moving_status("Home")
-                    self.homing_x = True
-            # When start running
-            elif self.protocol_y.x_axis_moving_status == "Run":
-                if self.protocol_x.x_axis_moving_status_before == "Idle":
-                    self.protocol_y.read_x_axis_target_motion()
-                    self.protocol_x.write_x_axis_target_motion(self.protocol_y.x_axis_target_pos, self.protocol_y.x_axis_target_spd, self.protocol_y.x_axis_target_acc_time)
-                    self.protocol_x.write_x_axis_moving_status("Run")
-                    self.running_x = True
-            # When jogging
-            elif self.protocol_y.x_axis_moving_status == "Jog Left":
-                if self.protocol_y.x_axis_moving_status_before != "Jog Left":
-                    self.protocol_x.write_x_axis_moving_status("Jog Left")
-                    self.jogging_x = True
-            elif self.protocol_y.x_axis_moving_status == "Jog Right":
-                if self.protocol_y.x_axis_moving_status_before != "Jog Right":
-                    self.protocol_x.write_x_axis_moving_status("Jog Right")
-                    self.jogging_x = True
-            
-            # When stop jogging
-            if self.protocol_y.x_axis_moving_status == "Idle":
-                if str(self.protocol_y.x_axis_moving_status_before)[0:3] == "Jog":
-                    self.protocol_x.write_x_axis_moving_status("Idle")
-                    self.protocol_y.write_x_axis_actual_motion(self.protocol_x.x_axis_actual_pos, self.protocol_x.x_axis_actual_spd)
-                    self.jogging_x = False
+                # When start homing
+                if self.protocol_y.x_axis_moving_status == "Home":
+                    if self.protocol_x.x_axis_moving_status_before == "Idle":
+                        self.protocol_x.write_x_axis_moving_status("Home")
+                        self.homing_x = True
+                # When start running
+                elif self.protocol_y.x_axis_moving_status == "Run":
+                    if self.protocol_x.x_axis_moving_status_before == "Idle":
+                        self.protocol_y.read_x_axis_target_motion()
+                        self.protocol_x.write_x_axis_target_motion(self.protocol_y.x_axis_target_pos, self.protocol_y.x_axis_target_spd, self.protocol_y.x_axis_target_acc_time)
+                        self.protocol_x.write_x_axis_moving_status("Run")
+                        self.running_x = True
+                # When jogging
+                elif self.protocol_y.x_axis_moving_status == "Jog Left":
+                    if self.protocol_y.x_axis_moving_status_before != "Jog Left":
+                        self.protocol_x.write_x_axis_moving_status("Jog Left")
+                        self.jogging_x = True
+                elif self.protocol_y.x_axis_moving_status == "Jog Right":
+                    if self.protocol_y.x_axis_moving_status_before != "Jog Right":
+                        self.protocol_x.write_x_axis_moving_status("Jog Right")
+                        self.jogging_x = True
+                
+                # When stop jogging
+                if self.protocol_y.x_axis_moving_status == "Idle":
+                    if str(self.protocol_y.x_axis_moving_status_before)[0:3] == "Jog":
+                        self.protocol_x.write_x_axis_moving_status("Idle")
+                        self.jogging_x = False
 
-            # Read moving status and actual motion all the time
-            self.protocol_x.read_holding_registers()
-            self.protocol_x.read_x_axis_moving_status()
-            self.protocol_x.read_x_axis_actual_motion()
-            
-            # While homing, running
-            if self.homing_x or self.running_x:
-                self.protocol_y.write_x_axis_moving_status(self.protocol_x.x_axis_moving_status)
-            if self.homing_x or self.running_x or self.jogging_x:
+                # Read moving status and actual motion all the time
+                self.protocol_x.read_holding_registers()
+                self.protocol_x.read_x_axis_moving_status()
+                self.protocol_x.read_x_axis_actual_motion()
                 self.protocol_y.write_x_axis_actual_motion(self.protocol_x.x_axis_actual_pos, self.protocol_x.x_axis_actual_spd)
 
-            if self.protocol_x.x_axis_moving_status == "Idle":
-                # When stop homing
-                if self.protocol_x.x_axis_moving_status_before == "Home":
-                    self.homing_x = False
-                # When stop running
-                if self.protocol_x.x_axis_moving_status_before == "Run":
-                    self.running_x = False
+                if self.protocol_x.x_axis_moving_status == "Idle":
+                    # When stop homing
+                    if self.protocol_x.x_axis_moving_status_before == "Home":
+                        self.protocol_y.write_x_axis_moving_status("Idle")
+                        self.homing_x = False
+                    # When stop running
+                    if self.protocol_x.x_axis_moving_status_before == "Run":
+                        self.protocol_y.write_x_axis_moving_status("Idle")
+                        self.running_x = False
 
 if __name__ == "__main__":
     app = App()
