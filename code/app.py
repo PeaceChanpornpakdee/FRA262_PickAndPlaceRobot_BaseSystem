@@ -734,6 +734,9 @@ class App(tk.Tk):
             self.message_navi.show()
 
     def handle_protocol_y(self):
+        """
+        This function handles protocol y
+        """
         # Check USB connection
         if self.protocol_y.usb_connect:
             # When reconnect USB
@@ -752,6 +755,7 @@ class App(tk.Tk):
                     if self.new_connection: # If Connected
                         self.protocol_y.routine() # Do routine
                     self.end_time = time.time()
+                    self.print_current_activity()
                     print((self.end_time-self.start_time)*1000, "ms\n")
                     self.start_time = time.time()
 
@@ -773,6 +777,9 @@ class App(tk.Tk):
             self.protocol_y.usb_connect_before = False
 
     def handle_protocol_x(self):
+        """
+        This function handles protocol x
+        """
         if self.protocol_x.connection:
             if self.time_ms_x >= 100:
                 self.time_ms_x = 0
@@ -820,6 +827,17 @@ class App(tk.Tk):
                     if self.protocol_x.x_axis_moving_status_before == "Run":
                         self.protocol_y.write_x_axis_moving_status("Idle")
                         self.running_x = False
+        
+    def print_current_activity(self):
+        """
+        This function prints current activity for debugging in terminal
+        """
+        if self.running:   print("Running y-axis ")
+        if self.homing:    print("Homing y-axis ")
+        if self.jogging:   print("Jogging")
+        if self.gripping:  print("Gripping")
+        if self.running_x: print("Running x-axis")
+        if self.homing_x:  print("Homing x-axis")
 
 if __name__ == "__main__":
     app = App()
