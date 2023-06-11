@@ -8,9 +8,18 @@ $~$
 
 Please install `Inter-SemiBold.ttf` from `font` folder.
 
+### TK (Ubuntu only)
+```
+sudo apt-get install python3-tk
+```
 ### Pillow
+Windows/MacOS
 ```
 pip install Pillow
+```
+Ubuntu
+```
+sudo apt-get install python3-pil python3-pil.imagetk
 ```
 ### Pyserial
 ```
@@ -26,6 +35,8 @@ $~$
 ## Configuration
 You might need to change COM port in `protocol.py`.
 > The original COM port is `self.port = "COM5"`
+ 
+View port on linux: `sudo dmesg | grep tty`
 
 $~$
 
