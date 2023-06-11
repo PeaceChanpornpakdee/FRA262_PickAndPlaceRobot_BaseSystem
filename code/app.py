@@ -101,6 +101,19 @@ class App(tk.Tk):
             font_size_button_small = 9
             font_size_button_home = 12
             font_size_button_run = 17
+        elif self.os == "L": # Linux
+            font_size_title = 20
+            font_size_subtitle = 15
+            font_size_grid = 12
+            font_size_status = 9
+            font_size_status_mm = 8
+            font_size_message_error = 9
+            font_size_message_navi = 8
+            font_size_section_title = 12
+            font_size_section_menu = 10
+            font_size_button_small = 9
+            font_size_button_home = 12
+            font_size_button_run = 17
         # Field Canvas (Upper)
         self.canvas_field = tk.Canvas(master=self, width=840, height=540, bg=Color.darkgray, bd=0, highlightthickness=0, relief='ridge')
         self.canvas_field.pack(pady=30)

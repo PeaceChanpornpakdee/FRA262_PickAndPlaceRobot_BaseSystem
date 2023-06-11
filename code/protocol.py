@@ -57,10 +57,12 @@ class Protocol_Y(Binary):
     """
     def __init__(self):
         self.os = platform.platform()[0].upper()
-        if self.os == 'M': #Mac
+        if self.os == 'M':  # Mac
             self.port = "/dev/cu.usbmodem14103"
-        elif self.os == 'W': #Windows        
+        elif self.os == 'W':  # Windows
             self.port = "COM16"
+        elif self.os == 'L':  # Linux
+            self.port = "/dev/ttyACM0"
 
         self.usb_connect = False
         self.usb_connect_before = False

@@ -5,8 +5,15 @@ class Photo():
         self.canvas = canvas
         self.x = x
         self.y = y
+
+        # select appropriate file path because VScode likes to be difficult
         self.file_name = "image/" + file_name + ".png"
-        self.image_file = Image.open(self.file_name)
+        self.file_name2 = "../image/" + file_name + ".png"
+        try:
+            self.image_file = Image.open(self.file_name)
+        except FileNotFoundError:
+            self.image_file = Image.open(self.file_name2)
+
         self.canvas_image = ImageTk.PhotoImage(self.image_file)
         self.photo = self.canvas.create_image(self.x, self.y, image=self.canvas_image)
 
