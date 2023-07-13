@@ -13,6 +13,7 @@ from components.text import TextBox, MessageBox, Error
 from components.photo import Photo
 from components.entry import Entry
 from protocol import Protocol_Y, Protocol_X
+from keyboard import Keyboard
 
 class App(tk.Tk):
     def __init__(self):
@@ -20,7 +21,8 @@ class App(tk.Tk):
         # Title
         self.title('Base System')
         # Mode
-        self.mode = "Developer"
+        self.mode = "Graphic"
+        # self.mode = "Protocol"
         # Window Dimension
         window_width = 900
         window_height = 780
@@ -43,6 +45,10 @@ class App(tk.Tk):
         self.new_connection = True
         # Create Components
         self.create_components()
+        # Keyboard Control for Developer
+        if self.mode == "Graphic":
+            keyboard = Keyboard(self)
+            keyboard.key_bind(self)
 
     def task(self):
         # Handle Buttons
@@ -341,28 +347,40 @@ class App(tk.Tk):
         """
         This function turns on end-effector's laser with protocol, turn on laser toggle, show laser on UI's navigator
         """
-        self.protocol_y.write_end_effector_status("Laser On")
+        if self.mode == "Graphic":
+            self.protocol_y.laser_on = "1"
+        elif self.mode == "Protocol":
+            self.protocol_y.write_end_effector_status("Laser On")
         self.toggle_laser.turn_on()
     
     def turn_off_laser(self):
         """
         This function turns off end-effector's laser with protocol, turn off laser toggle, hide laser on UI's navigator
         """
-        self.protocol_y.write_end_effector_status("Laser Off")
+        if self.mode == "Graphic":
+            self.protocol_y.laser_on = "0"
+        elif self.mode == "Protocol":
+            self.protocol_y.write_end_effector_status("Laser Off")
         self.toggle_laser.turn_off()
 
     def turn_on_gripper(self):
         """
         This function turns on end-effector's gripper with protocol, turn on gripper toggle, show laser messagebox
         """
-        self.protocol_y.write_end_effector_status("Gripper Power On")
+        if self.mode == "Graphic":
+            self.protocol_y.gripper_power = "1"
+        elif self.mode == "Protocol":
+            self.protocol_y.write_end_effector_status("Gripper Power On")
         self.toggle_gripper.turn_on()
 
     def turn_off_gripper(self):
         """
         This function turns off end-effector's gripper with protocol, turn off gripper toggle, hide laser messagebox
         """
-        self.protocol_y.write_end_effector_status("Gripper Power Off")
+        if self.mode == "Graphic":
+            self.protocol_y.gripper_power = "1"
+        elif self.mode == "Protocol":
+            self.protocol_y.write_end_effector_status("Gripper Power Off")
         self.toggle_gripper.turn_off()
 
     def movement(self, grid_x, grid_y):
@@ -437,13 +455,19 @@ class App(tk.Tk):
         if self.press_arrow.pressed:
             if self.toggle_gripper.on: 
                 if self.direction_arrow == "pick":
-                    self.protocol_y.write_end_effector_status("Gripper Pick")
+                    if self.mode == "Graphic":
+                        self.protocol_y.gripper_pick = "1"
+                    elif self.mode == "Protocol":
+                        self.protocol_y.write_end_effector_status("Gripper Pick")
                     self.press_arrow.photo_arrow_pick.hide()
                     self.press_arrow.photo_arrow_place.show()
                     self.direction_arrow = "place"
                     self.press_arrow.change_text("     Place")
                 elif self.direction_arrow == "place":
-                    self.protocol_y.write_end_effector_status("Gripper Place")
+                    if self.mode == "Graphic":
+                        self.protocol_y.gripper_place = "1"
+                    elif self.mode == "Protocol":
+                        self.protocol_y.write_end_effector_status("Gripper Place")
                     self.press_arrow.photo_arrow_place.hide()
                     self.press_arrow.photo_arrow_pick.show()
                     self.direction_arrow = "pick"
@@ -612,6 +636,18 @@ class App(tk.Tk):
         self.press_run.activate()
         self.press_home.activate()
 
+    def handle_connection_change(self):
+        """
+        This function handles when connection change
+        """
+        if self.connection != self.new_connection:
+            # Update Connection Value
+            self.connection = self.new_connection
+            if not self.connection: # If Disconnected
+                self.handle_disconnected()
+            else: # If Reconnected
+                self.handle_connected()
+
     def handle_disconnected(self):
         """
         This function handles when connection miss a heartbeat
@@ -650,9 +686,9 @@ class App(tk.Tk):
             self.press_run.activate()
             self.press_home.activate()
 
-    def handle_protocol_ui(self):
+    def handle_ui_change(self):
         """
-        This function handles updating UI according to protocol status 
+        This function handles updating UI (according to protocol status) 
         """
         # Laser
         if self.protocol_y.laser_on == "1":
@@ -736,44 +772,44 @@ class App(tk.Tk):
         """
         This function handles protocol y
         """
-        # Check USB connection
-        if self.protocol_y.usb_connect:
-            # When reconnect USB
-            if self.protocol_y.usb_connect_before == False:
-                self.handle_connected()
-                self.protocol_y.usb_connect_before = True
-            # Check if there is protocol error from user (y-axis)
-            if self.protocol_y.routine_normal == False:
-                self.message_connection.change_text("Protocol Error from Y-Axis")
-                self.handle_disconnected()
-            else:
-                # Do protocol as normal every 200 ms
-                if self.time_ms_y >= 200:
-                    self.time_ms_y = 0
-                    self.new_connection = self.protocol_y.heartbeat()
-                    if self.new_connection: # If Connected
-                        self.protocol_y.routine() # Do routine
-                    self.end_time = time.time()
-                    self.print_current_activity()
-                    print((self.end_time-self.start_time)*1000, "ms\n")
-                    self.start_time = time.time()
+        # Bypass for Graphic Mode
+        if self.mode == "Graphic":
+            self.handle_connection_change()
+            self.handle_ui_change()
 
-                # If Connection is Changed 
-                if self.connection != self.new_connection:
-                    # Update Connection Value
-                    self.connection = self.new_connection
-                    if not self.connection: # If Disconnected
-                        self.handle_disconnected()
-                    else: # If Reconnected
-                        self.handle_connected()
-                # Update UI accoring to protocol status
-                self.handle_protocol_ui()
-
+        # Handle connection and protocol for Protocol mode
         else:
-            self.message_connection.change_text("Please Connect the USB")
-            self.handle_disconnected()
-            self.protocol_y.write_heartbeat()
-            self.protocol_y.usb_connect_before = False
+            # Check USB connection
+            if self.protocol_y.usb_connect:
+                # When reconnect USB
+                if self.protocol_y.usb_connect_before == False:
+                    print("When reconnect USB")
+                    self.handle_connected()
+                    self.protocol_y.usb_connect_before = True
+                # Check if there is protocol error from user (y-axis)
+                if self.protocol_y.routine_normal == False:
+                    self.message_connection.change_text("Protocol Error from Y-Axis")
+                    self.handle_disconnected()
+                else:
+                    # Do protocol as normal every 200 ms
+                    if self.time_ms_y >= 200:
+                        self.time_ms_y = 0
+                        self.new_connection = self.protocol_y.heartbeat()
+                        if self.new_connection: # If Connected
+                            self.protocol_y.routine() # Do routine
+                        self.end_time = time.time()
+                        self.print_current_activity()
+                        print((self.end_time-self.start_time)*1000, "ms\n")
+                        self.start_time = time.time()
+                    # If Connection is Changed 
+                    self.handle_connection_change()
+                    # Update UI accoring to protocol status
+                    self.handle_ui_change()
+            else:
+                self.message_connection.change_text("Please Connect the USB")
+                self.handle_disconnected()
+                self.protocol_y.write_heartbeat()
+                self.protocol_y.usb_connect_before = False
 
     def handle_protocol_x(self):
         """
