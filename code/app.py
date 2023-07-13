@@ -236,7 +236,7 @@ class App(tk.Tk):
         This function is called when user click on the grid during point mode,
         then move the target and change entry text
         """
-        if self.operation_mode == "Point" and self.connection and self.protocol_y.usb_connect:
+        if self.operation_mode == "Point" and self.connection and (self.protocol_y.usb_connect or self.mode == "Graphic"):
             if not self.running and not self.homing and not self.jogging and not self.gripping:
                 # Convert pixel to grid
                 grid_x, grid_y = self.grid.map_2D_to_3D(event.x, event.y)
