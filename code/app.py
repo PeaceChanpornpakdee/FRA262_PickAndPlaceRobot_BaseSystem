@@ -61,12 +61,16 @@ class App(tk.Tk):
         self.handle_press_home()
         self.handle_press_run()
 
-        # Handle y-axis protocol
-        self.start_time = time.time()
-        self.handle_protocol_y()
+        if self.mode == "Graphic":
+            # Handle graphic mode only
+            self.handle_graphic()
 
-        # Handle x-axis protocol
-        self.handle_protocol_x()
+        elif self.mode == "Protocol":
+            # Handle y-axis protocol
+            self.start_time = time.time()
+            self.handle_protocol_y()
+            # Handle x-axis protocol
+            self.handle_protocol_x()
 
         # Validate Entry Value
         self.validate_entry()
@@ -777,90 +781,94 @@ class App(tk.Tk):
         """
         This function handles protocol y
         """
-        # Bypass for Graphic Mode
-        if self.mode == "Graphic":
-            self.handle_connection_change()
-            self.handle_ui_change()
-
-        # Handle connection and protocol for Protocol mode
-        elif self.mode == "Protocol":
-            # Check USB connection
-            if self.protocol_y.usb_connect:
-                # When reconnect USB
-                if self.protocol_y.usb_connect_before == False:
-                    print("When reconnect USB")
-                    self.handle_connected()
-                    self.protocol_y.usb_connect_before = True
-                # Check if there is protocol error from user (y-axis)
-                if self.protocol_y.routine_normal == False:
-                    self.message_connection.change_text("Protocol Error from Y-Axis")
-                    self.handle_disconnected()
-                else:
-                    # Do protocol as normal every 200 ms
-                    if self.time_ms_y >= 200:
-                        self.time_ms_y = 0
-                        self.new_connection = self.protocol_y.heartbeat()
-                        if self.new_connection: # If Connected
-                            self.protocol_y.routine() # Do routine
-                        self.end_time = time.time()
-                        self.print_current_activity()
-                        print((self.end_time-self.start_time)*1000, "ms\n")
-                        self.start_time = time.time()
-                    # If Connection is Changed 
-                    self.handle_connection_change()
-                    # Update UI accoring to protocol status
-                    self.handle_ui_change()
-            else:
-                self.message_connection.change_text("Please Connect the USB")
+        # Check USB connection
+        if self.protocol_y.usb_connect:
+            # When reconnect USB
+            if self.protocol_y.usb_connect_before == False:
+                print("When reconnect USB")
+                self.handle_connected()
+                self.protocol_y.usb_connect_before = True
+            # Check if there is protocol error from user (y-axis)
+            if self.protocol_y.routine_normal == False:
+                self.message_connection.change_text("Protocol Error from Y-Axis")
                 self.handle_disconnected()
-                self.protocol_y.write_heartbeat()
-                self.protocol_y.usb_connect_before = False
+            else:
+                # Do protocol as normal every 200 ms
+                if self.time_ms_y >= 200:
+                    self.time_ms_y = 0
+                    self.new_connection = self.protocol_y.heartbeat()
+                    if self.new_connection: # If Connected
+                        self.protocol_y.routine() # Do routine
+                    self.end_time = time.time()
+                    self.print_current_activity()
+                    print((self.end_time-self.start_time)*1000, "ms\n")
+                    self.start_time = time.time()
+                # If Connection is Changed 
+                self.handle_connection_change()
+                # Update UI accoring to protocol status
+                self.handle_ui_change()
+        else:
+            self.message_connection.change_text("Please Connect the USB")
+            self.handle_disconnected()
+            self.protocol_y.write_heartbeat()
+            self.protocol_y.usb_connect_before = False
 
     def handle_protocol_x(self):
         """
         This function handles protocol x
         """
-        if self.mode == "Protocol":
-            if self.protocol_x.connection:
-                if self.time_ms_x >= 100:
-                    self.time_ms_x = 0
+        if self.protocol_x.connection:
+            if self.time_ms_x >= 100:
+                self.time_ms_x = 0
 
-                    # When start homing
-                    if self.protocol_y.x_axis_moving_status == "Home":
-                        if self.protocol_x.x_axis_moving_status_before == "Idle":
-                            self.protocol_x.write_x_axis_moving_status("Home")
-                    # When start running
-                    elif self.protocol_y.x_axis_moving_status == "Run":
-                        if self.protocol_x.x_axis_moving_status_before == "Idle":
-                            self.protocol_y.read_x_axis_target_motion()
-                            self.protocol_x.write_x_axis_target_motion(self.protocol_y.x_axis_target_pos, self.protocol_y.x_axis_target_spd, self.protocol_y.x_axis_target_acc_time)
-                            self.protocol_x.write_x_axis_moving_status("Run")
-                    # When jogging
-                    elif self.protocol_y.x_axis_moving_status == "Jog Left":
-                        if self.protocol_y.x_axis_moving_status_before != "Jog Left":
-                            self.protocol_x.write_x_axis_moving_status("Jog Left")
-                    elif self.protocol_y.x_axis_moving_status == "Jog Right":
-                        if self.protocol_y.x_axis_moving_status_before != "Jog Right":
-                            self.protocol_x.write_x_axis_moving_status("Jog Right")
-                    
-                    # When stop jogging
-                    if self.protocol_y.x_axis_moving_status == "Idle":
-                        if str(self.protocol_y.x_axis_moving_status_before)[0:3] == "Jog":
-                            self.protocol_x.write_x_axis_moving_status("Idle")
+                # When start homing
+                if self.protocol_y.x_axis_moving_status == "Home":
+                    if self.protocol_x.x_axis_moving_status_before == "Idle":
+                        self.protocol_x.write_x_axis_moving_status("Home")
+                # When start running
+                elif self.protocol_y.x_axis_moving_status == "Run":
+                    if self.protocol_x.x_axis_moving_status_before == "Idle":
+                        self.protocol_y.read_x_axis_target_motion()
+                        self.protocol_x.write_x_axis_target_motion(self.protocol_y.x_axis_target_pos, self.protocol_y.x_axis_target_spd, self.protocol_y.x_axis_target_acc_time)
+                        self.protocol_x.write_x_axis_moving_status("Run")
+                # When jogging
+                elif self.protocol_y.x_axis_moving_status == "Jog Left":
+                    if self.protocol_y.x_axis_moving_status_before != "Jog Left":
+                        self.protocol_x.write_x_axis_moving_status("Jog Left")
+                elif self.protocol_y.x_axis_moving_status == "Jog Right":
+                    if self.protocol_y.x_axis_moving_status_before != "Jog Right":
+                        self.protocol_x.write_x_axis_moving_status("Jog Right")
+                
+                # When stop jogging
+                if self.protocol_y.x_axis_moving_status == "Idle":
+                    if str(self.protocol_y.x_axis_moving_status_before)[0:3] == "Jog":
+                        self.protocol_x.write_x_axis_moving_status("Idle")
 
-                    # Read moving status and actual motion all the time
-                    self.protocol_x.read_holding_registers()
-                    self.protocol_x.read_x_axis_moving_status()
-                    self.protocol_x.read_x_axis_actual_motion()
-                    self.protocol_y.write_x_axis_actual_motion(self.protocol_x.x_axis_actual_pos, self.protocol_x.x_axis_actual_spd)
+                # Read moving status and actual motion all the time
+                self.protocol_x.read_holding_registers()
+                self.protocol_x.read_x_axis_moving_status()
+                self.protocol_x.read_x_axis_actual_motion()
+                self.protocol_y.write_x_axis_actual_motion(self.protocol_x.x_axis_actual_pos, self.protocol_x.x_axis_actual_spd)
 
-                    if self.protocol_x.x_axis_moving_status == "Idle":
-                        # When stop homing
-                        if self.protocol_x.x_axis_moving_status_before == "Home":
-                            self.protocol_y.write_x_axis_moving_status("Idle")
-                        # When stop running
-                        if self.protocol_x.x_axis_moving_status_before == "Run":
-                            self.protocol_y.write_x_axis_moving_status("Idle")
+                if self.protocol_x.x_axis_moving_status == "Idle":
+                    # When stop homing
+                    if self.protocol_x.x_axis_moving_status_before == "Home":
+                        self.protocol_y.write_x_axis_moving_status("Idle")
+                    # When stop running
+                    if self.protocol_x.x_axis_moving_status_before == "Run":
+                        self.protocol_y.write_x_axis_moving_status("Idle")
+
+    def handle_graphic(self):
+        """
+        This function handles Graphic mode only
+        """
+        self.handle_connection_change()
+        self.handle_ui_change()
+        self.print_current_activity()
+        
+        if self.homing:
+            if self.protocol_x.x_axis_actual_pos == 0:
+                self.homing = False
         
     def print_current_activity(self):
         """
@@ -869,7 +877,7 @@ class App(tk.Tk):
         if self.running:   print("Running")
         if self.homing:    print("Homing")
         if self.jogging:   print("Jogging")
-        if self.gripping:  print("Gripping")
+        if self.gripping:  print("Gripping", time.time())
 
 if __name__ == "__main__":
     app = App()
