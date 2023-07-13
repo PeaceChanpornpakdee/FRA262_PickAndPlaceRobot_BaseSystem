@@ -104,15 +104,15 @@ class Keyboard():
         app.bind("<KeyPress-Up>", self.key_up)
         app.bind("<KeyPress-Down>", self.key_down)
 
-    def auto_pilot(self):
+    def auto_pilot(self, target_x, target_y):
         """
         This functions auto pilot for point mode
         """
         distance_x = 0
         distance_y = 0
         
-        diff_x = round(self.app.point_target_x - self.app.protocol_x.x_axis_actual_pos, 1)
-        diff_y = round(self.app.point_target_y - self.app.protocol_y.y_axis_actual_pos, 1)
+        diff_x = round(target_x - self.app.protocol_x.x_axis_actual_pos, 1)
+        diff_y = round(target_y - self.app.protocol_y.y_axis_actual_pos, 1)
         
         if diff_x > 0:
             if diff_x > 1:          distance_x = 1
@@ -133,3 +133,6 @@ class Keyboard():
 
         pos_y = self.app.protocol_y.y_axis_actual_pos + distance_y
         self.app.protocol_y.y_axis_actual_pos = round(pos_y, 1)
+
+        if self.app.protocol_x.x_axis_actual_pos == target_x and self.app.protocol_y.y_axis_actual_pos == target_y:
+            self.app.protocol_y.y_axis_moving_status = "Idle"
