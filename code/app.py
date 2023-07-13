@@ -887,6 +887,8 @@ class App(tk.Tk):
         if self.protocol_y.y_axis_moving_status == "Home":
             if self.protocol_x.x_axis_actual_pos == 0 and self.protocol_y.y_axis_actual_pos == 0:
                 self.protocol_y.y_axis_moving_status = "Idle"
+        elif self.protocol_y.y_axis_moving_status == "Go Pick":
+            self.protocol_y.y_axis_moving_status = "Go Place"
         elif self.protocol_y.y_axis_moving_status == "Go Point":
             self.keyboard.auto_pilot()
             if self.protocol_x.x_axis_actual_pos == self.point_target_x and self.protocol_y.y_axis_actual_pos == self.point_target_y:
