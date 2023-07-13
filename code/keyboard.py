@@ -4,7 +4,6 @@ class Keyboard():
     """
     def __init__(self, app):
         self.app = app
-        # self.gripper_current = "Idle_1"
 
     def key_c(self, event):
         """
@@ -19,20 +18,21 @@ class Keyboard():
         self.app.protocol_y.gripper_pick = "0"
         self.app.protocol_y.gripper_place = "0"
 
-        # if self.gripper_current == "Idle_1":
-        #     self.gripper_current = "Pick"
-        #     self.app.protocol_y.gripper_pick = "1"
+    def key_left(self, event):
+        if self.app.protocol_x.x_axis_actual_pos > -150:
+            self.app.protocol_x.x_axis_actual_pos -= 1
 
-        # elif self.gripper_current == "Pick":
-        #     self.gripper_current = "Idle_2"
+    def key_right(self, event):
+        if self.app.protocol_x.x_axis_actual_pos < 150:
+            self.app.protocol_x.x_axis_actual_pos += 1
 
-        # elif self.gripper_current == "Idle_2":
-        #     self.gripper_current = "Place"
-        #     self.app.protocol_y.gripper_place = "1"
+    def key_up(self, event):
+        if self.app.protocol_y.y_axis_actual_pos < 350:
+            self.app.protocol_y.y_axis_actual_pos += 1
 
-        # elif self.gripper_current == "Place":
-        #     self.gripper_current = "Idle_1"
-
+    def key_down(self, event):
+        if self.app.protocol_y.y_axis_actual_pos > -350:
+            self.app.protocol_y.y_axis_actual_pos -= 1
 
 
 
@@ -61,18 +61,7 @@ class Keyboard():
     #         self.app.message_navi.tail.recreate (self.app.message_navi.tail_points["NE"])
     #         self.app.message_laser.tail.recreate(self.app.message_laser.tail_points["SE"])
 
-    # def key_left(self, event):
-    #     if self.app.navi.grid_x > -15:
-    #         self.move_to(self.app.navi.grid_x-0.5, self.app.navi.grid_y)
-    # def key_right(self, event):
-    #     if self.app.navi.grid_x < 15:
-    #         self.move_to(self.app.navi.grid_x+0.5, self.app.navi.grid_y)
-    # def key_up(self, event):
-    #     if self.app.navi.grid_y < 35:
-    #         self.move_to(self.app.navi.grid_x, self.app.navi.grid_y+0.5)
-    # def key_down(self, event):
-    #     if self.app.navi.grid_y > -35:
-    #         self.move_to(self.app.navi.grid_x, self.app.navi.grid_y-0.5)
+    
 
     # def key_a(self, event):
     #     self.app.tray_pick.origin_x -= 0.1
@@ -92,10 +81,10 @@ class Keyboard():
     def key_bind(self, app):
         app.bind("<KeyPress-c>", self.key_c)
         app.bind("<KeyPress-p>", self.key_p)
-    #     app.bind("<KeyPress-Left>", self.key_left)
-    #     app.bind("<KeyPress-Right>", self.key_right)
-    #     app.bind("<KeyPress-Up>", self.key_up)
-    #     app.bind("<KeyPress-Down>", self.key_down)
+        app.bind("<KeyPress-Left>", self.key_left)
+        app.bind("<KeyPress-Right>", self.key_right)
+        app.bind("<KeyPress-Up>", self.key_up)
+        app.bind("<KeyPress-Down>", self.key_down)
     #     app.bind("<KeyPress-a>", self.key_a)
     #     app.bind("<KeyPress-d>", self.key_d)
     #     app.bind("<KeyPress-w>", self.key_w)
