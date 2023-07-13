@@ -318,7 +318,9 @@ class App(tk.Tk):
                 self.press_run.deactivate()
             else:
                 self.message_error.hide()
-                if not self.running and not self.homing and not self.jogging and not self.gripping and self.connection and self.protocol_y.usb_connect and self.protocol_y.routine_normal:
+                if self.mode == "Graphic" and not self.running and not self.homing and not self.jogging and not self.gripping and self.connection:
+                    self.press_run.activate()
+                elif not self.running and not self.homing and not self.jogging and not self.gripping and self.connection and self.protocol_y.usb_connect and self.protocol_y.routine_normal:
                     self.press_run.activate()
             # Return Validation Result
             return validate_result
@@ -532,7 +534,9 @@ class App(tk.Tk):
             if not self.toggle_laser.on:
                 self.toggle_laser.pressed = True
                 self.handle_toggle_laser()
-            if self.mode == "Protocol":
+            if self.mode == "Graphic":
+                self.protocol_y.y_axis_moving_status = "Jog Pick"
+            elif self.mode == "Protocol":
                 self.protocol_y.write_base_system_status("Set Pick Tray")
             self.tray_pick.clear_tray()
             self.jogging = True
@@ -556,7 +560,9 @@ class App(tk.Tk):
             if not self.toggle_laser.on:
                 self.toggle_laser.pressed = True
                 self.handle_toggle_laser()
-            if self.mode == "Protocol":
+            if self.mode == "Graphic":
+                self.protocol_y.y_axis_moving_status = "Jog Place"
+            elif self.mode == "Protocol":
                 self.protocol_y.write_base_system_status("Set Place Tray")
             self.tray_place.clear_tray()
             self.jogging = True
@@ -576,7 +582,9 @@ class App(tk.Tk):
         This function handles when user press "Home" button
         """
         if self.press_home.pressed:
-            if self.mode == "Protocol":
+            if self.mode == "Graphic":
+                self.protocol_y.y_axis_moving_status = "Home"
+            elif self.mode == "Protocol":
                 self.protocol_y.write_base_system_status("Home")
             self.homing = True
             # Close Laser
@@ -604,10 +612,14 @@ class App(tk.Tk):
         """
         if self.press_run.pressed:
             if self.operation_mode == "Tray":
-                if self.mode == "Protocol":
+                if self.mode == "Graphic":
+                    self.protocol_y.y_axis_moving_status = "Go Pick"
+                elif self.mode == "Protocol":
                     self.protocol_y.write_base_system_status("Run Tray Mode")
             elif self.operation_mode == "Point":
-                if self.mode == "Protocol":
+                if self.mode == "Graphic":
+                    self.protocol_y.y_axis_moving_status = "Go Point"
+                elif self.mode == "Protocol":
                     self.protocol_y.write_goal_point(self.point_target_x, self.point_target_y)
                     self.protocol_y.write_base_system_status("Run Point Mode")
                 self.message_navi.change_text("Going to Point")
@@ -722,6 +734,9 @@ class App(tk.Tk):
                 self.toggle_gripper.activate()
                 if self.protocol_y.gripper_power == "1":
                     self.press_arrow.activate()
+                self.press_pick.activate()
+                self.press_place.activate()
+                self.press_home.activate()
 
         # Actual motion value
         self.text_x_pos_num.change_text(self.protocol_x.x_axis_actual_pos)
@@ -865,17 +880,21 @@ class App(tk.Tk):
         self.handle_connection_change()
         self.handle_ui_change()
         self.print_current_activity()
+
+        self.protocol_y.y_axis_moving_status_before = self.protocol_y.y_axis_moving_status
         
         if self.homing:
-            if self.protocol_x.x_axis_actual_pos == 0:
-                self.homing = False
+            if self.protocol_x.x_axis_actual_pos == 0 and self.protocol_y.y_axis_actual_pos == 0:
+                # self.homing = False
+                self.protocol_y.y_axis_moving_status = "Idle"
+
         
     def print_current_activity(self):
         """
         This function prints current activity for debugging in terminal
         """
         if self.running:   print("Running")
-        if self.homing:    print("Homing")
+        if self.homing:    print("Homing", time.time())
         if self.jogging:   print("Jogging")
         if self.gripping:  print("Gripping", time.time())
 
