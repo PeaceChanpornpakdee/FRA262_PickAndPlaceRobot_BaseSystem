@@ -754,7 +754,8 @@ class App(tk.Tk):
             if self.protocol_y.y_axis_moving_status_before != "Idle" or self.protocol_x.x_axis_moving_status_before != "Idle":
                 self.handle_finish_moving()
                 if self.protocol_y.y_axis_moving_status_before == "Jog Pick":
-                    self.protocol_y.read_pick_tray_position()
+                    if self.mode == "Protocol":
+                        self.protocol_y.read_pick_tray_position()
                     self.tray_pick.origin_x = self.protocol_y.pick_tray_origin_x / 10
                     self.tray_pick.origin_y = self.protocol_y.pick_tray_origin_y / 10
                     self.tray_pick.orientation = self.protocol_y.pick_tray_orientation
@@ -762,7 +763,8 @@ class App(tk.Tk):
                     self.jogging = False
                     self.show_tray_pick = True
                 elif self.protocol_y.y_axis_moving_status_before == "Jog Place":
-                    self.protocol_y.read_place_tray_position()
+                    if self.mode == "Protocol":
+                        self.protocol_y.read_place_tray_position()
                     self.tray_place.origin_x = self.protocol_y.place_tray_origin_x / 10
                     self.tray_place.origin_y = self.protocol_y.place_tray_origin_y / 10
                     self.tray_place.orientation = self.protocol_y.place_tray_orientation

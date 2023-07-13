@@ -1,3 +1,5 @@
+import random
+
 class Keyboard():
     """
     Keyboard Class for Developer
@@ -7,16 +9,28 @@ class Keyboard():
 
     def key_c(self, event):
         """
-        This key function switches Connection
+        This key function switches 'Connection'
         """
         self.app.new_connection = not self.app.connection
 
-    def key_p(self, event):
+    def key_g(self, event):
         """
-        This key function finishes Picking or Placing
+        This key function finishes 'Gripper' picking or placing
         """
         self.app.protocol_y.gripper_pick = "0"
         self.app.protocol_y.gripper_place = "0"
+
+    def key_t(self, event):
+        """
+        This key function finishes 'Tray' picking or placing
+        """
+        self.app.protocol_y.pick_tray_origin_x = self.app.protocol_x.x_axis_actual_pos
+        self.app.protocol_y.pick_tray_origin_y = self.app.protocol_y.y_axis_actual_pos
+        self.app.protocol_y.pick_tray_orientation = random.uniform(0, 360)
+        self.app.protocol_y.place_tray_origin_x = self.app.protocol_x.x_axis_actual_pos
+        self.app.protocol_y.place_tray_origin_y = self.app.protocol_y.y_axis_actual_pos
+        self.app.protocol_y.place_tray_orientation = random.uniform(0, 360)
+        self.app.protocol_y.y_axis_moving_status = "Idle"
 
     def key_left(self, event):
         if self.app.protocol_x.x_axis_actual_pos > -150:
@@ -80,7 +94,8 @@ class Keyboard():
 
     def key_bind(self, app):
         app.bind("<KeyPress-c>", self.key_c)
-        app.bind("<KeyPress-p>", self.key_p)
+        app.bind("<KeyPress-g>", self.key_g)
+        app.bind("<KeyPress-t>", self.key_t)
         app.bind("<KeyPress-Left>", self.key_left)
         app.bind("<KeyPress-Right>", self.key_right)
         app.bind("<KeyPress-Up>", self.key_up)
