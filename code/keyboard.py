@@ -42,24 +42,28 @@ class Keyboard():
             self.distance *= 10
     
     def key_left(self, event):
-        if self.app.protocol_x.x_axis_actual_pos > -150:
-            pos = self.app.protocol_x.x_axis_actual_pos - self.distance
-            self.app.protocol_x.x_axis_actual_pos = round(pos, 1)
+        if self.app.running or self.app.homing or self.app.jogging:
+            if self.app.protocol_x.x_axis_actual_pos > -150:
+                pos = self.app.protocol_x.x_axis_actual_pos - self.distance
+                self.app.protocol_x.x_axis_actual_pos = round(pos, 1)
 
     def key_right(self, event):
-        if self.app.protocol_x.x_axis_actual_pos < 150:
-            pos = self.app.protocol_x.x_axis_actual_pos + self.distance
-            self.app.protocol_x.x_axis_actual_pos = round(pos, 1)
+        if self.app.running or self.app.homing or self.app.jogging:
+            if self.app.protocol_x.x_axis_actual_pos < 150:
+                pos = self.app.protocol_x.x_axis_actual_pos + self.distance
+                self.app.protocol_x.x_axis_actual_pos = round(pos, 1)
 
     def key_up(self, event):
-        if self.app.protocol_y.y_axis_actual_pos < 350:
-            pos = self.app.protocol_y.y_axis_actual_pos + self.distance
-            self.app.protocol_y.y_axis_actual_pos = round(pos, 1)
+        if self.app.running or self.app.homing or self.app.jogging:
+            if self.app.protocol_y.y_axis_actual_pos < 350:
+                pos = self.app.protocol_y.y_axis_actual_pos + self.distance
+                self.app.protocol_y.y_axis_actual_pos = round(pos, 1)
 
     def key_down(self, event):
-        if self.app.protocol_y.y_axis_actual_pos > -350:
-            pos = self.app.protocol_y.y_axis_actual_pos - self.distance
-            self.app.protocol_y.y_axis_actual_pos = round(pos, 1)
+        if self.app.running or self.app.homing or self.app.jogging:
+            if self.app.protocol_y.y_axis_actual_pos > -350:
+                pos = self.app.protocol_y.y_axis_actual_pos - self.distance
+                self.app.protocol_y.y_axis_actual_pos = round(pos, 1)
 
 
 
