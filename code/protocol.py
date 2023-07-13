@@ -82,6 +82,13 @@ class Protocol_Y(Binary):
         self.x_axis_moving_status_before = "Idle"
         self.x_axis_moving_status = "Idle"
 
+        self.pick_tray_origin_x = 0
+        self.pick_tray_origin_y = 0
+        self.pick_tray_orientation = 0
+        self.place_tray_origin_x = 0
+        self.place_tray_origin_y = 0
+        self.place_tray_orientation = 0
+
         self.goal_point_x_register = 0
 
         self.client = ModbusClient(method="rtu", port=self.port, stopbits=1, bytesize=8, parity="E", baudrate=19200)
