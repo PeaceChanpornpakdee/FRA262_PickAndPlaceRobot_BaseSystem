@@ -34,35 +34,56 @@ class Keyboard():
         self.app.protocol_y.y_axis_moving_status = "Idle"
 
     def key_comma(self, event):
+        """
+        This key function decreases (<) distance by 10 times
+        """
         if self.distance > 0.1:
             self.distance /= 10
 
     def key_dot(self, event):
+        """
+        This key function increases (>) distance by 10 times
+        """
         if self.distance < 10:
             self.distance *= 10
 
     def key_slash(self, event):
+        """
+        This key function finishes moving
+        """
         self.app.protocol_y.y_axis_moving_status = "Idle"
     
     def key_left(self, event):
+        """
+        This key function moving left
+        """
         if self.app.running or self.app.homing or self.app.jogging:
             if self.app.protocol_x.x_axis_actual_pos > -150:
                 pos = self.app.protocol_x.x_axis_actual_pos - self.distance
                 self.app.protocol_x.x_axis_actual_pos = round(pos, 1)
 
     def key_right(self, event):
+        """
+        This key function moving right
+        """
         if self.app.running or self.app.homing or self.app.jogging:
             if self.app.protocol_x.x_axis_actual_pos < 150:
                 pos = self.app.protocol_x.x_axis_actual_pos + self.distance
                 self.app.protocol_x.x_axis_actual_pos = round(pos, 1)
 
     def key_up(self, event):
+        """
+        This key function moving up
+        """
         if self.app.running or self.app.homing or self.app.jogging:
             if self.app.protocol_y.y_axis_actual_pos < 350:
                 pos = self.app.protocol_y.y_axis_actual_pos + self.distance
                 self.app.protocol_y.y_axis_actual_pos = round(pos, 1)
 
     def key_down(self, event):
+        """
+        This key function moving down
+        """
         if self.app.running or self.app.homing or self.app.jogging:
             if self.app.protocol_y.y_axis_actual_pos > -350:
                 pos = self.app.protocol_y.y_axis_actual_pos - self.distance
