@@ -378,7 +378,7 @@ class App(tk.Tk):
         This function turns off end-effector's gripper with protocol, turn off gripper toggle, hide laser messagebox
         """
         if self.mode == "Graphic":
-            self.protocol_y.gripper_power = "1"
+            self.protocol_y.gripper_power = "0"
         elif self.mode == "Protocol":
             self.protocol_y.write_end_effector_status("Gripper Power Off")
         self.toggle_gripper.turn_off()
