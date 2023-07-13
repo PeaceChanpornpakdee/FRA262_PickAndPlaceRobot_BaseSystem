@@ -887,7 +887,6 @@ class App(tk.Tk):
         
         if self.homing:
             if self.protocol_x.x_axis_actual_pos == 0 and self.protocol_y.y_axis_actual_pos == 0:
-                # self.homing = False
                 self.protocol_y.y_axis_moving_status = "Idle"
 
         

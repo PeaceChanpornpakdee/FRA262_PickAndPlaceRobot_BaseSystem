@@ -6,6 +6,7 @@ class Keyboard():
     """
     def __init__(self, app):
         self.app = app
+        self.distance = 1
 
     def key_c(self, event):
         """
@@ -32,21 +33,33 @@ class Keyboard():
         self.app.protocol_y.place_tray_orientation = random.uniform(0, 360)
         self.app.protocol_y.y_axis_moving_status = "Idle"
 
+    def key_comma(self, event):
+        if self.distance > 0.1:
+            self.distance /= 10
+
+    def key_dot(self, event):
+        if self.distance < 10:
+            self.distance *= 10
+    
     def key_left(self, event):
         if self.app.protocol_x.x_axis_actual_pos > -150:
-            self.app.protocol_x.x_axis_actual_pos -= 1
+            pos = self.app.protocol_x.x_axis_actual_pos - self.distance
+            self.app.protocol_x.x_axis_actual_pos = round(pos, 1)
 
     def key_right(self, event):
         if self.app.protocol_x.x_axis_actual_pos < 150:
-            self.app.protocol_x.x_axis_actual_pos += 1
+            pos = self.app.protocol_x.x_axis_actual_pos + self.distance
+            self.app.protocol_x.x_axis_actual_pos = round(pos, 1)
 
     def key_up(self, event):
         if self.app.protocol_y.y_axis_actual_pos < 350:
-            self.app.protocol_y.y_axis_actual_pos += 1
+            pos = self.app.protocol_y.y_axis_actual_pos + self.distance
+            self.app.protocol_y.y_axis_actual_pos = round(pos, 1)
 
     def key_down(self, event):
         if self.app.protocol_y.y_axis_actual_pos > -350:
-            self.app.protocol_y.y_axis_actual_pos -= 1
+            pos = self.app.protocol_y.y_axis_actual_pos - self.distance
+            self.app.protocol_y.y_axis_actual_pos = round(pos, 1)
 
 
 
@@ -96,6 +109,8 @@ class Keyboard():
         app.bind("<KeyPress-c>", self.key_c)
         app.bind("<KeyPress-g>", self.key_g)
         app.bind("<KeyPress-t>", self.key_t)
+        app.bind("<KeyPress-,>", self.key_comma)
+        app.bind("<KeyPress-.>", self.key_dot)
         app.bind("<KeyPress-Left>", self.key_left)
         app.bind("<KeyPress-Right>", self.key_right)
         app.bind("<KeyPress-Up>", self.key_up)
