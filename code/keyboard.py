@@ -40,6 +40,9 @@ class Keyboard():
     def key_dot(self, event):
         if self.distance < 10:
             self.distance *= 10
+
+    def key_slash(self, event):
+        self.app.protocol_y.y_axis_moving_status = "Idle"
     
     def key_left(self, event):
         if self.app.running or self.app.homing or self.app.jogging:
@@ -115,6 +118,7 @@ class Keyboard():
         app.bind("<KeyPress-t>", self.key_t)
         app.bind("<KeyPress-,>", self.key_comma)
         app.bind("<KeyPress-.>", self.key_dot)
+        app.bind("<KeyPress-/>", self.key_slash)
         app.bind("<KeyPress-Left>", self.key_left)
         app.bind("<KeyPress-Right>", self.key_right)
         app.bind("<KeyPress-Up>", self.key_up)

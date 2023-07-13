@@ -881,7 +881,6 @@ class App(tk.Tk):
         """
         self.handle_connection_change()
         self.handle_ui_change()
-        self.print_current_activity()
 
         self.protocol_y.y_axis_moving_status_before = self.protocol_y.y_axis_moving_status
         
@@ -895,9 +894,9 @@ class App(tk.Tk):
         This function prints current activity for debugging in terminal
         """
         if self.running:   print("Running")
-        if self.homing:    print("Homing", time.time())
+        if self.homing:    print("Homing")
         if self.jogging:   print("Jogging")
-        if self.gripping:  print("Gripping", time.time())
+        if self.gripping:  print("Gripping")
 
 if __name__ == "__main__":
     app = App()
