@@ -328,7 +328,7 @@ class App(tk.Tk):
         else:
             self.message_error.hide()
             if self.show_tray_pick and self.show_tray_place:
-                if not self.running and not self.homing and not self.jogging and not self.gripping:
+                if not self.running and not self.homing and not self.jogging and not self.gripping and self.connection:
                     self.press_run.activate()
             else:
                 self.press_run.deactivate()
