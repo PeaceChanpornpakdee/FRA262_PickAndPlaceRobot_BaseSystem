@@ -90,6 +90,9 @@ class Keyboard():
                 self.app.protocol_y.y_axis_actual_pos = round(pos, 1)
 
     def key_bind(self, app):
+        """
+        This function binds keyboard press with each key function
+        """
         app.bind("<KeyPress-c>", self.key_c)
         app.bind("<KeyPress-g>", self.key_g)
         app.bind("<KeyPress-t>", self.key_t)
@@ -100,3 +103,33 @@ class Keyboard():
         app.bind("<KeyPress-Right>", self.key_right)
         app.bind("<KeyPress-Up>", self.key_up)
         app.bind("<KeyPress-Down>", self.key_down)
+
+    def auto_pilot(self):
+        """
+        This functions auto pilot for point mode
+        """
+        distance_x = 0
+        distance_y = 0
+        
+        diff_x = round(self.app.point_target_x - self.app.protocol_x.x_axis_actual_pos, 1)
+        diff_y = round(self.app.point_target_y - self.app.protocol_y.y_axis_actual_pos, 1)
+        
+        if diff_x > 0:
+            if diff_x > 1:          distance_x = 1
+            elif diff_x >= 0.1:     distance_x = 0.1
+        elif diff_x < 0:
+            if diff_x < -1:         distance_x = -1
+            elif diff_x <= -0.1:    distance_x = -0.1
+        
+        pos_x = self.app.protocol_x.x_axis_actual_pos + distance_x
+        self.app.protocol_x.x_axis_actual_pos = round(pos_x, 1)
+
+        if diff_y > 0:
+            if diff_y > 1:          distance_y = 1
+            elif diff_y >= 0.1:     distance_y = 0.1
+        elif diff_y < 0:
+            if diff_y < -1:         distance_y = -1
+            elif diff_y <= -0.1:    distance_y = -0.1
+
+        pos_y = self.app.protocol_y.y_axis_actual_pos + distance_y
+        self.app.protocol_y.y_axis_actual_pos = round(pos_y, 1)

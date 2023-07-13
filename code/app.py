@@ -47,8 +47,8 @@ class App(tk.Tk):
         self.create_components()
         # Keyboard Control for Developer
         if self.mode == "Graphic":
-            keyboard = Keyboard(self)
-            keyboard.key_bind(self)
+            self.keyboard = Keyboard(self)
+            self.keyboard.key_bind(self)
 
     def task(self):
         # Handle Buttons
@@ -884,11 +884,14 @@ class App(tk.Tk):
 
         self.protocol_y.y_axis_moving_status_before = self.protocol_y.y_axis_moving_status
         
-        if self.homing:
+        if self.protocol_y.y_axis_moving_status == "Home":
             if self.protocol_x.x_axis_actual_pos == 0 and self.protocol_y.y_axis_actual_pos == 0:
                 self.protocol_y.y_axis_moving_status = "Idle"
+        elif self.protocol_y.y_axis_moving_status == "Go Point":
+            self.keyboard.auto_pilot()
+            if self.protocol_x.x_axis_actual_pos == self.point_target_x and self.protocol_y.y_axis_actual_pos == self.point_target_y:
+                self.protocol_y.y_axis_moving_status = "Idle"
 
-        
     def print_current_activity(self):
         """
         This function prints current activity for debugging in terminal
