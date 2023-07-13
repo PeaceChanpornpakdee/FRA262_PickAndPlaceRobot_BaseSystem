@@ -528,7 +528,8 @@ class App(tk.Tk):
             if not self.toggle_laser.on:
                 self.toggle_laser.pressed = True
                 self.handle_toggle_laser()
-            self.protocol_y.write_base_system_status("Set Pick Tray")
+            if self.mode == "Protocol":
+                self.protocol_y.write_base_system_status("Set Pick Tray")
             self.tray_pick.clear_tray()
             self.jogging = True
             self.toggle_laser.deactivate()
@@ -551,7 +552,8 @@ class App(tk.Tk):
             if not self.toggle_laser.on:
                 self.toggle_laser.pressed = True
                 self.handle_toggle_laser()
-            self.protocol_y.write_base_system_status("Set Place Tray")
+            if self.mode == "Protocol":
+                self.protocol_y.write_base_system_status("Set Place Tray")
             self.tray_place.clear_tray()
             self.jogging = True
             self.toggle_laser.deactivate()
@@ -570,7 +572,8 @@ class App(tk.Tk):
         This function handles when user press "Home" button
         """
         if self.press_home.pressed:
-            self.protocol_y.write_base_system_status("Home")
+            if self.mode == "Protocol":
+                self.protocol_y.write_base_system_status("Home")
             self.homing = True
             # Close Laser
             if self.toggle_laser.on:
@@ -597,10 +600,12 @@ class App(tk.Tk):
         """
         if self.press_run.pressed:
             if self.operation_mode == "Tray":
-                self.protocol_y.write_base_system_status("Run Tray Mode")
+                if self.mode == "Protocol":
+                    self.protocol_y.write_base_system_status("Run Tray Mode")
             elif self.operation_mode == "Point":
-                self.protocol_y.write_goal_point(self.point_target_x, self.point_target_y)
-                self.protocol_y.write_base_system_status("Run Point Mode")
+                if self.mode == "Protocol":
+                    self.protocol_y.write_goal_point(self.point_target_x, self.point_target_y)
+                    self.protocol_y.write_base_system_status("Run Point Mode")
                 self.message_navi.change_text("Going to Point")
             self.running = True
             # Close Laser & Open Gripper First
