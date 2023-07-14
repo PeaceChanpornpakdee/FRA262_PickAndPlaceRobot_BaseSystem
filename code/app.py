@@ -117,7 +117,7 @@ class App(tk.Tk):
         self.background_field = RoundRectangle(canvas=self.canvas_field, x=0, y=0, w=840, h=540, r=20, color=Color.whitegray)
         # Title and Logo
         self.background_title = RoundRectangle(canvas=self.canvas_field, x=600, y=26, w=240+20, h=80, r=20, color=Color.darkgray)
-        self.text_title = TextBox(canvas=self.canvas_field, x=690, y=52, text="Module III",  size=font_size_title, color=Color.lightblue)
+        self.text_title = TextBox(canvas=self.canvas_field, x=690, y=52, text="Module III",  size=font_size_title, color="#0AD1DA")
         self.text_subtitle = TextBox(canvas=self.canvas_field, x=690, y=82, text="Base System", size=font_size_subtitle, color=Color.whitegray)
         self.photo_logo = Photo(canvas=self.canvas_field, file_name="logo", x=800, y=66)
         # Grid
@@ -178,8 +178,8 @@ class App(tk.Tk):
         self.text_laser     = TextBox(canvas=self.canvas_command, x=90,  y=62, text="Laser", size=font_size_section_menu, color=Color.darkgray)
         self.text_gripper   = TextBox(canvas=self.canvas_command, x=85,  y=96, text="Gripper", size=font_size_section_menu, color=Color.darkgray)
             # Toggle and Press Button
-        self.toggle_laser   = ToggleButton(canvas=self.canvas_command, x=115, y=52, w=36, h=20, on_color=Color.blue, on_text="On", off_color=Color.gray, off_text="Off", text_size=font_size_button_small, on_default=False)
-        self.toggle_gripper = ToggleButton(canvas=self.canvas_command, x=115, y=86, w=36, h=20, on_color=Color.blue, on_text="On", off_color=Color.gray, off_text="Off", text_size=font_size_button_small, on_default=False)
+        self.toggle_laser   = ToggleButton(canvas=self.canvas_command, x=115, y=52, w=36, h=20, on_active_color=Color.blue, on_inactive_color=Color.lightblue, on_text="On", off_active_color=Color.gray, off_inactive_color=Color.lightgray, off_text="Off", text_size=font_size_button_small, on_default=False)
+        self.toggle_gripper = ToggleButton(canvas=self.canvas_command, x=115, y=86, w=36, h=20, on_active_color=Color.blue, on_inactive_color=Color.lightblue, on_text="On", off_active_color=Color.gray, off_inactive_color=Color.lightgray, off_text="Off", text_size=font_size_button_small, on_default=False)
         self.direction_arrow = "pick"
         self.press_arrow    = PressButton(canvas=self.canvas_command, x=115, y=113, w=70, h=22, r=11, active_color=Color.gray, inactive_color=Color.lightgray, text="     Pick", text_size=font_size_button_small, active_default=False, image="arrow")
         self.gripping = False

@@ -114,23 +114,25 @@ class ToggleButton(Button):
     """
     ToggleButton class
     """
-    def __init__(self, canvas, x, y, w, h, on_color, on_text, off_color, off_text, text_size, on_default):
+    def __init__(self, canvas, x, y, w, h, on_active_color, on_inactive_color, on_text, off_active_color, off_inactive_color, off_text, text_size, on_default):
         self.canvas = canvas
         self.x = x
         self.y = y
         self.w = w
         self.h = h
-        self.on_color = on_color
+        self.on_active_color = on_active_color
+        self.on_inactive_color = on_inactive_color
         self.on_text  = on_text
-        self.off_color = off_color
+        self.off_active_color = off_active_color
+        self.off_inactive_color = off_inactive_color
         self.off_text  = off_text
         self.text_size = text_size
         self.on = on_default
         self.active = True
         self.pressed = False
-        self.round_rec = RoundRectangle(self.canvas, x, y, w, h, h/2, self.on_color)
+        self.round_rec = RoundRectangle(self.canvas, x, y, w, h, h/2, self.on_active_color)
         self.oval      = Oval(self.canvas, x+w-h+3, y+3, h-6, fill_color=Color.white, outline_color="")
-        self.textbox = TextBox(self.canvas, x+55, y+h/2, self.on_text, self.text_size, self.on_color)
+        self.textbox = TextBox(self.canvas, x+55, y+h/2, self.on_text, self.text_size, self.on_active_color)
         self.click_area = self.create_click_area(w, h)
         self.canvas.tag_bind(self.click_area.rect, "<ButtonRelease-1>", self.clicked)
         if not self.on:
@@ -138,22 +140,30 @@ class ToggleButton(Button):
 
     def turn_on(self):
         self.on = True
-        self.round_rec.activate(self.on_color)
+        self.round_rec.activate(self.on_active_color)
         self.canvas.move(self.oval.oval, self.w-self.h, 0)
-        self.textbox.activate(self.on_text, self.on_color)
+        self.textbox.activate(self.on_text, self.on_active_color)
     
     def turn_off(self):
         self.on = False
-        self.round_rec.deactivate(self.off_color)
+        self.round_rec.deactivate(self.off_active_color)
         self.canvas.move(self.oval.oval, self.h-self.w, 0)
-        self.textbox.deactivate(self.off_text, self.off_color)
+        self.textbox.deactivate(self.off_text, self.off_active_color)
 
     def clicked(self, event):
         if self.active:
             self.pressed = True
 
     def activate(self):
+        if self.on:
+            self.round_rec.activate(self.on_active_color)
+        else:
+            self.round_rec.activate(self.off_active_color)
         self.active = True
     
     def deactivate(self):
+        if self.on:
+            self.round_rec.deactivate(self.on_inactive_color)
+        else:
+            self.round_rec.deactivate(self.off_inactive_color)
         self.active = False
