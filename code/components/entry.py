@@ -15,9 +15,9 @@ class Entry():
         self.inner_rec = RoundRectangle(canvas=self.canvas, x=self.x+2, y=self.y+2, w=116, h=20, r=10, color=Color.whitegray)
         self.os = platform.platform()[0].upper()
         if self.os == 'M':  # Mac
-            self.entry = tk.Entry(master=self.master, bg=Color.whitegray, bd=0, font="Inter-SemiBold", fg=self.color, selectforeground=self.color,highlightthickness=0, insertbackground=self.color, insertwidth=2, justify="center", width=8, textvariable=self.string_var)
+            self.entry = tk.Entry(master=self.master, bg=Color.whitegray, bd=0, font="Inter-SemiBold", fg=self.color, selectforeground=self.color, highlightthickness=0, insertbackground=self.color, insertwidth=2, justify="center", width=8, textvariable=self.string_var)
         elif self.os == 'W':  # Windows
-            self.entry = tk.Entry(master=self.master, bg=Color.whitegray, bd=0, font=("Inter SemiBold", 9), fg=self.color, selectforeground=self.color,highlightthickness=0, insertbackground=self.color, insertwidth=2, justify="center", width=8, textvariable=self.string_var)
+            self.entry = tk.Entry(master=self.master, bg=Color.whitegray, bd=0, font=("Inter SemiBold", 9), fg=self.color, selectforeground=self.color, highlightthickness=0, insertbackground=self.color, insertwidth=2, justify="center", width=8, textvariable=self.string_var)
         self.entry_window = self.canvas.create_window(self.x+59, self.y+11, window=self.entry)
         self.set_text("0.0")
 

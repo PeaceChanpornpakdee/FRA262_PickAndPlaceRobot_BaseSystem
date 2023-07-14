@@ -5,7 +5,7 @@ class Color:
     middlegray  = "#AAAAAA"
     gray        = "#8C8C8C"
     darkgray    = "#3C4048"
-    lightblue   = "#0AD1DA"
+    lightblue   = "#9ADBDE"
     blue        = "#00ABB3"
     red         = "#BC0000"
     
